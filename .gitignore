@@ -1,0 +1,28 @@
+# VS Code settings
+.vscode
+
+# Balloon demo files
+docs/balloon-demo.html
+source/balloon-demo.md
+
+# Local scratch files
+/local/*
+!/local/.gitkeep
+
+# Claude Code
+CLAUDE.md
+/.claude/*
+
+# Python virtual environment
+.venv/
+
+# Codex AI agent instructions
+AGENTS.md
+/.agents/*
+
+# Temporary files
+/tmp/*
+
+# Personal notes
+/memo.txt
+
