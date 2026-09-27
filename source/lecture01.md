@@ -4,8 +4,6 @@ var:
   header-date: "2026年09月30日 (水) 2時限"
 ---
 
-# 第01回 2I-プログラミング1
-
 # 第01回 4I-データベース工学
 
 ## ガイダンス
@@ -16,7 +14,7 @@ var:
 
 具体的には、**環境構築** (Docker での PostgreSQL コンテナ構築)、**設計** (概念設計・論理設計)、**操作** (Raw SQL/ORM)、**保守運用** について、ハンズオン形式で (＝実際に手を動かしながら) 学んでいきます。また「**ドキュメント指向データベース**」についても、基本概念や環境構築、操作などの概要を学んでいきます。
 
-- リレーショナルデータについては [PostgreSQL](https://www.postgresql.org/) を使用します。
+- リレーショナルデータベースについては [PostgreSQL](https://www.postgresql.org/) を使用します。
   - 昨年度の「プログラミング3」の講義で利用した [Supabase](https://supabase.com/) も、中核データベースとして PostgreSQL を採用しています。
 - ドキュメント指向データベースについては [MongoDB](https://www.mongodb.com/) を使用します。
 
@@ -31,19 +29,19 @@ var:
 1. 主要なデータベースモデル（リレーショナル／ドキュメント指向など）の特性を理解し、要件に応じた適切な選択や組み合わせができる。
 1. **Docker を使用して PostgreSQL の実行環境を構築**し、コンソール や DbGate (ウェブベースのデータベースクライアント) から接続して、SQL や ユーティリティコマンド を実行できる。
 1. 現実世界の要件を分析し、**ER図を用いた概念設計**ができる。
-1. リレーショナルモデルについて、**正規化や外部キー制約制約、インデックス設計などの論理設計**ができる。
+1. リレーショナルモデルについて、**正規化や外部キー制約、インデックス設計などの論理設計**ができる。
 1. **SQL** を用いてリレーショナルデータベースに対する各種クエリが実行できる。
 1. TypeScript から、[pg](https://www.npmjs.com/package/pg)（DBドライバ）や [Prisma](https://www.npmjs.com/package/prisma)・[Drizzle](https://www.npmjs.com/package/drizzle-orm)（ORM）を用いて PostgreSQL に接続し、データの保存・取得・更新などができる。
-1. Docker を使用して MongoDB の実行環境を構築ができる。
+1. Docker を使用して MongoDB の実行環境が構築できる。
 1. TypeScript から MongoDB に接続して基本的な CRUD 操作ができる。
 
 ---
 
-**<i class="fa-solid fa-comment-dots fa-flip-horizontal"></i>プロンプト例** <font size="-1">理解が曖昧な用語は生成AIを使って、再確認しておきましょう)</font>
+**<i class="fa-solid fa-comment-dots fa-flip-horizontal"></i>プロンプト例** <font size="-1">(理解が曖昧な用語は生成AIを使って、再確認しておきましょう)</font>
 
 > ソフトウェア開発の文脈で「データの永続化」ってどういう意味ですか。
 
-> Docker ってなに？「Docker を使用して PostgreSQL の実行環境を構築できように」っていわれたんですけど。
+> Docker ってなに？「Docker を使用して PostgreSQL の実行環境を構築できるように」っていわれたんですけど。
 
 ### 授業の位置づけ
 
@@ -72,14 +70,14 @@ var:
   - 教科書「キタミ式 ITパスポート」の「Chapter7 データベース」。
   - 第10回と第11回の講義で「**リレーショナルデータベースの基礎**」について学習済み。
 - 2年 通年 (履修単位)「**プログラミング1**」(Python)
-  - [Python と Sqlite3 の連携](https://takeshiwada1980.github.io/Programming1-2024/lecture11.html#sqliteとの連携)
+  - [Python と SQLite3 の連携](https://takeshiwada1980.github.io/Programming1-2024/lecture11.html#sqliteとの連携)
 - 3年 後期 (学修単位)「**プログラミング3**」(TypeScript/Next.js/Supabase)
-  - [ウェブアプリのデータの永続化](https://takeshiwada1980.github.io/Programming3-2025/lecture08.html#データの永続化) Prisma (TypeScript ORM) + Supabse (PostgreSQL)
+  - [ウェブアプリのデータの永続化](https://takeshiwada1980.github.io/Programming3-2025/lecture08.html#データの永続化) Prisma (TypeScript ORM) + Supabase (PostgreSQL)
 - 3年 後期「**知能情報実験実習1**」
   - 後期テーマ：サーバ構築 (Linux, Apache)、Docker
 - 4年 前期「**知能情報実験実習2**」
-  - 前期テーマ1：Prisma (TypeSCript ORM) + SqLite3 [資料](https://takeshiwada1980.github.io/Eii2-2026/)
-  - 前期テーマ2：SQLAlchemy (Python ORM) + SqLite3
+  - 前期テーマ1：Prisma (TypeScript ORM) + SQLite3 [資料](https://takeshiwada1980.github.io/Eii2-2026/)
+  - 前期テーマ2：SQLAlchemy (Python ORM) + SQLite3
 
 
 ::: {.balloon .char-01 .face-02 .tone-yellow}
@@ -93,7 +91,7 @@ var:
 - [ITパスポート試験](https://www3.jitec.ipa.go.jp/JitesCbt/) CBT形式
 - [基本情報技術者試験](https://www.ipa.go.jp/shiken/kubun/fe.html) CBT形式
 - [応用情報技術者試験](https://www.ipa.go.jp/shiken/kubun/ap.html) CBT形式
-  - 応用情報技術者試験は、2026年度の春に廃止予定。詳しくは [こちら](https://www.ipa.go.jp/shiken/minaoshi/index.html) を参照してください。
+  - 応用情報技術者試験は、**2027年度から新試験制度へ移行予定**。詳しくは [こちら](https://www.ipa.go.jp/shiken/minaoshi/index.html) を参照してください。
 
 これらはいずれも国家資格です。実践的な開発力とは直結しないものの <span class="masked">就職活動を含めたIT業界におけるキャリア形成</span> では一定の意義を持つので、就活などに備えて取得をお勧めします。
 
@@ -115,7 +113,7 @@ var:
 - 小テストは、主として講義資料内の「定着確認」から出題します (そのままではなく類題や解答形式の変更を含みます)。
 - 小テストは、**授業開始直後に実施するので**、余裕をもって教室に入るようにしてください。
 
-:::{.note .type-tips}
+::: {.note .type-tips}
 **小テストを受験できなかった場合の救済措置 (重要🚨)**
 
 遅刻や欠席 (交通障害・公欠・忌引き・出席停止など理由を問わない) により、小テストを受験できず追試験を希望する者は、当該授業日を含めて2日以内に学生から和田宛に **TeamsChat** (≠電子メール) **で追試験の実施依頼** をしてください。例えば、「10月7日 (水) に実施された小テスト」の追試験を希望する場合は、10月8日 (木) の 23:59 までに連絡してください。
@@ -158,7 +156,7 @@ var:
 
 :::
 
-<div class="note type-tips">
+::: {.note .type-tips}
 **実際の開発現場における「データベース」という言葉の使われ方**
 
 ややこしいですが、ソフトウェア開発の文脈で「データベース」という用語が使われる場合、以下のように「データそのもの」ではなく、それを「**管理・利用する仕組みやソフトウェアを含めた全体**」を指すことが一般的です。
@@ -173,7 +171,7 @@ var:
 - 「データベースの冗長化により、システムの可用性を99.9%以上確保できます」
 
 このあたりの使い分けは、本科目を学んでいくうちに自然につかめるようになると思います。
-</div>
+:::
 
 #### 定着確認
 
@@ -307,10 +305,10 @@ X004,保守 絶望太,排他市待機村7-5,...,80,...
 
 - 教員A👩‍🦰が、ロックをかけたまま昼休みに入ってしまったりすると、業務に大きな影響がでてしまいます。
 
-<div class="note type-senior">
+::: {.note .type-senior}
 **バイト単位のファイルロック**
 
-Windows や Linux、MacOS などの OS では、ファイル単位に加えて **バイト単位のファイルロック機能** も提供しています。こちらを利用すれば、**ファイル内の特定範囲にロックをかけることが可能**となります。しかし、その利用には以下のような大きな制約や難しさがあります。
+Windows や Linux、macOS などの OS では、ファイル単位に加えて **バイト単位のファイルロック機能** も提供しています。こちらを利用すれば、**ファイル内の特定範囲にロックをかけることが可能**となります。しかし、その利用には以下のような大きな制約や難しさがあります。
 
 - **OS依存性の問題**: 各 OS で異なるAPI (Windows: `LockFileEx`、Linux/macOS: `fcntl` の `F_SETLK` など) を使用する必要があり、クロスプラットフォーム開発が困難になります。
 - **動的変化への対応不可**: CSVファイルでデータの挿入・削除が発生すると、すべてのバイト位置が変化してしまいます。例えば、ファイル先頭に1行挿入しただけで、後続のすべてのロック範囲が無効になってしまいます。
@@ -318,7 +316,7 @@ Windows や Linux、MacOS などの OS では、ファイル単位に加えて *
 - **パフォーマンスの劣化**: 細かなロック管理により、ファイル操作のオーバーヘッドが大幅に増加し、システム全体のパフォーマンスが低下します。
 
 以上のような理由から、実際のアプリ開発において「バイト単位のファイルロック」が採用されることはほとんどありません。
-</div>
+:::
 
 **(プロンプト例)**
 
@@ -355,17 +353,17 @@ CSV や JSON などのデータファイルを **共有フォルダ** や **NAS*
 
 無論、データファイルへのアクセスを自前のサーバアプリで受け付ける仕組みを構築すれば、より細かいセキュリティ制御や排他制御を実現することはできます。しかし、その場合、認証や通信暗号化、ログ監査なども含めてセキュリティを意識したシステムの設計と実装が必要となり、現実的ではありません。
 
-<div class="note type-tips">
+::: {.note .type-tips}
 **ファイルを分割しても解決しない問題**
 
-ファイルによるデータ管理において、細かな粒度で排他制御やアクセス権の設定を行いたい場合、**データを複数のファイルに分割して保存する** という戦略があります。例えば、科目ごとにファイルを分けて「2025年度のDB工学の成績.json」「2025年度の論理回路2の成績.json」といった形で管理する、といったやり方です。このようにすれば、影響範囲を最小に留めたロックや、細かなアクセス権の設定が可能になります。
+ファイルによるデータ管理において、細かな粒度で排他制御やアクセス権の設定を行いたい場合、**データを複数のファイルに分割して保存する** という戦略があります。例えば、科目ごとにファイルを分けて「2026年度のDB工学の成績.json」「2026年度の論理回路2の成績.json」といった形で管理する、といったやり方です。このようにすれば、影響範囲を最小に留めたロックや、細かなアクセス権の設定が可能になります。
 
-しかし、この戦略をとった場合、検索や集計の際には複数ファイルを横断して読み込み処理が必要があり、パフォーマンスが著しく低下するという欠点があります。一般に「1KBのファイルを1000個読み込む場合」と「1MBのファイルを1個読み込む場合」を比較すると、前者の方が圧倒的に負荷が高く、処理に大きな時間がかかるようになります。
-</div>
+しかし、この戦略をとった場合、検索や集計の際には複数ファイルを横断する読み込み処理が必要であり、パフォーマンスが著しく低下するという欠点があります。一般に「1KBのファイルを1000個読み込む場合」と「1MBのファイルを1個読み込む場合」を比較すると、前者の方が圧倒的に負荷が高く、処理に大きな時間がかかるようになります。
+:::
 
 **(プロンプト例)**
 
-> 一般なOSのファイルシステムでは「1KBのファイルを1000個読み込む場合」と「1MBのファイルを1個読み込む場合」では、前者の方が圧倒的に負荷が高く時間を要しますが、これは何故ですか。また、例外 (逆転するケース) はありますか？
+> 一般的なOSのファイルシステムでは「1KBのファイルを1000個読み込む場合」と「1MBのファイルを1個読み込む場合」では、前者の方が圧倒的に負荷が高く時間を要しますが、これは何故ですか。また、例外 (逆転するケース) はありますか？
 
 ### データサイズやパフォーマンスに関する問題や制約
 
@@ -377,7 +375,7 @@ CSV や JSON などのデータファイルを **共有フォルダ** や **NAS*
 
 > ファイルI/Oにおける「バイトオフセット」とは何ですか。
 
-> 「大きなデータファイルのから特定のデータを高速に検索するためには、インデックスやキャッシュといった仕組みが必要」と聞きました。「インデックス」と「キャッシュ」の基本的な仕組みを教えてください。
+> 「大きなデータファイルから特定のデータを高速に検索するためには、インデックスやキャッシュといった仕組みが必要」と聞きました。「インデックス」と「キャッシュ」の基本的な仕組みを教えてください。
 
 ---
 
@@ -385,7 +383,7 @@ CSV や JSON などのデータファイルを **共有フォルダ** や **NAS*
 
 もちろん、高度な設計と実装技術を駆使すれば、これらの問題を解決することは可能です。ただし、そのような高度なデータ管理の仕組みを具現化したものこそが「DBMS」であり、通常のシステム開発において、それを自前で開発することはありません。
 
-ここでに示した問題や制約は DBMS を導入し、それを適切に利用することで大部分を解決することができます。
+ここで示した問題や制約は DBMS を導入し、それを適切に利用することで大部分を解決することができます。
 
 ## DBMS を利用したデータ管理の概要
 
@@ -415,7 +413,7 @@ CSV や JSON などのデータファイルを **共有フォルダ** や **NAS*
 
 **プロンプト例**
 
-> PostgreSQL や MySQL のような DMBS は、TCP/IP で別ホストに配置したクライアントから接続できると聞きました。アプリケーション層では、どのようなプロトコルを使うのですか。
+> PostgreSQL や MySQL のような DBMS は、TCP/IP で別ホストに配置したクライアントから接続できると聞きました。アプリケーション層では、どのようなプロトコルを使うのですか。
 
 > リレーショナルデータベースにおける「データ整合性の保証」とは、どのようなものですか。具体例で解説してください。
 
@@ -454,7 +452,7 @@ CSV や JSON などのデータファイルを **共有フォルダ** や **NAS*
     - 「ドキュメント型データベース」とも呼ばれます。
   - 階層型データベース
 
-なお、本科目では、リレーショナルデータベースとして PostgreSQL を使用しますが、PostgreSQL は、リレーショナルモデルに基づくだけはなく <span class="masked">オブジェクト指向データベース的な特徴や機能</span> も備えています。実際、PostgreSQLの[公式ドキュメント](https://www.postgresql.org/docs/current/intro-whatis.html)のなかでも **object-relational database system (ORDBMS)** と説明されています。
+なお、本科目では、リレーショナルデータベースとして PostgreSQL を使用しますが、PostgreSQL は、リレーショナルモデルに基づくだけではなく <span class="masked">オブジェクト指向データベース的な特徴や機能</span> も備えています。実際、PostgreSQLの[公式ドキュメント](https://www.postgresql.org/docs/current/intro-whatis.html)のなかでも **object-relational database system (ORDBMS)** と説明されています。
 
 - PostgreSQL では「**可変長配列型**」や「**JSON型**」をスキーマの一部として定義し、直接的に扱うことができます。これらは単に文字列としてシリアライズして保存されているのではなく、効率的な検索や更新を行えるような形式でフィールドに保存されます。
 
@@ -487,7 +485,7 @@ PostgreSQL や MySQL などの主要な RDBMS (サーバ) に対しては、公�
 
 **(このセクションは「情報2」の第10回講義の増補版です)**
 
-リレーショナルデータベース (RDB: Relational Database) とは Excel のような **表形式** でデータを管理するデータベースモデルです。「**RDB**」と略されほか、「**関係データベース**」とも呼ばれたりします。特に「ITパスポート試験」や「基本情報技術者試験」では <span class="masked">関係データベース</span> という呼称が使われます。
+リレーショナルデータベース (RDB: Relational Database) とは Excel のような **表形式** でデータを管理するデータベースモデルです。「**RDB**」と略されるほか、「**関係データベース**」とも呼ばれたりします。特に「ITパスポート試験」や「基本情報技術者試験」では <span class="masked">関係データベース</span> という呼称が使われます。
 
 
 RDBでは、Excel のシートに相当するものを「**テーブル（Table）**」と呼びます。また、「列」を「**カラム (Column)**」や「**属性 (Attribute)**」、行を「**レコード (Record)**」や「**タプル (Tuple)**」のように呼びます。カラムには「名前」「誕生日」「残業時間」などの項目が設定され、レコードにはそれぞれの項目に対応する具体的な値 (例えば `1，'高負荷 耐子'，'1985-06-21', 65, 1`、`2，'不具合 直志'，'1990-11-02', 48, 1` など) が入ります。
@@ -555,15 +553,15 @@ RDBの重要な機能のひとつに「**JOIN** (結合)」というものがあ
 
 - SQL の詳細については、**今後の授業の内容なので、現時点で詳細に理解する必要はありません**。
 
-サイトにアクセスして、Database として「PostgreSQL 17」を選択してください。PostgreSQL は、毎年9～10月頃に新しいメジャーバージョンがリリースされていて、v17 は 2024年9月26日 (約1年前) にリリースされています。
+サイトにアクセスして、Database として「PostgreSQL 18」を選択してください。PostgreSQL は、毎年9～10月頃に新しいメジャーバージョンがリリースされていて、v18 は 2025年9月25日 (約1年前) にリリースされています。
 
 ![img](figs/01/db-fiddle-01.png)
 
-まずは、社員と部署に関するテーブルのスキーマを定義し、そこにデータを挿入 (**INSERT**) していきたいと思います。[こちら](https://github.com/TakeshiWada1980/DB-2025/blob/main/docs/codes/01/init-table.sql)(👈`init-table.sql`) から SQL をコピーして、以下のように **Schema SQL** のペイン (領域) に貼り付けてください。
+まずは、社員と部署に関するテーブルのスキーマを定義し、そこにデータを挿入 (**INSERT**) していきたいと思います。[こちら](https://github.com/TakeshiWada1980/DB-2026/blob/main/docs/codes/01/init-table.sql)(👈`init-table.sql`) から SQL をコピーして、以下のように **Schema SQL** のペイン (領域) に貼り付けてください。
 
 ![img](figs/01/db-fiddle-02.png)
 
-**Schema SQL** ペインで `[Ctrl]+[Enter]` を押下すると実際にコードが実行されます。成功すると、**Results** ペイン に `There are no results to be displayed.` のように表示されます。失敗する場合は Daatabase が「PostgreSQL」になっていることを確認してください。「MySQL」や「SQLite」になっていると失敗します。
+**Schema SQL** ペインで `[Ctrl]+[Enter]` を押下すると実際にコードが実行されます。成功すると、**Results** ペイン に `There are no results to be displayed.` のように表示されます。失敗する場合は Database が「PostgreSQL」になっていることを確認してください。「MySQL」や「SQLite」になっていると失敗します。
 
 ---
 
@@ -774,7 +772,7 @@ ORDER BY
 
 RDB (主にSQL演習) のハンズオン学習では **PostgreSQL** (ポストグレエスキューエル、ポストグレス、ポスグレ) を使用していきます。PostgreSQL は Windows に直接インストールすることもできますが、本科目では「**Docker**」という仕組みを用いて、PostgreSQL を「コンテナ」と呼ばれる仮想的な箱の中で起動し、その箱ごと利用します。Docker を利用すれば、既存の PC 環境を汚さずに PostgreSQL を構築でき、万一破損しても簡単に再構築できます。また、[DbGate](https://dbgate.org/)という「ウェブベースの DBMS クライアント」もコンテナとして利用していきます。
 
-PostgreSQL コンテナのセットアップは次回の講義で行います。今回は、その前段階として **Docker**（**Docker Desktop**）のインストールと動作確認までを行います。なお、既に Docker Desktop をインストール済みの場合は再インストールの必要はありません。ただし、最新バージョン (2025年10月1日現在の最新バージョンは **4.47.0** ) にアップデートしておくことを推奨します。
+PostgreSQL コンテナのセットアップは次回の講義で行います。今回は、その前段階として **Docker**（**Docker Desktop**）のインストールと動作確認までを行います。なお、既に Docker Desktop をインストール済みの場合は再インストールの必要はありません。ただし、最新バージョン (2026年09月27日現在の最新バージョンは **4.92.0** ) にアップデートしておくことを推奨します。
 
 なお、Docker は、Git/GitHub とあわせてソフトウェア開発の現場では標準的に使われる技術になっています。既に3年生の後期の「知能情報実験実習1」のなかで Docker は学んでいると思いますが、日常的な開発でも積極的に利用して慣れておいてください。Git/GitHubと同じで <span class="masked">習うよりも慣れろ</span> という技術になります。
 
@@ -789,16 +787,16 @@ PostgreSQL コンテナのセットアップは次回の講義で行います。
 「Docker Desktop」をインストールすると、自動的に Docker もインストールされ、Windows で Docker を利用するための準備が整います。Windows 環境で Docker Desktop をインストールする方法はウェブに多数の情報があるので、それを参考にインストールしてください。
 
 - [DockerDesktop インストール Windows](https://www.google.com/search?q=DockerDesktop+インストール+windows)@ Google検索
-  - 比較的に新しい情報を参照するようにしてください。
+  - 比較的新しい情報を参照するようにしてください。
   - Windows で Docker を動かすには「Hyper-V」を利用する方法と、「WSL2」を利用する方法があります。基本的に「WSL2」を利用する方法でインストールと設定をしてください。
 
-<div class="note type-tips">
+::: {.note .type-tips}
 **Dockerアカウントの作成**
 
 Docker 自体はアカウントがなくても利用できますが、Docker Hub からのイメージ取得 (pull) に回数制限がかかるなどの不便が生じます。特に授業のように、多数の学生が同時にイメージを取得する状況では、**アカウントを持っていないとイメージのダウンロードが途中で止まったり、時間がかかってしまうことがあります**。
 
 そのため、事前に Docker アカウント（Docker ID）を作成し、Docker Desktop にログインしておくことを強く推奨します。アカウントは「**無料**」で作成できます。授業をスムーズに受講するためにもアカウントを作成して、Docker Desktop アプリからログインしておいてください。
-</div>
+:::
 
 ### Docker Desktop の動作確認
 
@@ -812,18 +810,18 @@ Docker Desktop がインストールされ、「**Docker が利用できる状�
 
 また、ウィンドウの左下に緑色で「**Engine running**」の文字が表示されていることを確認してください。
 
-<div class="note type-tips">
+::: {.note .type-tips}
 **DockerDesktopの自動起動の設定**
 
 本科目以外で Docker を使用することがなければ、以下のように自動起動をオフにしておくことをお勧めします。なお、自動起動をオフにした場合は、授業の開始前にスタートメニューから「**Docker Desktop**」を手動で起動しておいてください。
 
 ![img](figs/01/docker-04.png)
 
-</div>
+:::
 
 ### Hello World コンテナの起動確認
 
-Docker Desktop の起動が確認できたら、コンテナを問題なく起動できるかを確認しています。ターミナル (PowerShell) を開いて `docker run --rm hello-world` というコマンドを実行してください。
+Docker Desktop の起動が確認できたら、コンテナを問題なく起動できるかを確認していきます。ターミナル (PowerShell) を開いて `docker run --rm hello-world` というコマンドを実行してください。
 
 ```
 PS C:\Users\xxxx> docker run --rm hello-world
@@ -845,8 +843,8 @@ PS C:\Users\xxxx> docker run --rm hello-world
 PS C:\Users\xxxx> docker run --rm hello-world
 Unable to find image 'hello-world:latest' locally
 latest: Pulling from library/hello-world
-17eec7bbc9d7: Pull complete
-Digest: sha256:54e66cc1dd1fcb1c3c58bd8017914dbed8701e2d8c74d9262e26bd9cc1642d31
+4f55086f7dd0: Pull complete
+Digest: sha256:5e23090353324d887c48ad5e5c56d294eab81588df9605b07d1afe895f9cc8f8
 Status: Downloaded newer image for hello-world:latest
 
 Hello from Docker!
@@ -857,7 +855,7 @@ To generate this message, Docker took the following steps:
  2. The Docker daemon pulled the "hello-world" image from the Docker Hub.
     (amd64)
  3. The Docker daemon created a new container from that image which runs the
-    executable that produces the output you are currently reading.  
+    executable that produces the output you are currently reading.
  4. The Docker daemon streamed that output to the Docker client, which sent it
     to your terminal.
 
@@ -883,7 +881,7 @@ For more examples and ideas, visit:
 >  4. Dockerデーモンはその出力を Docker クライアントにストリーミングし、Docker クライアントはそれをターミナルに送信しました。
 > 
 > より野心的なものを試すには、次のように Ubuntuコンテナ を実行します。  
-> $docker run-it ubuntu bash  
+> $ docker run -it ubuntu bash
 > 
 > 無料の Docker ID を使用して、イメージの共有、ワークフローの自動化などを行います。  
 >  https://hub.docker.com/  
@@ -893,11 +891,11 @@ For more examples and ideas, visit:
 
 ### 宿題: PostgreSQL と DbGate のイメージのプル (ダウンロード)
 
-<div class="note type-caution">
+::: {.note .type-caution}
 **注意**
 
 **このセクションの作業には、非常に大きなファイルのダウンロードをともないます。学校で授業中には実行せず、自宅などで取り組んでください。**
-</div>
+:::
 
 次回の授業では、PostgreSQL と DbGate のコンテナを作成します。その準備として、各コンテナの元になるイメージを予めプル (ローカルにダウンロード) しておいてください。手順は以下の通りです。
 
@@ -907,26 +905,26 @@ For more examples and ideas, visit:
 
 - `docker image pull` コマンドの実行には、回線状況によっては数分から10分程度かかる場合があります。
 
-```
-docker image pull postgres:17.6
-docker image pull dbgate/dbgate:6.6.3
+```powershell
+docker image pull postgres:18.6
+docker image pull dbgate/dbgate:7.2.6
 ```
 
-- `docker pull postgres:17.6` のように `image` を省略することもできます。どちらも同じ動作ですが、`docker image pull` のように明示的に書くと、「イメージ」を対象とした操作であることがより分かりやすくなります (Docker には、主に「イメージ」を対象とした操作と、「コンテナ」を対象とした操作があります)。
+- `docker pull postgres:18.6` のように `image` を省略することもできます。どちらも同じ動作ですが、`docker image pull` のように明示的に書くと、「イメージ」を対象とした操作であることがより分かりやすくなります (Docker には、主に「イメージ」を対象とした操作と、「コンテナ」を対象とした操作があります)。
 
 イメージが取得できたことを確認します。以下のコマンドを実行してください。
 
-```
+```powershell
 docker images
 ```
 
-以下のようにリストのなかに `postgres:17.6` と `dbgate/dbgate:6.6.3` が含まれていれば OK です。
+以下のようにリストのなかに `postgres:18.6` と `dbgate/dbgate:7.2.6` が含まれていれば OK です。
 
 ```
-REPOSITORY                TAG              IMAGE ID       CREATED         SIZE
-postgres                  17.6             3fe059c96160   5 days ago      453MB
-dbgate/dbgate             6.6.3            c17f3615b225   4 weeks ago     1.32GB
-hello-world               latest           1b44b5a3e06a   7 weeks ago     10.1kB
+IMAGE                  ID
+postgres:18.6          662db3da228c  
+dbgate/dbgate:7.2.6    95a402f3cb33  
+hello-world:latest     e2ac70e7319a
 ```
 
 ## 授業時間外学習の指示 (宿題)
@@ -936,5 +934,5 @@ hello-world               latest           1b44b5a3e06a   7 weeks ago     10.1kB
 - この講義資料を再読・熟読し「不明な用語」や「理解が不十分な用語」があればインターネットや、ChatGPTなどの生成AIを利用して解決してください。また、興味関心を持ったトピックについて、ウェブ、生成AI、YouTube動画などを利用して知識を広げ、理解を深めてください。
   - 特に **(プロンプト例)** を示しているものについては、実際に生成AIにプロンプトを投げ、さらに対話を重ねることで、知識の幅を広げるだけでなく、理解をより深く確かなものにしてください。
 - 講義資料内の「演習」に再度取り組んでください。演習内容は、授業時間中に1回取り組むだけでは定着しないので注意してください。
-- 次回までに、Docker Desktop をインストールして、hello-world コンテナが正常に動作することを確認しておいてください。また、`docker image pull` コマンドで `postgres:17.6` と `dbgate/dbgate:6.6.3` のイメージをプルしておいてください。
+- 次回までに、Docker Desktop をインストールして、hello-world コンテナが正常に動作することを確認しておいてください。また、`docker image pull` コマンドで `postgres:18.6` と `dbgate/dbgate:7.2.6` のイメージをプルしておいてください。
   - 問題があれば **遅くとも講義の前日までにアポをとって解決に向けた相談** をしてください。
