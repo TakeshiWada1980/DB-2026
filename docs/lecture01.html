@@ -72,8 +72,8 @@ class="toc-section-number">2.1</span>
 <li><a href="#なぜdbms-が利用されるのか" id="toc-なぜdbms-が利用されるのか"><span
 class="toc-section-number">3</span> なぜ、DBMS が利用されるのか？</a>
 <ul>
-<li><a href="#データの永続化" id="toc-データの永続化"><span class="toc-section-number">3.1</span>
-データの永続化</a></li>
+<li><a href="#データの永続化-data-persistence" id="toc-データの永続化-data-persistence"><span
+class="toc-section-number">3.1</span> データの永続化 (Data Persistence)</a></li>
 <li><a href="#os-のファイルシステムを直接利用したデータの永続化の問題"
 id="toc-os-のファイルシステムを直接利用したデータの永続化の問題"><span
 class="toc-section-number">3.2</span> OS
@@ -322,6 +322,11 @@ class="toc-section-number">8</span> 授業時間外学習の指示 (宿題)</a><
       <li>ウェブの技術記事や YouTube 動画、生成 AI
       を活用し、授業で扱った内容に関する補足的な知識や、最近の技術動向についてキャッチアップに努めてください。</li>
       </ul>
+      <div class="balloon char-01 face-02 tone-yellow">
+      <p>本科目は学修単位科目であり、各回の講義資料は、データベースを初めて学ぶ人であれば、6時間程度をかけて取り組むことを想定した分量・難易度となっています
+      (特に第03回目以降)。資料の説明を眺めるだけでなく、<strong>実際に手を動かして演習に取り組み、不明な点を調べながら理解を深める時間も含んでいます</strong>。</p>
+      <p>授業内だけでなく、授業時間外の学習もしっかりと取り組んでください。</p>
+      </div>
       <h1 data-number="2" id="データベースとは"><span class="header-section-number">2</span>
       データベースとは</h1>
       <p>データベース (Database) とは、<strong>データ (data)</strong> と <strong>ベース
@@ -496,47 +501,149 @@ class="toc-section-number">8</span> 授業時間外学習の指示 (宿題)</a><
       <p>このあたりの使い分けは、本科目を学んでいくうちに自然につかめるようになると思います。</p>
       <h1 data-number="3" id="なぜdbms-が利用されるのか"><span
       class="header-section-number">3</span> なぜ、DBMS が利用されるのか？</h1>
-      <p>現在、企業の基幹システム
-      (会計システム、人事システム、販売管理システムなど)や、ECサイトなどのウェブサービスのような「<strong>複数のユーザやプログラムによって共有・利用されるシステム</strong>」においては、ほぼ例外なく
-      <strong>DBMS</strong> が利用されています。</p>
-      <p>ここでは「<strong>なぜ、データ管理に、OSのファイルシステムではなく、DBMSが使われているのか？</strong>」について整理していきます。視点を変えれば、<strong>CSVやJSONなどのデータファイルを用いたデータ管理には、どんな制約や問題、リスクがあるのか？</strong>
-      について考えていきます。</p>
-      <h2 data-number="3.1" id="データの永続化"><span class="header-section-number">3.1</span>
-      データの永続化</h2>
-      <p>一般にプログラムでは「<strong>ユーザが入力した情報</strong>」や「<strong>システムが動的に生成した情報</strong>
+      <p>企業の基幹システム (会計システム、人事システム、販売管理システムなど)
+      や、ECサイトなどのウェブサービスでは、顧客情報や注文情報などを管理するために
+      <strong>DBMS</strong>
+      が広く利用されています。特に「<strong>複数のユーザやプログラムが同じデータを参照・更新する</strong>」「<span
+      class="masked">関連するデータの整合性を保ったまま更新する</span>」といった要件があると、DBMS
+      の機能が重要になります。</p>
+      <p>ここでは「<strong>なぜ、アプリから CSV や JSON
+      などのファイルを直接読み書きするだけではなく、DBMS
+      を利用するのか？</strong>」について整理していきます。PostgreSQL などの DBMS も、内部では OS
+      のファイルシステムを利用してデータを保存しています。比較したいのは、次の 2 つの違いです。</p>
+      <ul>
+      <li>アプリがファイルを直接読み書きし、データの検索・更新や同時アクセスへの対応を担う方法</li>
+      <li>アプリが DBMS に処理を依頼し、データの検索・更新や同時アクセスへの対応を任せる方法</li>
+      </ul>
+      <div class="balloon char-01 face-05 tone-blue">
+      <p>実際のシステムでは「文情報は DBMS で管理し、集計結果の受け渡しには CSV
+      ファイルを使う」といった併用もします。大事なことは「<strong>どのデータを、誰が、どのように読み書きするのか</strong>」を考慮しながら、保存・管理の方法を選ぶことになります。</p>
+      </div>
+      <h2 data-number="3.1" id="データの永続化-data-persistence"><span
+      class="header-section-number">3.1</span> データの永続化 (Data Persistence)</h2>
+      <p>プログラムの実行中には「<strong>ユーザが入力した情報</strong>」や「<strong>システムが動的に生成した情報</strong>
       (＝例えば <span class="masked">「最終ログイン日時」や「一時的な計算結果」</span>
-      など)」は、変数 (メモリ)
-      に保持されますが、<strong>これらはプログラムの実行終了とともに失われてしまいます</strong>。</p>
+      など)」を、変数 (メモリ)
+      に保持して処理します。ただし、<strong>メモリに保持しているだけの情報は、プログラムの実行終了とともに失われてしまいます</strong>。</p>
       <div class="sourceCode" id="cb1"
       data-caption="変数に格納された情報はプロセスの終了とともに失われてしまう"><pre
       class="sourceCode numberSource python numberLines"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1"></a><span class="co"># Python</span></span>
 <span id="cb1-2"><a href="#cb1-2"></a>name <span class="op">=</span> <span class="bu">input</span>(<span class="st">&quot;あなたの名前を入力してください: &quot;</span>)</span>
 <span id="cb1-3"><a href="#cb1-3"></a><span class="bu">print</span>(<span class="ss">f&quot;こんにちは、</span><span class="sc">{</span>name<span class="sc">}</span><span class="ss">さん！&quot;</span>)</span></code></pre></div>
-      <p>プログラムの終了後も、これらの情報 (上記の例で言えば <code>name</code> の値)
-      を保持して、プログラムを再び起動したときに引き続き利用できるようにするためには「<strong>データの永続化</strong>」という仕組みが必要となります。</p>
+      <p>上記のプログラムでは、入力された名前を画面に表示しているだけで、ファイルなどには保存していません。そのため、再び起動すると、前回入力した名前を利用することはできません。</p>
+      <p>プログラムの終了後も必要な情報 (上記の例で言えば <code>name</code> の値)
+      を保持し、次に起動したときにも利用できるように、SSD や HDD
+      などの記憶装置に保存することを「<strong>データの永続化</strong>」といいます。アプリ側では、保存した情報を読み込み、処理を再開する仕組みも必要になります。</p>
+      <p>なお、「永続化」は、永久にデータが失われないという意味ではありません。記憶装置が故障したり、<span
+      class="masked">保存処理の途中でプログラムが停止</span>
+      したりする場合も考え、データの重要度に応じて保存方法やバックアップを設計する必要があります。</p>
+      <h3 data-number="3.1.1" id="定着確認-1"><span class="header-section-number">3.1.1</span>
+      定着確認</h3>
+      <ul>
+      <li>プログラムの終了後も必要な情報を保持し、次に起動したときにも利用できるように、SSD や HDD
+      などへ保存することを何というか。漢字3文字で答えよ。
+      <ul>
+      <li><strong>答え</strong>: <span class="masked">永続化</span></li>
+      </ul></li>
+      <li>プログラムの終了後も情報を利用したい場合、そのプログラムの実行中のメモリに保持しておくだけでは不十分な理由を答えよ。
+      <ul>
+      <li><strong>答え</strong>: <span
+      class="masked">そのプログラムのメモリにだけ保持した情報は、プログラムの終了後に再び起動しても、自動的には復元されないため。</span></li>
+      </ul></li>
+      <li>アプリで入力した情報をファイルに保存した。アプリを終了し、再び起動したときに、その保存済みの情報を処理に利用するためには、どのような処理が必要か答えよ。
+      <ul>
+      <li><strong>答え</strong>: <span
+      class="masked">保存したファイルから情報を読み込み、アプリで利用できる状態にする処理。</span></li>
+      </ul></li>
+      <li>データの保存が完了しなかったり、保存済みのデータを利用できなくなったりする原因となる障害の例を2つ答えよ。
+      <ul>
+      <li><strong>答え</strong>: <span class="masked">例:
+      記憶装置の故障、保存処理の途中でのプログラムの異常終了。</span></li>
+      </ul></li>
+      <li>データを永続化しているアプリでも、データの重要度に応じてバックアップを設計する必要がある理由を答えよ。
+      <ul>
+      <li><strong>答え</strong>: <span
+      class="masked">永続化しても、記憶装置の故障などで元のデータを失う可能性があるため。バックアップは、そのような場合にデータを復元するための備えとなる。</span></li>
+      </ul></li>
+      <li>次の説明は「適切である」か「適切ではない」か答えよ。
+      <ul>
+      <li><strong>答え</strong>: <span class="masked">適切である</span></li>
+      </ul></li>
+      </ul>
+      <blockquote>
+      <p>PostgreSQL は、標準的な構成では OS のファイルシステム上のファイルにデータを保存する。</p>
+      </blockquote>
+      <ul>
+      <li>アプリが CSV や JSON のファイルを直接読み書きしてデータを管理する方法と、PostgreSQL などの
+      DBMS を利用する方法の比較として、最も適切なものを答えよ。
+      <ul>
+      <li>❶
+      ファイルを直接読み書きする方法では、ファイル内のデータの検索や、複数の処理による更新の競合への対応を、OS
+      がアプリの要件に合わせて全て自動的に行う。</li>
+      <li>❷ DBMS を利用する方法では、検索・更新や同時アクセスへの対応について、DBMS
+      が提供する機能を利用できる。</li>
+      <li>❸ DBMS を利用する方法では、データを永続化する場合でも、DBMS
+      自身が記憶装置への保存処理を行う必要はない。
+      <ul>
+      <li><strong>答え</strong>: <span class="masked">❷</span></li>
+      </ul></li>
+      </ul></li>
+      <li>データ管理において、DBMS の機能が特に重要になる要件の例を2つ答えよ。
+      <ul>
+      <li><strong>答え</strong>: <span class="masked">例:
+      複数のユーザやプログラムによる同じデータへの更新を調整すること、関連するデータの整合性を保ったまま更新すること。</span></li>
+      </ul></li>
+      </ul>
       <h2 data-number="3.2" id="os-のファイルシステムを直接利用したデータの永続化の問題"><span
       class="header-section-number">3.2</span> OS
       のファイルシステムを直接利用したデータの永続化の問題</h2>
       <p>最も基本的な「データの永続化」の方法は、OS のファイルシステムを利用して
       <strong>テキストファイル</strong> (TXT、CSV、JSONなど) や <strong>バイナリファイル</strong>
       にデータ (情報) を書き出し、必要に応じて読み出すというものです。</p>
-      <p>例えば、Python では標準ライブラリの <code>csv</code> や、外部ライブラリの
-      <code>Pandas</code> で「CSV
-      ファイルの読み書き」ができるので、それを利用してデータの永続化が可能です。また、標準ライブラリの
+      <p>例えば、Python においては、標準ライブラリの <code>csv</code> や、外部ライブラリの
+      <code>pandas</code>
+      で「<strong>CSVファイルの読み書き</strong>」ができるので、それを利用してアプリ側でデータの永続化が実装できました。また、標準ライブラリの
       <code>json</code> を用いれば JSON ファイルの読み書きができ、<code>pickle</code> を用いれば
-      Python
-      オブジェクトを「バイナリ形式」で保存・復元できるので、これらも永続化の手段となります。</p>
+      Python オブジェクトを「バイナリ形式」で保存・復元することもできました (<a
+      href="https://takeshiwada1980.github.io/Programming1-2024/lecture18.html#json形式のシリアライズとデシリアライズ">PG1-第18回講義</a>・<a
+      href="https://takeshiwada1980.github.io/Programming1-2024/lecture25.html#自動セーブとロード機能の追加">PG1-第25回講義</a>)。</p>
+      <div class="balloon char-01 face-05 tone-blue">
+      <p>単純な読み書きなら、ファイルへの保存は実装しやすく実務でも頻繁に使われています。大事なことは「<strong>何を保存して、どのように使うのか</strong>」に合わせて選ぶことです。例えば、次のような用途では「ファイルシステムを直接利用したデータの永続化」が適しています。</p>
       <ul>
-      <li>参考:<a
-      href="https://takeshiwada1980.github.io/Programming1-2024/lecture18.html#json形式のシリアライズとデシリアライズ">PG1-第18回講義</a></li>
-      <li>参考:<a
-      href="https://takeshiwada1980.github.io/Programming1-2024/lecture25.html#自動セーブとロード機能の追加">PG1-第25回講義</a></li>
+      <li>アプリの設定を JSON ファイルに保存し、起動時に読み込む。</li>
+      <li>集計結果を CSV ファイルに出力し、別のシステムや担当者に渡す。</li>
+      <li>保存済みの実験データを読み込み、分析する。
+      <ul>
+      <li>同じファイルを複数のプログラムで読む場合でも、読み取り中に内容が変更されなければ、更新同士の競合は起きません。</li>
+      </ul></li>
       </ul>
-      <p>このように「<strong>OSのファイルシステムを直接利用したデータの永続化</strong>」は、比較的実装が容易で、プログラムに組み込みやすく便利な方法です。ただし、この方法には様々な問題や制約があり、<span
-      class="masked">実際には、限定的なケースでのみ安全かつ効率的な手法となります</span>。</p>
+      </div>
+      <p>一方で、同じファイルを複数のプロセスから同時に更新したり、「注文を記録する」と「在庫を減らす」をセットで反映したりする場合には、単なる読み書きだけでは不十分です。例えば
+      <span
+      class="masked">注文だけが記録されて在庫が減らないまま処理が止まると</span>、データのつじつまが合わなくなります
+      (データの整合性が失われてしまいます)。</p>
+      <div class="balloon char-01 face-02 tone-yellow">
+      <p>ここで大事なのは、<strong>ファイルを読み書きできることと、必要なルールを守ってデータを管理できることは別</strong>という点です。「途中で処理が止まったら？」「同時に更新されたら？」という場面まで考える必要があります。</p>
+      </div>
+      <p>ファイルでこうした管理を実装する場合、<strong>同時更新の調整や、失敗した場合の回復までアプリ側で設計・検証する必要</strong>
+      があります。DBMS には、それらを支援する機能が用意されています。</p>
+      <p>例えば、PostgreSQL の <strong>トランザクション</strong>
+      は、複数の更新を「全て反映する」か「全て取り消す」かのまとまりとして扱う仕組みです。詳しくは今後の講義で学んでいきます。</p>
+      <div class="note type-tips">
+      <p><strong>小さなアプリでも DBMS は選択肢になる</strong></p>
+      <p>DBMS を利用するために、必ず別のサーバを用意するわけではありません。<a
+      href="https://www.sqlite.org/whentouse.html">SQLite</a>
+      のように、アプリに組み込んで利用し、データを基本的に1つのファイルで管理する DBMS
+      もあります。</p>
+      <p>保存先がファイルでも、アプリからは SQL などを通じて DBMS
+      の機能を利用します。個人用のアプリでも、検索や更新の処理を自作する手間を減らすために DBMS
+      を選ぶことがあります。</p>
+      </div>
+      <p>DBMS
+      を導入した場合も、どの処理をひとまとまりの更新にするか、どのようなデータを許可するかは、アプリの要件に合わせて設計する必要があります。</p>
       <p>以下では、<strong>CSV や JSON
-      などのデータファイルを使ったデータ管理で起き得る問題や制約</strong>、それにともなう「<strong>リスク</strong>」について探っていきます。</p>
-      <h3 data-number="3.2.1" id="定着確認-1"><span class="header-section-number">3.2.1</span>
+      などのファイルをアプリから直接読み書きして管理する場合に、どのような実装上の課題が生じるのか</strong>を具体例で見ていきます。</p>
+      <h3 data-number="3.2.1" id="定着確認-2"><span class="header-section-number">3.2.1</span>
       定着確認</h3>
       <ul>
       <li>JSON とは何の略語か英語で答えよ。
@@ -546,6 +653,26 @@ class="toc-section-number">8</span> 授業時間外学習の指示 (宿題)</a><
       <li>CSV とは何の略語か英語で答えよ。
       <ul>
       <li><strong>答え</strong>: <span class="masked">Comma Separated Values</span></li>
+      </ul></li>
+      <li>入力された名前を変数に保持して画面に表示するだけのプログラムがある。この名前をプログラムの終了後も保持し、次に起動したときに利用するためには、どのような処理が必要か答えよ。
+      <ul>
+      <li><strong>答え</strong>: <span class="masked">名前をファイルや DBMS
+      などを用いて永続化し、次に起動したときに読み込む処理が必要。</span></li>
+      </ul></li>
+      <li>次の説明は「適切である」か「適切ではない」か答えよ。
+      <ul>
+      <li><strong>答え</strong>: <span class="masked">適切ではない</span></li>
+      </ul></li>
+      </ul>
+      <blockquote>
+      <p>アプリの設定を起動時に読み込む用途や、集計結果を別のシステムに渡す用途でも、JSON や CSV
+      のファイルを使う方法は不適切であり、必ず DBMS を利用しなければならない。</p>
+      </blockquote>
+      <ul>
+      <li>注文情報と在庫情報を別々に更新するプログラムで、注文を記録した直後に処理が停止し、在庫が減らなかった。このような不整合を防ぐため、注文の記録と在庫の更新をどのようなまとまりとして扱う必要があるか答えよ。
+      <ul>
+      <li><strong>答え</strong>: <span
+      class="masked">両方の更新を全て反映するか、全て取り消すかのひとまとまりとして扱う。</span></li>
       </ul></li>
       </ul>
       <h2 data-number="3.3" id="汎用性や拡張性に関する問題や制約"><span
@@ -568,7 +695,7 @@ class="toc-section-number">8</span> 授業時間外学習の指示 (宿題)</a><
       <blockquote>
       <p>データファイル設計における「フォーマット」と「スキーマ」の違いについて解説してください。</p>
       </blockquote>
-      <h3 data-number="3.3.1" id="定着確認-2"><span class="header-section-number">3.3.1</span>
+      <h3 data-number="3.3.1" id="定着確認-3"><span class="header-section-number">3.3.1</span>
       定着確認</h3>
       <ul>
       <li>I/O とは何の略語か英語で答えよ。
@@ -666,7 +793,7 @@ class="toc-section-number">8</span> 授業時間外学習の指示 (宿題)</a><
       <p>Windows 環境の Python でテキストファイルに対する排他制御 (排他ロック)
       をしたいです。どのようにすればよいですか。</p>
       </blockquote>
-      <h3 data-number="3.4.1" id="定着確認-3"><span class="header-section-number">3.4.1</span>
+      <h3 data-number="3.4.1" id="定着確認-4"><span class="header-section-number">3.4.1</span>
       定着確認</h3>
       <ul>
       <li>サーバの設定ファイルに対して「管理者X」が編集を加えて保存した。その後、同じ設定ファイルを古い状態のまま開いていた「管理者Y」が編集して保存した結果、「管理者X」が追加した内容が反映されずに消失してしまった。この現象を何と呼ぶか答えよ。
@@ -791,7 +918,7 @@ class="toc-section-number">8</span> 授業時間外学習の指示 (宿題)</a><
       <blockquote>
       <p>リレーショナルデータベースにおける「データ整合性の保証」とは、どのようなものですか。具体例で解説してください。</p>
       </blockquote>
-      <h3 data-number="4.2.1" id="定着確認-4"><span class="header-section-number">4.2.1</span>
+      <h3 data-number="4.2.1" id="定着確認-5"><span class="header-section-number">4.2.1</span>
       定着確認</h3>
       <ul>
       <li>データベースに関する文脈で SQL とは何の略語か英語で答えよ。
@@ -1110,7 +1237,7 @@ class="toc-section-number">8</span> 授業時間外学習の指示 (宿題)</a><
       (＝これを <strong>クエリ</strong> (Query) と呼びます)
       を出せることが特徴となっています。次週以降、しばらくは SQL
       を使ったクエリについて学んでいきます。</p>
-      <h3 data-number="6.1.1" id="定着確認-5"><span class="header-section-number">6.1.1</span>
+      <h3 data-number="6.1.1" id="定着確認-6"><span class="header-section-number">6.1.1</span>
       定着確認</h3>
       <ul>
       <li>RDBMS に対するクエリを記述するために使用される言語をアルファベット3文字で答えよ。
@@ -1476,7 +1603,7 @@ class="toc-section-number">8</span> 授業時間外学習の指示 (宿題)</a><
       <li>コーディング不要でフォームやレポートを作成可能。VBA によるカスタマイズにも対応。</li>
       <li>小規模な業務アプリやデータ管理ツールとして、非エンジニアでも扱いやすい。ただし、同時接続数やデータ量に制限があるため、本格的なウェブアプリには不向き。</li>
       </ul>
-      <h3 data-number="6.3.8" id="定着確認-6"><span class="header-section-number">6.3.8</span>
+      <h3 data-number="6.3.8" id="定着確認-7"><span class="header-section-number">6.3.8</span>
       定着確認</h3>
       <ul>
       <li>LAMPスタックの「L」「A」「M」「P」は、それぞれ、何を意味しているか答えよ
