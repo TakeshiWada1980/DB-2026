@@ -138,26 +138,28 @@ class="toc-section-number">8</span> 授業時間外学習の指示 (宿題)</a><
       <h1 data-number="1" id="ガイダンス"><span class="header-section-number">1</span>
       ガイダンス</h1>
       <h2 data-number="1.1" id="概要"><span class="header-section-number">1.1</span> 概要</h2>
-      <p>本科目では、「<strong>リレーショナルデータベース</strong>」について、その概念から保守運用に至るまでを体系的に学んでいきます。具体的には、<strong>環境構築</strong>
-      (Docker での PostgreSQL コンテナ構築)、<strong>設計</strong>
-      (概念設計・論理設計)、<strong>操作</strong> (Raw SQL/ORM)、<strong>保守運用</strong>
-      について、ハンズオン形式で (＝実際に手を動かしながら)
-      学んでいきます。また、「<strong>ドキュメント指向データベース</strong>」についても、基本概念や環境構築、操作などの概要を学んでいきます。</p>
+      <p>本科目では「<i class="fa-solid fa-database"></i><strong>リレーショナルデータベース</strong>」について、その概念から保守運用に至るまでを体系的に学んでいきます。</p>
+      <p>具体的には、<strong>環境構築</strong> (Docker での PostgreSQL
+      コンテナ構築)、<strong>設計</strong> (概念設計・論理設計)、<strong>操作</strong> (Raw
+      SQL/ORM)、<strong>保守運用</strong> について、ハンズオン形式で (＝実際に手を動かしながら)
+      学んでいきます。また「<strong>ドキュメント指向データベース</strong>」についても、基本概念や環境構築、操作などの概要を学んでいきます。</p>
       <ul>
       <li>リレーショナルデータについては <a href="https://www.postgresql.org/">PostgreSQL</a>
       を使用します。
       <ul>
-      <li>Programming3 で利用した <a href="https://supabase.com/">Supabase</a> も PostgreSQL
-      を基盤としています。</li>
+      <li>昨年度の「プログラミング3」の講義で利用した <a href="https://supabase.com/">Supabase</a>
+      も、中核データベースとして PostgreSQL を採用しています。</li>
       </ul></li>
       <li>ドキュメント指向データベースについては <a href="https://www.mongodb.com/">MongoDB</a>
-      を使用します。。</li>
+      を使用します。</li>
       </ul>
-      <p>具体的には、次のような「知識・理解」および「実践的スキル」を習得することを目指していきます。</p>
+      <div class="balloon char-01 face-05 tone-blue">
+      <p>具体的には、次のような「知識・理解」および「実践的スキル」を習得することを目標に学んでいきます。</p>
+      </div>
       <ol type="1">
       <li>データの永続化や管理における <strong>データベースマネジメントシステム (DBMS)</strong>
       の位置付けと、その導入効果を説明できる。</li>
-      <li>主要なデータベースモデル（リレーショナル／ドキュメント指向など）の特性を理解し、要件に応じた適切な選択ができる。</li>
+      <li>主要なデータベースモデル（リレーショナル／ドキュメント指向など）の特性を理解し、要件に応じた適切な選択や組み合わせができる。</li>
       <li><strong>Docker を使用して PostgreSQL の実行環境を構築</strong>し、コンソール や DbGate
       (ウェブベースのデータベースクライアント) から接続して、SQL や ユーティリティコマンド
       を実行できる。</li>
@@ -165,15 +167,23 @@ class="toc-section-number">8</span> 授業時間外学習の指示 (宿題)</a><
       <li>リレーショナルモデルについて、<strong>正規化や外部キー制約制約、インデックス設計などの論理設計</strong>ができる。</li>
       <li><strong>SQL</strong>
       を用いてリレーショナルデータベースに対する各種クエリが実行できる。</li>
-      <li>TypeScriptから<a href="https://www.npmjs.com/package/pg">pg</a>(DBドライバ) や、<a
+      <li>TypeScript から、<a href="https://www.npmjs.com/package/pg">pg</a>（DBドライバ）や <a
       href="https://www.npmjs.com/package/prisma">Prisma</a>・<a
-      href="https://www.npmjs.com/package/drizzle-orm">Drizzle</a>(ORM) による PostgreSQL
-      の利用ができる。</li>
-      <li>PostgreSQL
-      のユーティリティを用いて、データベースのバックアップ／リストア、実行計画の表示などができる。</li>
+      href="https://www.npmjs.com/package/drizzle-orm">Drizzle</a>（ORM）を用いて PostgreSQL
+      に接続し、データの保存・取得・更新などができる。</li>
       <li>Docker を使用して MongoDB の実行環境を構築ができる。</li>
       <li>TypeScript から MongoDB に接続して基本的な CRUD 操作ができる。</li>
       </ol>
+      <hr />
+      <p><strong><i class="fa-solid fa-comment-dots fa-flip-horizontal"></i>プロンプト例</strong>
+      <font size="-1">理解が曖昧な用語は生成AIを使って、再確認しておきましょう)</font></p>
+      <blockquote>
+      <p>ソフトウェア開発の文脈で「データの永続化」ってどういう意味ですか。</p>
+      </blockquote>
+      <blockquote>
+      <p>Docker ってなに？「Docker を使用して PostgreSQL
+      の実行環境を構築できように」っていわれたんですけど。</p>
+      </blockquote>
       <h2 data-number="1.2" id="授業の位置づけ"><span class="header-section-number">1.2</span>
       授業の位置づけ</h2>
       <p>この授業は、次のような位置付けになります。</p>
@@ -187,156 +197,162 @@ class="toc-section-number">8</span> 授業時間外学習の指示 (宿題)</a><
       <ul>
       <li>自己の基盤となる専門分野について実践的な知識と技術を修得し、工学的諸問題に適用する能力</li>
       </ul></li>
-      <li>担当教員： Takeshi Wada (知能情報コース)</li>
+      <li><a href="https://www.ct.omu.ac.jp/assets/S_4_2026_1.pdf">シラバス</a> (本校HP)</li>
       </ul>
-      <div class="note type-senior">
-      <p><strong>学修単位</strong></p>
-      <p>本科目は「プログラミング3」や「アルゴリズムとデータ構造2」と同じく「<strong>学修単位</strong>」の科目であり「<strong>30時間
-      (相当) の対面授業</strong>」と「<strong>60時間 (相当)
-      の授業時間外学習</strong>」を前提とした内容 (ボリュームと学習難易度) の科目となります。</p>
-      <p>授業については <strong>毎週90分</strong>
-      を実施し、これを2時間と見なして全15回の講義によって「30時間相当の対面授業」を確保しています。これに加えて、皆さんには<strong>授業1回につき、授業時間外に</strong>
-      <span class="masked">4時間相当の自主的な学習 (復習や演習、発展的探求)</span>
-      <strong>が求められています</strong>。</p>
+      <div class="balloon char-01 face-05 tone-blue">
+      <p>学修単位科目は、大学の授業設計と同様に「30時間 (相当) の対面授業」と「60時間 (相当)
+      の授業時間外学習」を前提とする内容 (学習量・難易度)
+      で構成されています。つまり、<strong>授業1回あたり4時間程度の授業時間外学習</strong>
+      (<u>ここまでの学習状況や理解度による個人差があり</u>) が必要になります。</p>
+      <ul>
+      <li><a
+      href="https://www.ct.omu.ac.jp/assets/2026gakushu_4.pdf">学修単位科目における時間外学習の指示（4年）</a></li>
+      </ul>
       </div>
       <h3 data-number="1.2.2" id="関連科目"><span class="header-section-number">1.2.2</span>
       関連科目</h3>
+      <p>リレーショナルデータベースについては、これまでも断片的に学習してきました。本科目ではこれを体系的に学習していきたいと思います。</p>
       <ul>
-      <li><p>2年 前期 (学修単位)「<strong>情報2</strong>」 - 教科書「キタミ式
-      ITパスポート」の「Chapter7 データベース」pp.160-191。</p>
+      <li>2年 前期 (学修単位)「<strong>情報2</strong>」
       <ul>
-      <li>第10回と第11回の講義で「<strong>リレーショナルデータベースの基礎</strong>」について学習済み。
-      <ul>
-      <li>教科書「キタミ式 ITパスポート」の「Chapter7 データベース」pp.160-191。</li>
-      <li>情報2 <a
-      href="https://omunet.sharepoint.com/:b:/s/S__2025_ybfc0r/EXzsVwn4VrJMj1KMknK9vy0BJTDyP2MypAxQjp7-lRlb2g?e=atkHP3">第10回/第11回の講義資料PDF</a>(学内のみ)</li>
-      <li>SQLite3 を使用した SQL の基礎演習
-      (テーブルの作成、レコードの挿入、SELECT、正規化、結合)。</li>
+      <li>教科書「キタミ式 ITパスポート」の「Chapter7 データベース」。</li>
+      <li>第10回と第11回の講義で「<strong>リレーショナルデータベースの基礎</strong>」について学習済み。</li>
       </ul></li>
-      </ul></li>
-      <li><p>2年 通年 (履修単位)「<strong>プログラミング1</strong>」(Python)</p>
+      <li>2年 通年 (履修単位)「<strong>プログラミング1</strong>」(Python)
       <ul>
       <li><a
-      href="https://takeshiwada1980.github.io/Programming1-2023/lecture11.html#sqliteとの連携">Python
+      href="https://takeshiwada1980.github.io/Programming1-2024/lecture11.html#sqliteとの連携">Python
       と Sqlite3 の連携</a></li>
       </ul></li>
-      <li><p>3年 後期
-      (学修単位)「<strong>プログラミング3</strong>」(TypeScript/Next.js/Supabase)</p>
+      <li>3年 後期 (学修単位)「<strong>プログラミング3</strong>」(TypeScript/Next.js/Supabase)
       <ul>
       <li><a
-      href="https://takeshiwada1980.github.io/Programming3-2024/lecture08.html#データの永続化">ウェブアプリのデータの永続化</a></li>
-      <li>Prisma (TypeSCript ORM) + Supabse (PostgreSQL)</li>
+      href="https://takeshiwada1980.github.io/Programming3-2025/lecture08.html#データの永続化">ウェブアプリのデータの永続化</a>
+      Prisma (TypeScript ORM) + Supabse (PostgreSQL)</li>
       </ul></li>
-      <li><p>3年 後期「<strong>知能情報実験実習1</strong>」</p>
+      <li>3年 後期「<strong>知能情報実験実習1</strong>」
       <ul>
-      <li>サーバ構築 (Linux, Apache)、Docker</li>
+      <li>後期テーマ：サーバ構築 (Linux, Apache)、Docker</li>
       </ul></li>
-      <li><p>4年 前期「<strong>知能情報実験実習2</strong>」</p>
+      <li>4年 前期「<strong>知能情報実験実習2</strong>」
       <ul>
-      <li>SQLAlchemy (Python ORM) + SqLite3</li>
-      <li>Prisma (TypeSCript ORM) + SqLite3</li>
+      <li>前期テーマ1：Prisma (TypeSCript ORM) + SqLite3 <a
+      href="https://takeshiwada1980.github.io/Eii2-2026/">資料</a></li>
+      <li>前期テーマ2：SQLAlchemy (Python ORM) + SqLite3</li>
       </ul></li>
       </ul>
-      <p>以上のように、これまで皆さんは様々な科目を通して多くの知識や技術を学んできました。しかし、<strong>それらを独立した「点」と「点」で持っているままでは、卒業研究や仕事の場で求められる実力にはなりません</strong>。自分自身で能動的かつ探求的に「点」と「点」を結びつけ、「線」や「面」に広げてこそ、はじめて本当の価値が生まれます。<strong>他の人が持っていない「線」や「面」を築けるかどうかが、自分の強み
-      (＝自分にしかできないこと) となっていきます</strong>。</p>
-      <p>本科目の受講においても、これまでに培ってきた知識や技術と、新たに学ぶ内容を<span
-      class="masked">「どのように結びつけることができるのか？」</span>
-      を強く意識し、取り組んでください。</p>
+      <div class="balloon char-01 face-02 tone-yellow">
+      <p>これまでに培ってきた知識や技術と、本科目で新たに学ぶ内容を「<strong>どのように結びつけることができるのか？</strong>」を強く意識し、取り組んでください。</p>
+      </div>
       <hr />
-      <p>この他、データベース (特にリレーショナルデータベース)
-      は「<strong>ITパスポート試験</strong>」「<strong>基本情報技術者試験</strong>」「<strong>応用情報技術者試験</strong>」などの資格試験でも重要分野となっています。</p>
+      <p>この他、データベース (特に「リレーショナルデータベース」の概念)
+      は「<strong>ITパスポート試験</strong>」「<strong>基本情報技術者試験</strong>」「<strong>応用情報技術者試験</strong>」などの資格試験においても知識を問われる重要分野となっています。</p>
       <ul>
       <li><a href="https://www3.jitec.ipa.go.jp/JitesCbt/">ITパスポート試験</a> CBT形式</li>
       <li><a href="https://www.ipa.go.jp/shiken/kubun/fe.html">基本情報技術者試験</a> CBT形式</li>
-      <li><a href="https://www.ipa.go.jp/shiken/kubun/ap.html">応用情報技術者試験</a>
-      2026年度からCBT形式に移行予定</li>
+      <li><a href="https://www.ipa.go.jp/shiken/kubun/ap.html">応用情報技術者試験</a> CBT形式
+      <ul>
+      <li>応用情報技術者試験は、2026年度の春に廃止予定。詳しくは <a
+      href="https://www.ipa.go.jp/shiken/minaoshi/index.html">こちら</a> を参照してください。</li>
+      </ul></li>
       </ul>
       <p>これらはいずれも国家資格です。実践的な開発力とは直結しないものの <span
       class="masked">就職活動を含めたIT業界におけるキャリア形成</span>
-      では一定の意義を持つので取得をお勧めします。</p>
+      では一定の意義を持つので、就活などに備えて取得をお勧めします。</p>
       <h3 data-number="1.2.3" id="教科書と参考書"><span class="header-section-number">1.2.3</span>
       教科書と参考書</h3>
-      <ul>
-      <li>教科書「<strong>達人に学ぶDB設計 徹底指南書
-      (第2版)</strong>」は、授業および授業時間外学習で適宜使用します。</li>
-      <li>参考書
+      <p>教科書「<strong>SQL 第2版
+      ゼロからはじめるデータベース操作</strong>」は、主に授業時間外学習で使用します。</p>
+      <p>おすすめの参考書は以下の通りです。研究室に所蔵しているので、購入前に内容 (レベル感)
+      を確認したいときは声をかけてください。</p>
       <ul>
       <li><a href="https://www.amazon.co.jp/dp/4297146738/">改訂第4版 すらすらと手が動くようになる
       SQL書き方ドリル</a></li>
-      <li><a
-      href="https://www.amazon.co.jp/dp/4296001973/">データベースをなぜつくるのか　知っておきたいE-R図とSQLの基礎</a></li>
+      <li><a href="https://www.amazon.co.jp/dp/4296001973/">データベースをなぜつくるのか
+      知っておきたいE-R図とSQLの基礎</a></li>
+      <li><a href="https://www.amazon.co.jp/dp/4798186627">達人に学ぶDB設計 徹底指南書
+      (第2版)</a></li>
       <li><a href="https://www.amazon.co.jp/dp/4297104083/">失敗から学ぶRDBの正しい歩き方</a></li>
-      </ul></li>
       </ul>
       <h2 data-number="1.3" id="成績評価法と履修上の注意"><span
       class="header-section-number">1.3</span> 成績評価法と履修上の注意</h2>
-      <p><strong>総合成績</strong>（年度末の最終成績）は、シラバス記載のように「試験<strong>45%</strong>、小テスト<strong>35%</strong>、課題<strong>20%</strong>の割合で総合して評価」します。</p>
+      <p><strong>総合成績</strong>（年度末の最終成績）は、シラバス記載のように「試験
+      <strong>45%</strong>、小テスト <strong>35%</strong>、課題 <strong>20%</strong>
+      の割合で総合して評価」します。</p>
       <ul>
-      <li>小テストおよび課題は、主として「授業時間外学習の取り組み」を評価するものとなります。</li>
-      <li>小テスト実施するときは、その前回講義でアナウンスします。</li>
+      <li>小テストは、主として講義資料内の「定着確認」から出題します
+      (そのままではなく類題や解答形式の変更を含みます)。</li>
+      <li>小テストは、<strong>授業開始直後に実施するので</strong>、余裕をもって教室に入るようにしてください。</li>
       </ul>
       <div class="note type-tips">
-      <p><strong>各種事情で小テストを受験できなかったときは</strong></p>
-      <p>遅刻や欠席（公欠や出欠停止を含む）により、授業中に実施する「小テスト」を受験できず追試験を希望するときは、当該授業日を含めて2日以内に、自分から担当教員宛に
-      Teams Chat で「追試験の実施依頼」を申し出てください。例えば、10月9日 (木)
-      実施の小テストの追受験を希望する場合は、遅くとも 10日 (金) 23:59 までに連絡してください。</p>
+      <p><strong>小テストを受験できなかった場合の救済措置 (重要🚨)</strong></p>
+      <p>遅刻や欠席 (交通障害・公欠・忌引き・出席停止など理由を問わない)
+      により、小テストを受験できず追試験を希望する者は、当該授業日を含めて2日以内に学生から和田宛に
+      <strong>TeamsChat</strong> (≠電子メール) <strong>で追試験の実施依頼</strong>
+      をしてください。例えば、「10月7日 (水) に実施された小テスト」の追試験を希望する場合は、10月8日
+      (木) の 23:59 までに連絡してください。</p>
       <ul>
-      <li>小テストの追試験は、公欠や出席停止を含めて理由に関わらず「<strong>1人あたり最大3回まで</strong>」対応します。</li>
-      <li>電子メールや口頭など、Teams Chat 以外による依頼には対応しません。</li>
-      <li>実施依頼には、具体的な希望の日時 (平日 08:40-19:00 を原則) を3案ほど添えてください。
+      <li>小テストの追試験は、理由に関わらず <strong>1人あたり最大3回まで対応</strong>
+      します。4回目以降の欠席・遅刻による小テスト未受験に対しては、追試は実施せず「0点」で評価します。</li>
+      <li>Teams による実施依頼には、具体的な希望の日時
+      (原則として次回授業日の前日までの平日の昼休み、14:50 ～ 17:00 の時間帯)
+      を3案ほど添えてください。
       <ul>
-      <li>「放課後」や「先生の空いている時間」のような抽象表現は使用しないでください。</li>
+      <li>「放課後」や「先生の空いている時間」のような抽象表現は不可とします。</li>
       </ul></li>
+      <li>上記の期限までに連絡がない場合、追試験には対応しません。感染症等により登校再開日が未定で希望日時を挙げられない場合でも、追試験を希望する旨および登校再開日が未定である旨を明記のうえ、期限内に連絡してください。<u>登校再開日が判明した時点から2日以内</u>に、改めて日程調整の連絡を自分から送ってください。</li>
       </ul>
       </div>
       <h3 data-number="1.3.1" id="履修上の注意点"><span class="header-section-number">1.3.1</span>
       履修上の注意点</h3>
       <ul>
       <li>毎回、十分に充電したノートPCを持参してください。</li>
-      <li>授業や課題の取り組みにおいて、生成AIの利用に制限はありませんが、これらは「<strong>理解を深めるため</strong>」「<strong>知識の幅を広げるため</strong>」に利用してください。「正答を得るため」や「自分では記述できないクエリ
-      (SQL) を書かせるため」に利用することは推奨しません。
+      <li>授業や課題の取り組みにおいて生成AIの利用に特段の制限はありませんが、これらは「<strong>自身の理解を深めるため</strong>」「<strong>知識の幅を広げるため</strong>」に利用してください。
       <ul>
-      <li>推奨する利用方法は、講義資料のなかに <strong>(プロンプト例)</strong>
-      として示しています。</li>
+      <li>大阪公立大学 <a
+      href="https://omunet-my.sharepoint.com/:b:/g/personal/z21707r_omu_ac_jp/IQARd_CK72S6SpSfwK5AtF19AXMt4sy-vRY9Tn8DxxGw6zs?e=xlR5bl">生成AIの利活用に関する学生向けガイドライン
+      (第2.0版)</a> に示される「学問的誠実性」に反するような利用は禁止とします。</li>
       </ul></li>
-      <li>ウェブの技術記事やYouTube動画、生成AIを活用し、授業で扱った内容に関する補足的な知識や、最近の技術動向についてキャッチアップに努めてください。</li>
+      <li>ウェブの技術記事や YouTube 動画、生成 AI
+      を活用し、授業で扱った内容に関する補足的な知識や、最近の技術動向についてキャッチアップに努めてください。</li>
       </ul>
       <h1 data-number="2" id="データベースとは"><span class="header-section-number">2</span>
       データベースとは</h1>
       <p>データベース (Database) とは、<strong>データ (data)</strong> と <strong>ベース
       (base)</strong>
-      を合わせた複合語になります。データは「<strong>記録された情報</strong>」や「<strong>観測事実</strong>」を意味し、ベースは「<strong>基盤</strong>」「<strong>置き場</strong>」「<strong>土台</strong>」を意味します。また、ベースは軍事用語として
-      <span class="masked">「基地」や「補給拠点」</span>
-      といった意味合いも持っています。このことから、データベースはもともと「情報の基盤」や「知識やデータの倉庫」のような比喩的イメージを持つ言葉となっています。</p>
-      <p><strong>非情報分野</strong>において、一般的に「データベース」という言葉は <span
-      class="masked">「一定の形式や構造に従って整理されたデータの集まり」</span>
-      を指します。その意味では、電話帳や国語辞典、出席簿といったアナログ資料もデータベースとみなせますし、CSV
+      を合わせた「複合語」になります。データは「<strong>記録された情報</strong>」や「<strong>観測事実</strong>」を意味し、ベースは「<strong>基盤</strong>」「<strong>置き場</strong>」「<strong>土台</strong>」を意味します。また、ベースは軍事用語として
+      <span class="masked">「基地」や「補給拠点」</span> といった意味合いも持っています。</p>
+      <p>このことから、データベースはもともと「情報の基盤」や「知識やデータの倉庫」のような比喩的イメージを持つ言葉となっています。</p>
+      <p>そのため、<strong>非情報分野</strong>においては、一般的に「データベース」という言葉は「<strong>一定の形式や構造に従って整理されたデータの集まり</strong>」を指します。その意味では、「電話帳」や「国語辞典」、「出席簿」といったアナログ資料もデータベースとみなせますし、CSV
       や JSON などのデジタルファイルもデータベースと呼ぶことができます。</p>
-      <p>しかし、<strong>コンピュータサイエンスやソフトウェア開発の分野</strong>では <span
-      class="masked">CSV や JSON のような単なるデータファイル</span>
-      を「データベース」と呼ぶことは通常ありません。これらの分野でデータベースという言葉は「<strong>一定の形式や構造に従ってデータを蓄積・管理し、必要に応じて検索・更新・削除・集計・加工などを柔軟かつ高速に行える仕組み</strong>」を指すことが一般的です。ただし、文脈によっては、データそのものを「<strong>データベース
+      <p>一方で、<strong>コンピュータサイエンスやソフトウェア開発の分野</strong>において、CSV や
+      JSON
+      のような単なるデータファイルを「データベース」と呼ぶことは通常ありません。これらの分野で「データベース」という言葉は「<strong>一定の形式や構造に従ってデータを蓄積・管理し、必要に応じて検索・更新・削除・集計・加工などを柔軟かつ高速に行える仕組み</strong>」を指すことが一般的です。ただし、文脈によっては、データそのものを「<strong>データベース
       (DB)</strong>」と呼び、それらを管理する仕組みやソフトウェアを「<strong>データベースマネジメントシステム
       (DBMS)</strong>」と区別して呼ぶこともあります。</p>
+      <div class="balloon char-01 face-05 tone-blue">
       <p>まとめると、以下のようになります。</p>
       <ul>
-      <li>CSV や JSON、Excel などのファイルや、それらの集まりをデータベースとは言わない。
+      <li>CSV や JSON、Excel などのファイルや、それらの集まりを「データベース」とは言わない。
       <ul>
-      <li>単なる CSV
-      の読み書き処理を「データベースから情報を取得して」のように表現すると大きな誤解を与えるので十分に注意すること。</li>
+      <li><u>単なる CSV
+      の読み書き処理を「データベースから情報を取得して」のように表現すると大きな誤解を与える</u>
+      ので十分に注意してください。</li>
       </ul></li>
       <li>データの蓄積・管理、柔軟な操作を可能にする仕組みやソフトウェアのことを「データベース」あるいは「データベースマネジメントシステム」と呼ぶ。
       <ul>
-      <li>データベースマネジメントシステムには、ユーザごとのアクセス制御、ネットワーク経由での利用、データ整合性の維持、障害時復旧といった機能が標準的に備わっている。</li>
-      <li>データベース管理システムと呼ぶこともある。</li>
+      <li>データベースマネジメントシステムには「ユーザごとのアクセス制御」「ネットワーク経由での利用」「データ整合性の維持」「障害時復旧といった機能」などが標準的に備わっています。</li>
+      <li>「データベース管理システム」と呼ぶこともあります。</li>
       </ul></li>
       <li>データベースは「<strong>DB</strong>」、データベースマネジメントシステムは「<strong>DBMS</strong>」という略語で使用される。
       <ul>
-      <li>DB について「デービー」という読み方も比較的広く使われている。</li>
+      <li>DB について「デービー」という読み方も比較的広く使われています。</li>
       </ul></li>
       </ul>
+      </div>
       <div class="note type-tips">
       <p><strong>実際の開発現場における「データベース」という言葉の使われ方</strong></p>
-      <p>ややこしいですが、ソフトウェア開発の文脈で「データベース」という用語が使われる場合、以下のように「データそのもの」ではなく、それを「管理・利用する仕組みやソフトウェアを含めた全体」を指すことが一般的です。</p>
+      <p>ややこしいですが、ソフトウェア開発の文脈で「データベース」という用語が使われる場合、以下のように「データそのもの」ではなく、それを「<strong>管理・利用する仕組みやソフトウェアを含めた全体</strong>」を指すことが一般的です。</p>
       <ul>
       <li>「この機能では、ユーザーの行動ログをデータベースに保存する必要がありますね」</li>
       <li>「データベースのスキーマ設計はどうしますか？正規化は第3正規形まででよいでしょうか」</li>
