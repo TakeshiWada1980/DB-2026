@@ -62,16 +62,22 @@
 class="toc-section-number">1.3</span> 成績評価法と履修上の注意</a></li>
 </ul></li>
 <li><a href="#データベースとは" id="toc-データベースとは"><span class="toc-section-number">2</span>
-データベースとは</a></li>
+データベースとは</a>
+<ul>
+<li><a href="#実際の開発現場におけるデータベースという言葉の使われ方"
+id="toc-実際の開発現場におけるデータベースという言葉の使われ方"><span
+class="toc-section-number">2.1</span>
+<strong>実際の開発現場における「データベース」という言葉の使われ方</strong></a></li>
+</ul></li>
 <li><a href="#なぜdbms-が利用されるのか" id="toc-なぜdbms-が利用されるのか"><span
 class="toc-section-number">3</span> なぜ、DBMS が利用されるのか？</a>
 <ul>
 <li><a href="#データの永続化" id="toc-データの永続化"><span class="toc-section-number">3.1</span>
 データの永続化</a></li>
-<li><a href="#osのファイルシステムを直接利用したデータの永続化の問題"
-id="toc-osのファイルシステムを直接利用したデータの永続化の問題"><span
-class="toc-section-number">3.2</span>
-OSのファイルシステムを直接利用したデータの永続化の問題</a></li>
+<li><a href="#os-のファイルシステムを直接利用したデータの永続化の問題"
+id="toc-os-のファイルシステムを直接利用したデータの永続化の問題"><span
+class="toc-section-number">3.2</span> OS
+のファイルシステムを直接利用したデータの永続化の問題</a></li>
 <li><a href="#汎用性や拡張性に関する問題や制約" id="toc-汎用性や拡張性に関する問題や制約"><span
 class="toc-section-number">3.3</span> 汎用性や拡張性に関する問題や制約</a></li>
 <li><a href="#同時アクセスと排他制御に関する問題や制約"
@@ -171,7 +177,7 @@ class="toc-section-number">8</span> 授業時間外学習の指示 (宿題)</a><
       href="https://www.npmjs.com/package/prisma">Prisma</a>・<a
       href="https://www.npmjs.com/package/drizzle-orm">Drizzle</a>（ORM）を用いて PostgreSQL
       に接続し、データの保存・取得・更新などができる。</li>
-      <li>Docker を使用して MongoDB の実行環境を構築できる。</li>
+      <li>Docker を使用して MongoDB の実行環境が構築できる。</li>
       <li>TypeScript から MongoDB に接続して基本的な CRUD 操作ができる。</li>
       </ol>
       <hr />
@@ -281,8 +287,8 @@ class="toc-section-number">8</span> 授業時間外学習の指示 (宿題)</a><
       の割合で総合して評価」します。</p>
       <ul>
       <li>小テストは、主として講義資料内の「定着確認」から出題します
-      (そのままではなく類題や解答形式の変更を含みます)。</li>
-      <li>小テストは、<strong>授業開始直後に実施するので</strong>、余裕をもって教室に入るようにしてください。</li>
+      (そのままではなく類題や解答形式の変更を含みます)。小テストは
+      <strong>授業開始直後に実施するので</strong>、余裕をもって教室に入るようにしてください。</li>
       </ul>
       <div class="note type-tips">
       <p><strong>小テストを受験できなかった場合の救済措置 (重要🚨)</strong></p>
@@ -306,12 +312,12 @@ class="toc-section-number">8</span> 授業時間外学習の指示 (宿題)</a><
       <h3 data-number="1.3.1" id="履修上の注意点"><span class="header-section-number">1.3.1</span>
       履修上の注意点</h3>
       <ul>
-      <li>毎回、十分に充電したノートPCを持参してください。</li>
+      <li>毎回、十分に充電した「ノートPC」を持参してください。</li>
       <li>授業や課題の取り組みにおいて生成AIの利用に特段の制限はありませんが、これらは「<strong>自身の理解を深めるため</strong>」「<strong>知識の幅を広げるため</strong>」に利用してください。
       <ul>
       <li>大阪公立大学 <a
       href="https://omunet-my.sharepoint.com/:b:/g/personal/z21707r_omu_ac_jp/IQARd_CK72S6SpSfwK5AtF19AXMt4sy-vRY9Tn8DxxGw6zs?e=xlR5bl">生成AIの利活用に関する学生向けガイドライン
-      (第2.0版)</a> に示される「学問的誠実性」に反するような利用は禁止とします。</li>
+      (第2.0版)</a> に示されるような「学問的誠実性に反するような利用」は禁止とします。</li>
       </ul></li>
       <li>ウェブの技術記事や YouTube 動画、生成 AI
       を活用し、授業で扱った内容に関する補足的な知識や、最近の技術動向についてキャッチアップに努めてください。</li>
@@ -350,27 +356,63 @@ class="toc-section-number">8</span> 授業時間外学習の指示 (宿題)</a><
       </ul></li>
       </ul>
       </div>
-      <div class="note type-tips">
-      <p><strong>実際の開発現場における「データベース」という言葉の使われ方</strong></p>
-      <p>ややこしいですが、ソフトウェア開発の文脈で「データベース」という用語が使われる場合、以下のように「データそのもの」ではなく、それを「<strong>管理・利用する仕組みやソフトウェアを含めた全体</strong>」を指すことが一般的です。</p>
-      <ul>
-      <li>「この機能では、ユーザーの行動ログをデータベースに保存する必要がありますね」</li>
-      <li>「データベースのスキーマ設計はどうしますか？正規化は第3正規形まででよいでしょうか」</li>
-      <li>「データベースの応答が遅くなっています💦クエリのパフォーマンスを確認してください」</li>
-      <li>「データベースの容量が90%を超えました。ディスク拡張が必要です」</li>
-      <li>「来週末にデータベースのバージョンアップを予定しています」</li>
-      <li>「データベースのセキュリティパッチを適用する必要があります」</li>
-      <li>「性能要件：データベースの応答時間は平均100ms以下であること」</li>
-      <li>「データベースの冗長化により、システムの可用性を99.9%以上確保できます」</li>
-      </ul>
-      <p>このあたりの使い分けは、本科目を学んでいくうちに自然につかめるようになると思います。</p>
-      </div>
       <h3 data-number="2.0.1" id="定着確認"><span class="header-section-number">2.0.1</span>
       定着確認</h3>
+      <ul>
+      <li>ソフトウェア開発の分野で一般に「データベース」と呼ばれるものの説明として、最も適切なものを答えよ。
+      <ul>
+      <li>❶ データを保存したファイルであれば、形式や用途を問わず全て該当する。</li>
+      <li>❷
+      一定の形式や構造に従ってデータを蓄積・管理し、検索・更新・削除・集計・加工などを柔軟かつ高速に行える仕組みを指す。</li>
+      <li>❸ データを画面に表示する機能だけを持つソフトウェアを指す。</li>
+      <li>❹ データを保存するためのハードウェアだけを指す。
+      <ul>
+      <li><strong>答え</strong>: <span class="masked">❷</span></li>
+      </ul></li>
+      </ul></li>
+      <li>データベースが行うデータの操作について、「蓄積・管理」以外の例を3つ答えよ。
+      <ul>
+      <li><strong>答え</strong>: <span
+      class="masked">検索、更新、削除、集計、加工などから3つ</span></li>
+      </ul></li>
+      <li>データそのものと、それを管理する仕組みを区別する場合、「DB」と「DBMS」はそれぞれ何を指すか答えよ。
+      <ul>
+      <li><strong>答え</strong>: <span class="masked">DB はデータそのもの、DBMS
+      はそれらを管理する仕組みやソフトウェアを指す。</span></li>
+      </ul></li>
+      <li>次の説明は「適切である」か「適切ではない」か答えよ。
+      <ul>
+      <li><strong>答え</strong>: <span class="masked">適切ではない</span></li>
+      </ul></li>
+      </ul>
+      <blockquote>
+      <p>「データベース」という言葉が指すものは、非情報分野でもソフトウェア開発の分野でも常に同じであり、文脈によって使い分けられることはない。</p>
+      </blockquote>
+      <ul>
+      <li>ソフトウェア開発の説明で、DBMS を使わずに CSVファイル
+      を読み込むだけの処理を「データベースから情報を取得する」と表現すると、どのような誤解を与えるか答えよ。
+      <ul>
+      <li><strong>答え</strong>: <span class="masked">単なるファイルの読み込みではなく、DBMS
+      を利用してデータを管理・取得していると受け取られるおそれがある。</span></li>
+      </ul></li>
+      <li>次の説明は「適切である」か「適切ではない」か答えよ。
+      <ul>
+      <li><strong>答え</strong>: <span class="masked">適切ではない</span></li>
+      </ul></li>
+      </ul>
+      <blockquote>
+      <p>DBMS の役割はデータを保存することだけであり、ユーザーごとのアクセス制御や障害時復旧は、DBMS
+      が標準的に備える機能には含まれない。</p>
+      </blockquote>
       <ul>
       <li>DBMS とは何の略語か英語で答えよ。
       <ul>
       <li><strong>答え</strong>: <span class="masked">Database Management System</span></li>
+      </ul></li>
+      <li>DBMS の日本語での名称を答えよ。
+      <ul>
+      <li><strong>答え</strong>: <span
+      class="masked">データベースマネジメントシステム、データベース管理システム</span></li>
       </ul></li>
       <li>次の説明は「適切である」か「適切ではない」か答えよ。
       <ul>
@@ -418,7 +460,40 @@ class="toc-section-number">8</span> 授業時間外学習の指示 (宿題)</a><
       <li><strong>答え</strong>: <span class="masked">❷</span></li>
       </ul></li>
       </ul></li>
+      <li>次の説明は「適切である」か「適切ではない」か答えよ。
+      <ul>
+      <li><strong>答え</strong>: <span class="masked">適切ではない</span></li>
+      </ul></li>
       </ul>
+      <blockquote>
+      <p>非情報分野における広い意味での「データベース」は、電子的なデータだけを対象とするため、紙の電話帳や国語辞典は含まれない。</p>
+      </blockquote>
+      <ul>
+      <li>次の説明は「適切である」か「適切ではない」か答えよ。
+      <ul>
+      <li><strong>答え</strong>: <span class="masked">適切である</span></li>
+      </ul></li>
+      </ul>
+      <blockquote>
+      <p>非情報分野では、一定の形式や構造に従って整理された CSVファイル や JSONファイル
+      も「データベース」と呼ぶことがある。</p>
+      </blockquote>
+      <h2 data-number="2.1" id="実際の開発現場におけるデータベースという言葉の使われ方"><span
+      class="header-section-number">2.1</span>
+      <strong>実際の開発現場における「データベース」という言葉の使われ方</strong></h2>
+      <p>データそのものを「DB」、それを管理するソフトウェアを「DBMS」と区別しましたが、実際の開発現場では、これらをまとめて「データベース」と呼ぶこともよくあります。</p>
+      <p>以下は、開発現場で聞かれる発言の例です。同じ「データベース」という言葉でも、データの保存先や構造、DBMSの動作や運用など、話題によって指している対象は少しずつ異なります。</p>
+      <ul>
+      <li>「この機能では、ユーザーの行動ログをデータベースに保存する必要がありますね」</li>
+      <li>「データベースのスキーマ設計はどうしますか？正規化は第3正規形まででよいでしょうか」</li>
+      <li>「データベースの応答が遅くなっています💦クエリのパフォーマンスを確認してください」</li>
+      <li>「データベース用ディスクの使用率が90%を超えました。ディスク拡張が必要です」</li>
+      <li>「来週末にデータベースのバージョンアップを予定しています」</li>
+      <li>「データベースのセキュリティパッチを適用する必要があります」</li>
+      <li>「性能要件：データベースの応答時間は平均100ms以下であること」</li>
+      <li>「システムの可用性を高めるために、データベースの冗長化を検討しています」</li>
+      </ul>
+      <p>このあたりの使い分けは、本科目を学んでいくうちに自然につかめるようになると思います。</p>
       <h1 data-number="3" id="なぜdbms-が利用されるのか"><span
       class="header-section-number">3</span> なぜ、DBMS が利用されるのか？</h1>
       <p>現在、企業の基幹システム
@@ -439,17 +514,18 @@ class="toc-section-number">8</span> 授業時間外学習の指示 (宿題)</a><
 <span id="cb1-3"><a href="#cb1-3"></a><span class="bu">print</span>(<span class="ss">f&quot;こんにちは、</span><span class="sc">{</span>name<span class="sc">}</span><span class="ss">さん！&quot;</span>)</span></code></pre></div>
       <p>プログラムの終了後も、これらの情報 (上記の例で言えば <code>name</code> の値)
       を保持して、プログラムを再び起動したときに引き続き利用できるようにするためには「<strong>データの永続化</strong>」という仕組みが必要となります。</p>
-      <h2 data-number="3.2" id="osのファイルシステムを直接利用したデータの永続化の問題"><span
-      class="header-section-number">3.2</span>
-      OSのファイルシステムを直接利用したデータの永続化の問題</h2>
-      <p>最も基本的な「データの永続化」の方法は、OSのファイルシステムを利用して
+      <h2 data-number="3.2" id="os-のファイルシステムを直接利用したデータの永続化の問題"><span
+      class="header-section-number">3.2</span> OS
+      のファイルシステムを直接利用したデータの永続化の問題</h2>
+      <p>最も基本的な「データの永続化」の方法は、OS のファイルシステムを利用して
       <strong>テキストファイル</strong> (TXT、CSV、JSONなど) や <strong>バイナリファイル</strong>
       にデータ (情報) を書き出し、必要に応じて読み出すというものです。</p>
       <p>例えば、Python では標準ライブラリの <code>csv</code> や、外部ライブラリの
-      <code>Pandas</code>
-      で「CSVファイルの読み書き」ができるので、それを利用してデータの永続化が可能です。また、標準ライブラリの
-      <code>json</code> を用いれば JSONファイルの読み書きができ、<code>pickle</code> を用いれば
-      Pythonオブジェクトを「バイナリ形式」で保存・復元できるので、これらも永続化の手段となります。</p>
+      <code>Pandas</code> で「CSV
+      ファイルの読み書き」ができるので、それを利用してデータの永続化が可能です。また、標準ライブラリの
+      <code>json</code> を用いれば JSON ファイルの読み書きができ、<code>pickle</code> を用いれば
+      Python
+      オブジェクトを「バイナリ形式」で保存・復元できるので、これらも永続化の手段となります。</p>
       <ul>
       <li>参考:<a
       href="https://takeshiwada1980.github.io/Programming1-2024/lecture18.html#json形式のシリアライズとデシリアライズ">PG1-第18回講義</a></li>
@@ -635,7 +711,7 @@ class="toc-section-number">8</span> 授業時間外学習の指示 (宿題)</a><
       <p><strong>ファイルを分割しても解決しない問題</strong></p>
       <p>ファイルによるデータ管理において、細かな粒度で排他制御やアクセス権の設定を行いたい場合、<strong>データを複数のファイルに分割して保存する</strong>
       という戦略があります。例えば、科目ごとにファイルを分けて「2026年度のDB工学の成績.json」「2026年度の論理回路2の成績.json」といった形で管理する、といったやり方です。このようにすれば、影響範囲を最小に留めたロックや、細かなアクセス権の設定が可能になります。</p>
-      <p>しかし、この戦略をとった場合、検索や集計の際には複数ファイルを横断して読み込み処理が必要であり、パフォーマンスが著しく低下するという欠点があります。一般に「1KBのファイルを1000個読み込む場合」と「1MBのファイルを1個読み込む場合」を比較すると、前者の方が圧倒的に負荷が高く、処理に大きな時間がかかるようになります。</p>
+      <p>しかし、この戦略をとった場合、検索や集計の際には複数ファイルを横断する読み込み処理が必要であり、パフォーマンスが著しく低下するという欠点があります。一般に「1KBのファイルを1000個読み込む場合」と「1MBのファイルを1個読み込む場合」を比較すると、前者の方が圧倒的に負荷が高く、処理に大きな時間がかかるようになります。</p>
       </div>
       <p><strong>(プロンプト例)</strong></p>
       <blockquote>
@@ -1052,8 +1128,8 @@ class="toc-section-number">8</span> 授業時間外学習の指示 (宿題)</a><
       </ul></li>
       </ul>
       <h2 data-number="6.2" id="演習"><span class="header-section-number">6.2</span> 演習</h2>
-      <p>オンライン SQL 実行環境である<a href="https://www.db-fiddle.com/">DB
-      Fiddle</a>というサービスを利用して、SQL を使って RDBMS (PostgreSQL)
+      <p>オンライン SQL 実行環境である <a href="https://www.db-fiddle.com/">DB Fiddle</a>
+      というサービスを利用して、SQL を使って RDBMS (PostgreSQL)
       を操作する体験をしてみたいと思います。</p>
       <ul>
       <li>SQL
@@ -1068,9 +1144,9 @@ class="toc-section-number">8</span> 授業時間外学習の指示 (宿題)</a><
       </figure>
       <p>まずは、社員と部署に関するテーブルのスキーマを定義し、そこにデータを挿入
       (<strong>INSERT</strong>) していきたいと思います。<a
-      href="https://github.com/TakeshiWada1980/DB-2026/blob/main/docs/codes/01/init-table.sql">こちら</a>(👈<code>init-table.sql</code>)
-      から SQL をコピーして、以下のように <strong>Schema SQL</strong> のペイン (領域)
-      に貼り付けてください。</p>
+      href="https://github.com/TakeshiWada1980/DB-2026/blob/main/docs/codes/01/employees_setup.sql">こちら</a>
+      (👈<code>employees_setup.sql</code>) から SQL をコピーして、以下のように <strong>Schema
+      SQL</strong> のペイン (領域) に貼り付けてください。</p>
       <figure>
       <img src="figs/01/db-fiddle-02.png" alt="img" />
       <figcaption aria-hidden="true">img</figcaption>
@@ -1577,23 +1653,23 @@ For more examples and ideas, visit:
       <li><code>docker image pull</code>
       コマンドの実行には、回線状況によっては数分から10分程度かかる場合があります。</li>
       </ul>
-      <pre><code>docker image pull postgres:17.6
-docker image pull dbgate/dbgate:6.6.3</code></pre>
+      <div class="sourceCode" id="cb10"><pre class="sourceCode powershell"><code class="sourceCode powershell"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>docker image pull postgres<span class="op">:</span><span class="dv">18.6</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="dt">docker</span> image pull dbgate<span class="op">/</span>dbgate<span class="op">:</span><span class="dv">7.2</span><span class="op">.</span><span class="dv">6</span></span></code></pre></div>
       <ul>
-      <li><code>docker pull postgres:17.6</code> のように <code>image</code>
+      <li><code>docker pull postgres:18.6</code> のように <code>image</code>
       を省略することもできます。どちらも同じ動作ですが、<code>docker image pull</code>
       のように明示的に書くと、「イメージ」を対象とした操作であることがより分かりやすくなります
       (Docker
       には、主に「イメージ」を対象とした操作と、「コンテナ」を対象とした操作があります)。</li>
       </ul>
       <p>イメージが取得できたことを確認します。以下のコマンドを実行してください。</p>
-      <pre><code>docker images</code></pre>
-      <p>以下のようにリストのなかに <code>postgres:17.6</code> と <code>dbgate/dbgate:6.6.3</code>
+      <div class="sourceCode" id="cb11"><pre class="sourceCode powershell"><code class="sourceCode powershell"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>docker images</span></code></pre></div>
+      <p>以下のようにリストのなかに <code>postgres:18.6</code> と <code>dbgate/dbgate:7.2.6</code>
       が含まれていれば OK です。</p>
-      <pre><code>REPOSITORY                TAG              IMAGE ID       CREATED         SIZE
-postgres                  17.6             3fe059c96160   5 days ago      453MB
-dbgate/dbgate             6.6.3            c17f3615b225   4 weeks ago     1.32GB
-hello-world               latest           1b44b5a3e06a   7 weeks ago     10.1kB</code></pre>
+      <pre><code>IMAGE                  ID
+postgres:18.6          662db3da228c  
+dbgate/dbgate:7.2.6    95a402f3cb33  
+hello-world:latest     e2ac70e7319a</code></pre>
       <h1 data-number="8" id="授業時間外学習の指示-宿題"><span
       class="header-section-number">8</span> 授業時間外学習の指示 (宿題)</h1>
       <ul>
@@ -1607,7 +1683,7 @@ hello-world               latest           1b44b5a3e06a   7 weeks ago     10.1kB
       <li>講義資料内の「演習」に再度取り組んでください。演習内容は、授業時間中に1回取り組むだけでは定着しないので注意してください。</li>
       <li>次回までに、Docker Desktop をインストールして、hello-world
       コンテナが正常に動作することを確認しておいてください。また、<code>docker image pull</code>
-      コマンドで <code>postgres:17.6</code> と <code>dbgate/dbgate:6.6.3</code>
+      コマンドで <code>postgres:18.6</code> と <code>dbgate/dbgate:7.2.6</code>
       のイメージをプルしておいてください。
       <ul>
       <li>問題があれば <strong>遅くとも講義の前日までにアポをとって解決に向けた相談</strong>
