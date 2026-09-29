@@ -101,6 +101,10 @@ id="toc-osのファイルシステムを直接利用したデータ管理"><span
 OSのファイルシステムを直接利用したデータ管理</a></li>
 <li><a href="#dbms-を使ったデータ管理" id="toc-dbms-を使ったデータ管理"><span
 class="toc-section-number">4.2</span> DBMS を使ったデータ管理</a></li>
+<li><a href="#中級者向け-ネットワーク共有した-csvファイルで安全にデータを管理するには"
+id="toc-中級者向け-ネットワーク共有した-csvファイルで安全にデータを管理するには"><span
+class="toc-section-number">4.3</span> 中級者向け: ネットワーク共有した
+CSVファイルで、安全にデータを管理するには？</a></li>
 </ul></li>
 <li><a href="#データベースの種類" id="toc-データベースの種類"><span
 class="toc-section-number">5</span> データベースの種類</a></li>
@@ -1207,6 +1211,116 @@ class="toc-section-number">8</span> 授業時間外学習の指示 (宿題)</a><
       <p>DBMS (サーバのストレージエンジン)
       は、OSのファイルシステムを利用することなくデータの永続化を実現している。</p>
       </blockquote>
+      <h2 data-number="4.3"
+      id="中級者向け-ネットワーク共有した-csvファイルで安全にデータを管理するには"><span
+      class="header-section-number">4.3</span> 中級者向け: ネットワーク共有した
+      CSVファイルで、安全にデータを管理するには？</h2>
+      <div class="balloon char-01 face-02 tone-yellow">
+      <p>このセクションは「<strong>中級者向けの完全なオプション</strong>」です。ここまでを早めに終えた人や、<u>進度に余裕がある人の中で、こうした内容に興味があり、あえて挑戦してみたい人だけ</u>
+      取り組んでください。</p>
+      <p>やらなくても問題ありません (小テストや試験の完全対象外です)。</p>
+      </div>
+      <p>ここまで、ファイルを直接読み書きしてデータを管理するときの問題を見てきました。ただ、中級レベルの人は「<strong>ロックしてから保存すれば、意外と簡単に解決できるのでは？</strong>」と感じた人もいると思います。</p>
+      <p>そこで、<strong><u>DBMSを使わずに、2人の教員が同時に使える成績管理アプリをつくること</u></strong>
+      を想定して、その難しさを考えてみます。CSVファイルを Python
+      で単に読み書きするだけなら、極めて単純なプログラムとなります。</p>
+      <p>しかし、<strong>CSVファイル が複数のプロセスから同時に読み書きされる前提</strong> で <span
+      class="masked">「更新の消失をさせない」や「途中で処理が止まってもデータを壊さない」</span>
+      という条件を加えると設計段階 (仕様作成)
+      で検討べきことや一気に増して、実装も極めて複雑になります。</p>
+      <h3 data-number="4.3.1" id="アプリの仕様を検討"><span
+      class="header-section-number">4.3.1</span> アプリの仕様を検討</h3>
+      <p>ネットワークドライブ上に、次のような <strong>成績.csv</strong>
+      が保存されているものとします。</p>
+      <div class="sourceCode" id="cb4" data-caption="成績.csv"><pre
+      class="sourceCode numberSource csv numberLines"><code class="sourceCode"><span id="cb4-1"><a href="#cb4-1"></a>学籍番号,氏名,国語,算数</span>
+<span id="cb4-2"><a href="#cb4-2"></a>X001,山田太郎,70,80</span>
+<span id="cb4-3"><a href="#cb4-3"></a>X002,佐藤花子,65,75</span>
+<span id="cb4-4"><a href="#cb4-4"></a>X003,鈴木次郎,90,60</span></code></pre></div>
+      <p>このファイルを、教員Aと教員Bの2人が共有して利用する成績管理プログラムを Python
+      で作成します。学籍番号は学生を一意に識別する値とし、この演習では学生の追加・削除や学籍番号の変更は扱いません。</p>
+      <p>教員Aと教員Bの担当科目は、あらかじめ次のように決まっているものとします。</p>
+      <ul>
+      <li>教員A：国語担当</li>
+      <li>教員B：算数担当</li>
+      </ul>
+      <p>ここでは、利用者が教員A・教員Bのどちらであるかについては、<strong>自己申告された内容を正しいものとして扱う</strong>ことにします。また、各教員が起動するアプリは1つずつとし、本人確認や同じ教員による多重起動への対応は、いったん考えないものとします。</p>
+      <p>さらに、基本の演習では、2人とも
+      <strong>このアプリを通してだけファイルを操作する</strong>ものとします。担当科目に関する以下の制限も、まずはアプリ内での制限として考えてください。</p>
+      <p>プログラムは、次の要件をすべて満たすものとします。</p>
+      <ol type="1">
+      <li>両教員は学籍番号と氏名を閲覧でき、教員Aは国語、教員Bは算数の成績だけを閲覧・変更できること。</li>
+      <li>学籍番号・氏名と、自分が担当していない科目の成績は変更できないこと。</li>
+      <li>成績として入力できる値は、0〜100の整数とすること。</li>
+      <li>教員Aと教員Bは、<strong>同時にプログラムを起動して利用できる</strong>こと。</li>
+      <li>教員Aが国語を編集中に、教員Bが算数を変更・保存しても、<strong>どちらか一方の変更が失われない</strong>こと。</li>
+      <li>編集画面を開いている間ずっと <strong>成績.csv</strong>
+      をロックし、もう一方の教員を待たせる方法は禁止する。ただし、保存処理に必要な短時間の待機は認める。</li>
+      <li>保存時には、<strong>自分が読み込んだ後に他の教員が行った変更を誤って上書きしない</strong>こと。</li>
+      <li>教員Aと教員Bが同じ学生について別々の科目を変更した場合も、<strong>両方の変更が最終的なファイルに反映される</strong>こと。</li>
+      <li>保存処理中にアプリが異常終了しても、<strong>成績.csv</strong>
+      は保存前または保存後の完全な内容として読み取れること。途中までしか書かれていない状態を残さないこと。</li>
+      <li>ほぼ同時に保存処理が開始された場合にも、データの整合性を保つこと。</li>
+      </ol>
+      <p>DBMSは使用せず、成績データは <strong>成績.csv</strong>
+      を中心に管理します。ただし、一時ファイルやロック管理用のファイルを補助的に使っても構いません。まずは
+      <strong>アプリの異常終了</strong>
+      を対象とし、停電・記憶装置の故障まで同じ方法で対処できるとは考えないでください。ネットワーク切断への対応も、基本の設計を考えた後で検討します。</p>
+      <div class="note type-tips">
+      <p><strong>画面で隠すことと、アクセスを禁止することは別</strong></p>
+      <p>この演習では、本人の自己申告を信頼し、アプリ以外からのファイル操作もないと仮定しています。実際のシステムで「担当外の成績は見せない・変更させない」ことを保証するには、この仮定では不十分です。</p>
+      <p>利用者がCSVファイル全体を直接読み書きできれば、画面の制限を回避できてしまいます。実運用では、本人確認に加えて、<strong>利用者がデータへアクセスする経路と、その経路ごとの権限</strong>を設計する必要があります。</p>
+      </div>
+      <h3 data-number="4.3.2" id="保存するときだけロックするで十分か"><span
+      class="header-section-number">4.3.2</span> 「保存するときだけロックする」で十分か？</h3>
+      <p>例えば、2人が <strong>X001の国語70点・算数80点</strong>
+      を読み込み、教員Aが国語を75点に、教員Bが算数を85点に変更したとします。最終的には
+      <strong>国語75点・算数85点</strong> が保存されてほしいわけです。</p>
+      <p>ここで、保存する瞬間だけロックして、画面を開いたときのデータ全体を書き戻すとどうなるでしょうか。書き込みの順番は制御できても、後から保存するアプリが持っている
+      <strong>担当外科目の古い値</strong> で、先に保存された変更を消してしまいます。</p>
+      <p>考え方の一つは、画面を開いたときのデータ全体を保存するのではなく、<strong>「どの学生の、どの科目を、何点に変更したか」だけを記録しておく</strong>ことです。そのうえで、保存時には次の流れを考えます。</p>
+      <ol type="1">
+      <li>両方のアプリが共通して使う仕組みで、保存処理の排他ロックを取得する。</li>
+      <li><strong>ロックを取得してから</strong>、最新の <strong>成績.csv</strong> を読み直す。</li>
+      <li>学籍番号で学生を特定し、自分が変更した担当科目の値だけを最新データに反映する。他の値は維持する。</li>
+      <li>更新後のデータを保存し、必要な後処理を済ませてからロックを解除する。</li>
+      </ol>
+      <p>ポイントは、<strong>最新データの読み直しから保存の完了までを、ひとまとまりとして保護すること</strong>です。読み直した後、ロックを取る前に別のアプリが保存できてしまう設計では、せっかく読み直した内容も古くなってしまいます。</p>
+      <p>この例では、2人の担当科目が異なるので、変更箇所を分けて反映できます。もし同じ科目を複数人で編集できる仕様に変えるなら、「先に保存した人を優先するのか」「変更の衝突を検出して再確認を求めるのか」といったルールも必要になります。</p>
+      <h3 data-number="4.3.3" id="書き込み途中で止まったら何が残るか"><span
+      class="header-section-number">4.3.3</span> 書き込み途中で止まったら、何が残るか？</h3>
+      <p>ここまでで、他の教員の変更を消さないための方針は見えてきました。しかし、元の
+      <strong>成績.csv</strong>
+      を直接上書きしている途中でプログラムが止まると、ファイルの一部だけが書かれた状態になる可能性があります。<strong>排他ロックは、書き込み失敗を自動的に取り消してくれる仕組みではありません。</strong></p>
+      <p>対策の候補としては、更新後の内容を一時ファイルに最後まで書き出し、それが完了してから元のファイルと置き換える方法があります。ただし、<strong>一時ファイルを使えば、どの環境でも安全になるわけではありません</strong>。置き換えが一度の操作として行われる条件、失敗したときに残るファイル、置き換え前後でロックが何を保護するかまで確認が必要です。</p>
+      <p>例えば、Pythonの <a
+      href="https://docs.python.org/3/library/os.html#os.replace"><code>os.replace</code></a>
+      にも、異なるファイルシステム間では失敗する場合があるなどの条件があります。今回の保存先はネットワークドライブなので、利用するOSやファイル共有の仕組みで期待する動作が得られるかも確認することになります。</p>
+      <h3 data-number="4.3.4" id="動いたことと安全に動くことの違い"><span
+      class="header-section-number">4.3.4</span> 「動いた」ことと「安全に動く」ことの違い</h3>
+      <p>ここで重要なのは、<strong>このような仕組みは「実装できれば終わり」ではない</strong>という点です。</p>
+      <p>例えば、ロック中に最新のCSVを読み直し、自分が変更した部分を反映して保存する処理を実装できたとします。それでも、そのプログラムが仕様を満たすことを確認するためには、さまざまな状況を想定して検証しなければなりません。</p>
+      <p>例えば、次のような場合です。</p>
+      <ul>
+      <li>2人の利用者がほぼ同時に保存した場合</li>
+      <li>一方がファイルを読み込んだ直後に、もう一方が更新した場合</li>
+      <li>ロックを取得した直後にプログラムが異常終了した場合</li>
+      <li>CSVへの書き込み途中でエラーが発生した場合</li>
+      <li>一時ファイルの作成や置き換えに失敗した場合</li>
+      <li>保存処理の途中でネットワークやファイル共有に問題が発生した場合</li>
+      </ul>
+      <p>しかも、こうした問題は<strong>普段の操作ではなかなか再現しない</strong>ことがあります。100回実行して99回正常に動いても、複数の処理が偶然同じタイミングで動いた1回だけデータが失われる、といった不具合も起こり得ます。</p>
+      <p>そのため、単に「自分の環境で何度か動かして問題がなかった」だけでは十分とはいえません。読み込み後などの決めた場所で処理を一時停止し、もう一方のアプリを動かすことで、<strong>問題になりそうな順序を意図的に再現する</strong>必要があります。</p>
+      <p>先ほどのX001の例なら、保存順をA→B、B→Aの両方で試し、どちらも国語75点・算数85点になるかを確認します。異常終了の検証では、画面のエラー表示だけでなく、<strong>再起動後にCSVが読み取れるか、保存済みの他の教員の変更が残っているか</strong>まで確認してください。検証には、失ってもよい練習用のデータを使います。</p>
+      <p>ネットワーク切断まで考えると、「保存は完了したが、完了の通知を受け取れなかった」という状況も検討することになります。この場合、エラーが表示されたからといって、保存前の状態に戻っているとは限りません。想定する故障と、その後の確認・復旧方法を決めることも設計の一部です。</p>
+      <p>つまり、ファイルを使って複数利用者から安全にデータを更新できる仕組みを作る場合、難しいのはコードを書くことだけではありません。<strong>同時実行や異常終了まで含めて正しく動作することを設計し、それを十分に検証すること自体が大きな負担になります。</strong></p>
+      <p>DBMSを利用する大きな利点の一つは、こうした同時実行制御やトランザクション、障害時の整合性維持といった仕組みを、十分に検証された機能として利用できることです。DBMSを使えば何も考えなくてよいわけではありませんが、<strong>データ管理のための難しい仕組みを毎回アプリケーション側で一から設計・実装・検証する必要を大きく減らすことができます。</strong></p>
+      <p>例えば、PostgreSQLの<a
+      href="https://www.postgresql.org/docs/current/tutorial-transactions.html">トランザクション</a>では、複数の更新をまとめて確定・取消できます。一方、「誰にどの科目の変更を許可するか」「どの処理を1つのトランザクションにするか」は、アプリの要件に合わせて設計する必要があります。この役割分担を、これからの演習で学んでいきます。</p>
+      <p><strong>(プロンプト例)</strong></p>
+      <blockquote>
+      <p>PythonでCSVを読み書きする基礎は分かります。共有フォルダの成績CSVを2人の教員が編集し、各教員は別々の科目を担当するアプリを考えています。各教員はアプリを1つだけ起動し、アプリ以外からファイルを変更しないものとします。編集画面を開いている間のロックは禁止し、保存処理中の短時間のロックは認めます。まずコードは示さず、「ロック取得→最新CSVの読み直し→自分の変更だけ反映→保存→ロック解除」という設計で更新の消失を防ぐ考え方と、書き込み途中の異常終了に備えて別途検討すべきことを説明してください。最後に、私が設計の不備を考えるための問いを1つ出してください。</p>
+      </blockquote>
       <h1 data-number="5" id="データベースの種類"><span class="header-section-number">5</span>
       データベースの種類</h1>
       <p>データベースのアーキテクチャ (内部の仕組み/データの整理方法) は、大きく「<strong>RDB
@@ -1217,7 +1331,7 @@ class="toc-section-number">8</span> 授業時間外学習の指示 (宿題)</a><
       について学んでいきます。</p>
       <ul>
       <li>各種データベースモデルについては「📖 <strong>教科書
-      pp.6-11</strong>」を読んでおいてください。
+      pp.18-19</strong>」もあわせて読んでおいてください。
       <ul>
       <li><strong>リレーショナルデータベース</strong> (RDB)</li>
       <li>オブジェクト指向データベース
@@ -1553,18 +1667,18 @@ class="toc-section-number">8</span> 授業時間外学習の指示 (宿題)</a><
       (<code>[Ctrl]+[Enter]</code>) して意図するような結果が得られることを確認してください。</p>
       <h3 data-number="6.2.1" id="where句-と-order-by句の使用例"><span
       class="header-section-number">6.2.1</span> WHERE句 と ORDER BY句の使用例</h3>
-      <div class="sourceCode" id="cb4"
+      <div class="sourceCode" id="cb5"
       data-caption="残業時間50時間以上の社員を降順で出力するSQL"><pre
-      class="sourceCode numberSource sql numberLines"><code class="sourceCode sql"><span id="cb4-1"><a href="#cb4-1"></a><span class="kw">SELECT</span></span>
-<span id="cb4-2"><a href="#cb4-2"></a>  <span class="kw">id</span>,</span>
-<span id="cb4-3"><a href="#cb4-3"></a>  name,</span>
-<span id="cb4-4"><a href="#cb4-4"></a>  overtime</span>
-<span id="cb4-5"><a href="#cb4-5"></a><span class="kw">FROM</span></span>
-<span id="cb4-6"><a href="#cb4-6"></a>  employees</span>
-<span id="cb4-7"><a href="#cb4-7"></a><span class="kw">WHERE</span></span>
-<span id="cb4-8"><a href="#cb4-8"></a>  overtime <span class="op">&gt;=</span> <span class="dv">50</span></span>
-<span id="cb4-9"><a href="#cb4-9"></a><span class="kw">ORDER</span> <span class="kw">BY</span></span>
-<span id="cb4-10"><a href="#cb4-10"></a>  overtime <span class="kw">DESC</span>;</span></code></pre></div>
+      class="sourceCode numberSource sql numberLines"><code class="sourceCode sql"><span id="cb5-1"><a href="#cb5-1"></a><span class="kw">SELECT</span></span>
+<span id="cb5-2"><a href="#cb5-2"></a>  <span class="kw">id</span>,</span>
+<span id="cb5-3"><a href="#cb5-3"></a>  name,</span>
+<span id="cb5-4"><a href="#cb5-4"></a>  overtime</span>
+<span id="cb5-5"><a href="#cb5-5"></a><span class="kw">FROM</span></span>
+<span id="cb5-6"><a href="#cb5-6"></a>  employees</span>
+<span id="cb5-7"><a href="#cb5-7"></a><span class="kw">WHERE</span></span>
+<span id="cb5-8"><a href="#cb5-8"></a>  overtime <span class="op">&gt;=</span> <span class="dv">50</span></span>
+<span id="cb5-9"><a href="#cb5-9"></a><span class="kw">ORDER</span> <span class="kw">BY</span></span>
+<span id="cb5-10"><a href="#cb5-10"></a>  overtime <span class="kw">DESC</span>;</span></code></pre></div>
       <p>コードをじっくりと読み解けば、トライ＆エラーで以下の演習に取り組めると思います。腕試しで挑戦してみてください。</p>
       <ul>
       <li>演習: <code>birthday</code> という列 (カラム) を出力するようにしてみましょう。</li>
@@ -1576,18 +1690,18 @@ class="toc-section-number">8</span> 授業時間外学習の指示 (宿題)</a><
       class="header-section-number">6.2.2</span> JOIN (内部結合) の使用例</h3>
       <p>RDBの重要な機能のひとつである「<strong>JOIN (結合)</strong>」の例です。実際にクエリ (SQL)
       を発行して、どのような結果が返ってくるかを確認してみてください。</p>
-      <div class="sourceCode" id="cb5"
+      <div class="sourceCode" id="cb6"
       data-caption="employeesテーブルとdepartmentsテーブルを結合するSQL"><pre
-      class="sourceCode numberSource sql numberLines"><code class="sourceCode sql"><span id="cb5-1"><a href="#cb5-1"></a><span class="kw">SELECT</span></span>
-<span id="cb5-2"><a href="#cb5-2"></a>  e.<span class="kw">id</span>,</span>
-<span id="cb5-3"><a href="#cb5-3"></a>  e.name,</span>
-<span id="cb5-4"><a href="#cb5-4"></a>  e.birthday,</span>
-<span id="cb5-5"><a href="#cb5-5"></a>  e.overtime,</span>
-<span id="cb5-6"><a href="#cb5-6"></a>  e.department_id,</span>
-<span id="cb5-7"><a href="#cb5-7"></a>  d.name <span class="kw">AS</span> <span class="ot">&quot;department_name&quot;</span></span>
-<span id="cb5-8"><a href="#cb5-8"></a><span class="kw">FROM</span></span>
-<span id="cb5-9"><a href="#cb5-9"></a>  employees <span class="kw">AS</span> e</span>
-<span id="cb5-10"><a href="#cb5-10"></a>  <span class="kw">JOIN</span> departments <span class="kw">AS</span> d <span class="kw">ON</span> e.department_id <span class="op">=</span> d.<span class="kw">id</span>;</span></code></pre></div>
+      class="sourceCode numberSource sql numberLines"><code class="sourceCode sql"><span id="cb6-1"><a href="#cb6-1"></a><span class="kw">SELECT</span></span>
+<span id="cb6-2"><a href="#cb6-2"></a>  e.<span class="kw">id</span>,</span>
+<span id="cb6-3"><a href="#cb6-3"></a>  e.name,</span>
+<span id="cb6-4"><a href="#cb6-4"></a>  e.birthday,</span>
+<span id="cb6-5"><a href="#cb6-5"></a>  e.overtime,</span>
+<span id="cb6-6"><a href="#cb6-6"></a>  e.department_id,</span>
+<span id="cb6-7"><a href="#cb6-7"></a>  d.name <span class="kw">AS</span> <span class="ot">&quot;department_name&quot;</span></span>
+<span id="cb6-8"><a href="#cb6-8"></a><span class="kw">FROM</span></span>
+<span id="cb6-9"><a href="#cb6-9"></a>  employees <span class="kw">AS</span> e</span>
+<span id="cb6-10"><a href="#cb6-10"></a>  <span class="kw">JOIN</span> departments <span class="kw">AS</span> d <span class="kw">ON</span> e.department_id <span class="op">=</span> d.<span class="kw">id</span>;</span></code></pre></div>
       <ul>
       <li>演習: 実行結果として表示されるテーブルの <code>name</code> という列 (カラム) のヘッダを
       <code>名前</code> に変えてみましょう。
@@ -1601,21 +1715,21 @@ class="toc-section-number">8</span> 授業時間外学習の指示 (宿題)</a><
       <p>いまの時点で、SQLの構文について理解する必要はありません。大事なのは「<strong>SQLでこんな集計できちゃうんだ</strong>🤔」とイメージを掴むことです。ただし、ちょっとでも読解しようとする姿勢と行動は実力アップにつながります
       (また、<span class="masked">Python や TypeScript
       プログラムで同様の処理を実装するなら･･･</span>を考えてみるとおもしろいかもしれません)。</p>
-      <div class="sourceCode" id="cb6" data-caption="部署ごとの残業時間を集計するSQL"><pre
-      class="sourceCode numberSource sql numberLines"><code class="sourceCode sql"><span id="cb6-1"><a href="#cb6-1"></a><span class="kw">SELECT</span></span>
-<span id="cb6-2"><a href="#cb6-2"></a>  d.<span class="kw">id</span> <span class="kw">AS</span> <span class="ot">&quot;部署ID&quot;</span>,</span>
-<span id="cb6-3"><a href="#cb6-3"></a>  d.name <span class="kw">AS</span> <span class="ot">&quot;部署名&quot;</span>,</span>
-<span id="cb6-4"><a href="#cb6-4"></a>  <span class="fu">COUNT</span>(e.<span class="kw">id</span>) <span class="kw">AS</span> <span class="ot">&quot;人数&quot;</span>,</span>
-<span id="cb6-5"><a href="#cb6-5"></a>  <span class="fu">COALESCE</span>(<span class="fu">SUM</span>(e.overtime), <span class="dv">0</span>) <span class="kw">AS</span> <span class="ot">&quot;総残業時間&quot;</span>,</span>
-<span id="cb6-6"><a href="#cb6-6"></a>  <span class="fu">ROUND</span>(<span class="fu">COALESCE</span>(<span class="fu">AVG</span>(e.overtime), <span class="dv">0</span>), <span class="dv">1</span>) <span class="kw">AS</span> <span class="ot">&quot;平均残業時間&quot;</span></span>
-<span id="cb6-7"><a href="#cb6-7"></a><span class="kw">FROM</span></span>
-<span id="cb6-8"><a href="#cb6-8"></a>  departments <span class="kw">AS</span> d</span>
-<span id="cb6-9"><a href="#cb6-9"></a>  <span class="kw">LEFT</span> <span class="kw">JOIN</span> employees <span class="kw">AS</span> e <span class="kw">ON</span> d.<span class="kw">id</span> <span class="op">=</span> e.department_id</span>
-<span id="cb6-10"><a href="#cb6-10"></a><span class="kw">GROUP</span> <span class="kw">BY</span></span>
-<span id="cb6-11"><a href="#cb6-11"></a>  d.<span class="kw">id</span>,</span>
-<span id="cb6-12"><a href="#cb6-12"></a>  d.name</span>
-<span id="cb6-13"><a href="#cb6-13"></a><span class="kw">ORDER</span> <span class="kw">BY</span></span>
-<span id="cb6-14"><a href="#cb6-14"></a>  d.<span class="kw">id</span>;</span></code></pre></div>
+      <div class="sourceCode" id="cb7" data-caption="部署ごとの残業時間を集計するSQL"><pre
+      class="sourceCode numberSource sql numberLines"><code class="sourceCode sql"><span id="cb7-1"><a href="#cb7-1"></a><span class="kw">SELECT</span></span>
+<span id="cb7-2"><a href="#cb7-2"></a>  d.<span class="kw">id</span> <span class="kw">AS</span> <span class="ot">&quot;部署ID&quot;</span>,</span>
+<span id="cb7-3"><a href="#cb7-3"></a>  d.name <span class="kw">AS</span> <span class="ot">&quot;部署名&quot;</span>,</span>
+<span id="cb7-4"><a href="#cb7-4"></a>  <span class="fu">COUNT</span>(e.<span class="kw">id</span>) <span class="kw">AS</span> <span class="ot">&quot;人数&quot;</span>,</span>
+<span id="cb7-5"><a href="#cb7-5"></a>  <span class="fu">COALESCE</span>(<span class="fu">SUM</span>(e.overtime), <span class="dv">0</span>) <span class="kw">AS</span> <span class="ot">&quot;総残業時間&quot;</span>,</span>
+<span id="cb7-6"><a href="#cb7-6"></a>  <span class="fu">ROUND</span>(<span class="fu">COALESCE</span>(<span class="fu">AVG</span>(e.overtime), <span class="dv">0</span>), <span class="dv">1</span>) <span class="kw">AS</span> <span class="ot">&quot;平均残業時間&quot;</span></span>
+<span id="cb7-7"><a href="#cb7-7"></a><span class="kw">FROM</span></span>
+<span id="cb7-8"><a href="#cb7-8"></a>  departments <span class="kw">AS</span> d</span>
+<span id="cb7-9"><a href="#cb7-9"></a>  <span class="kw">LEFT</span> <span class="kw">JOIN</span> employees <span class="kw">AS</span> e <span class="kw">ON</span> d.<span class="kw">id</span> <span class="op">=</span> e.department_id</span>
+<span id="cb7-10"><a href="#cb7-10"></a><span class="kw">GROUP</span> <span class="kw">BY</span></span>
+<span id="cb7-11"><a href="#cb7-11"></a>  d.<span class="kw">id</span>,</span>
+<span id="cb7-12"><a href="#cb7-12"></a>  d.name</span>
+<span id="cb7-13"><a href="#cb7-13"></a><span class="kw">ORDER</span> <span class="kw">BY</span></span>
+<span id="cb7-14"><a href="#cb7-14"></a>  d.<span class="kw">id</span>;</span></code></pre></div>
       <p>💻<strong>実行結果</strong></p>
       <table>
       <thead>
@@ -1668,39 +1782,39 @@ class="toc-section-number">8</span> 授業時間外学習の指示 (宿題)</a><
       <h3 data-number="6.2.4" id="caseの使用例"><span class="header-section-number">6.2.4</span>
       CASEの使用例</h3>
       <p>以下は、脱・初心者レベルのクエリになります。授業を重ねながら、このレベルのクエリも自分の手で書けるように力をつけていきましょう。</p>
-      <div class="sourceCode" id="cb7"
+      <div class="sourceCode" id="cb8"
       data-caption="部署ごとに社員が何年代生まれかを集計するSQL"><pre
-      class="sourceCode numberSource sql numberLines"><code class="sourceCode sql"><span id="cb7-1"><a href="#cb7-1"></a><span class="kw">SELECT</span></span>
-<span id="cb7-2"><a href="#cb7-2"></a>  d.<span class="kw">id</span> <span class="kw">AS</span> <span class="ot">&quot;部署ID&quot;</span>,</span>
-<span id="cb7-3"><a href="#cb7-3"></a>  <span class="cf">CASE</span></span>
-<span id="cb7-4"><a href="#cb7-4"></a>    <span class="cf">WHEN</span> <span class="fu">GROUPING</span>(d.<span class="kw">id</span>) <span class="op">=</span> <span class="dv">1</span> <span class="cf">THEN</span> <span class="st">&#39;(全体)&#39;</span></span>
-<span id="cb7-5"><a href="#cb7-5"></a>    <span class="cf">ELSE</span> <span class="fu">MAX</span>(d.name)</span>
-<span id="cb7-6"><a href="#cb7-6"></a>  <span class="cf">END</span> <span class="kw">AS</span> <span class="ot">&quot;部署名&quot;</span>,</span>
-<span id="cb7-7"><a href="#cb7-7"></a>  <span class="fu">SUM</span>(</span>
-<span id="cb7-8"><a href="#cb7-8"></a>    <span class="cf">CASE</span></span>
-<span id="cb7-9"><a href="#cb7-9"></a>      <span class="cf">WHEN</span> birthday <span class="kw">BETWEEN</span> <span class="st">&#39;1970-01-01&#39;</span> <span class="kw">AND</span> <span class="st">&#39;1979-12-31&#39;</span>  <span class="cf">THEN</span> <span class="dv">1</span></span>
-<span id="cb7-10"><a href="#cb7-10"></a>      <span class="cf">ELSE</span> <span class="dv">0</span></span>
-<span id="cb7-11"><a href="#cb7-11"></a>    <span class="cf">END</span></span>
-<span id="cb7-12"><a href="#cb7-12"></a>  ) <span class="kw">AS</span> <span class="ot">&quot;1970年代&quot;</span>,</span>
-<span id="cb7-13"><a href="#cb7-13"></a>  <span class="fu">SUM</span>(</span>
-<span id="cb7-14"><a href="#cb7-14"></a>    <span class="cf">CASE</span></span>
-<span id="cb7-15"><a href="#cb7-15"></a>      <span class="cf">WHEN</span> birthday <span class="kw">BETWEEN</span> <span class="st">&#39;1980-01-01&#39;</span> <span class="kw">AND</span> <span class="st">&#39;1989-12-31&#39;</span>  <span class="cf">THEN</span> <span class="dv">1</span></span>
-<span id="cb7-16"><a href="#cb7-16"></a>      <span class="cf">ELSE</span> <span class="dv">0</span></span>
-<span id="cb7-17"><a href="#cb7-17"></a>    <span class="cf">END</span></span>
-<span id="cb7-18"><a href="#cb7-18"></a>  ) <span class="kw">AS</span> <span class="ot">&quot;1980年代&quot;</span>,</span>
-<span id="cb7-19"><a href="#cb7-19"></a>  <span class="fu">SUM</span>(</span>
-<span id="cb7-20"><a href="#cb7-20"></a>    <span class="cf">CASE</span></span>
-<span id="cb7-21"><a href="#cb7-21"></a>      <span class="cf">WHEN</span> birthday <span class="kw">BETWEEN</span> <span class="st">&#39;1990-01-01&#39;</span> <span class="kw">AND</span> <span class="st">&#39;1999-12-31&#39;</span>  <span class="cf">THEN</span> <span class="dv">1</span></span>
-<span id="cb7-22"><a href="#cb7-22"></a>      <span class="cf">ELSE</span> <span class="dv">0</span></span>
-<span id="cb7-23"><a href="#cb7-23"></a>    <span class="cf">END</span></span>
-<span id="cb7-24"><a href="#cb7-24"></a>  ) <span class="kw">AS</span> <span class="ot">&quot;1990年代&quot;</span></span>
-<span id="cb7-25"><a href="#cb7-25"></a><span class="kw">FROM</span></span>
-<span id="cb7-26"><a href="#cb7-26"></a>  departments <span class="kw">AS</span> d</span>
-<span id="cb7-27"><a href="#cb7-27"></a>  <span class="kw">LEFT</span> <span class="kw">JOIN</span> employees <span class="kw">AS</span> e <span class="kw">ON</span> d.<span class="kw">id</span> <span class="op">=</span> e.department_id</span>
-<span id="cb7-28"><a href="#cb7-28"></a><span class="kw">GROUP</span> <span class="kw">BY</span></span>
-<span id="cb7-29"><a href="#cb7-29"></a>  <span class="kw">ROLLUP</span> (d.<span class="kw">id</span>)</span>
-<span id="cb7-30"><a href="#cb7-30"></a><span class="kw">ORDER</span> <span class="kw">BY</span></span>
-<span id="cb7-31"><a href="#cb7-31"></a>  d.<span class="kw">id</span>;</span></code></pre></div>
+      class="sourceCode numberSource sql numberLines"><code class="sourceCode sql"><span id="cb8-1"><a href="#cb8-1"></a><span class="kw">SELECT</span></span>
+<span id="cb8-2"><a href="#cb8-2"></a>  d.<span class="kw">id</span> <span class="kw">AS</span> <span class="ot">&quot;部署ID&quot;</span>,</span>
+<span id="cb8-3"><a href="#cb8-3"></a>  <span class="cf">CASE</span></span>
+<span id="cb8-4"><a href="#cb8-4"></a>    <span class="cf">WHEN</span> <span class="fu">GROUPING</span>(d.<span class="kw">id</span>) <span class="op">=</span> <span class="dv">1</span> <span class="cf">THEN</span> <span class="st">&#39;(全体)&#39;</span></span>
+<span id="cb8-5"><a href="#cb8-5"></a>    <span class="cf">ELSE</span> <span class="fu">MAX</span>(d.name)</span>
+<span id="cb8-6"><a href="#cb8-6"></a>  <span class="cf">END</span> <span class="kw">AS</span> <span class="ot">&quot;部署名&quot;</span>,</span>
+<span id="cb8-7"><a href="#cb8-7"></a>  <span class="fu">SUM</span>(</span>
+<span id="cb8-8"><a href="#cb8-8"></a>    <span class="cf">CASE</span></span>
+<span id="cb8-9"><a href="#cb8-9"></a>      <span class="cf">WHEN</span> birthday <span class="kw">BETWEEN</span> <span class="st">&#39;1970-01-01&#39;</span> <span class="kw">AND</span> <span class="st">&#39;1979-12-31&#39;</span>  <span class="cf">THEN</span> <span class="dv">1</span></span>
+<span id="cb8-10"><a href="#cb8-10"></a>      <span class="cf">ELSE</span> <span class="dv">0</span></span>
+<span id="cb8-11"><a href="#cb8-11"></a>    <span class="cf">END</span></span>
+<span id="cb8-12"><a href="#cb8-12"></a>  ) <span class="kw">AS</span> <span class="ot">&quot;1970年代&quot;</span>,</span>
+<span id="cb8-13"><a href="#cb8-13"></a>  <span class="fu">SUM</span>(</span>
+<span id="cb8-14"><a href="#cb8-14"></a>    <span class="cf">CASE</span></span>
+<span id="cb8-15"><a href="#cb8-15"></a>      <span class="cf">WHEN</span> birthday <span class="kw">BETWEEN</span> <span class="st">&#39;1980-01-01&#39;</span> <span class="kw">AND</span> <span class="st">&#39;1989-12-31&#39;</span>  <span class="cf">THEN</span> <span class="dv">1</span></span>
+<span id="cb8-16"><a href="#cb8-16"></a>      <span class="cf">ELSE</span> <span class="dv">0</span></span>
+<span id="cb8-17"><a href="#cb8-17"></a>    <span class="cf">END</span></span>
+<span id="cb8-18"><a href="#cb8-18"></a>  ) <span class="kw">AS</span> <span class="ot">&quot;1980年代&quot;</span>,</span>
+<span id="cb8-19"><a href="#cb8-19"></a>  <span class="fu">SUM</span>(</span>
+<span id="cb8-20"><a href="#cb8-20"></a>    <span class="cf">CASE</span></span>
+<span id="cb8-21"><a href="#cb8-21"></a>      <span class="cf">WHEN</span> birthday <span class="kw">BETWEEN</span> <span class="st">&#39;1990-01-01&#39;</span> <span class="kw">AND</span> <span class="st">&#39;1999-12-31&#39;</span>  <span class="cf">THEN</span> <span class="dv">1</span></span>
+<span id="cb8-22"><a href="#cb8-22"></a>      <span class="cf">ELSE</span> <span class="dv">0</span></span>
+<span id="cb8-23"><a href="#cb8-23"></a>    <span class="cf">END</span></span>
+<span id="cb8-24"><a href="#cb8-24"></a>  ) <span class="kw">AS</span> <span class="ot">&quot;1990年代&quot;</span></span>
+<span id="cb8-25"><a href="#cb8-25"></a><span class="kw">FROM</span></span>
+<span id="cb8-26"><a href="#cb8-26"></a>  departments <span class="kw">AS</span> d</span>
+<span id="cb8-27"><a href="#cb8-27"></a>  <span class="kw">LEFT</span> <span class="kw">JOIN</span> employees <span class="kw">AS</span> e <span class="kw">ON</span> d.<span class="kw">id</span> <span class="op">=</span> e.department_id</span>
+<span id="cb8-28"><a href="#cb8-28"></a><span class="kw">GROUP</span> <span class="kw">BY</span></span>
+<span id="cb8-29"><a href="#cb8-29"></a>  <span class="kw">ROLLUP</span> (d.<span class="kw">id</span>)</span>
+<span id="cb8-30"><a href="#cb8-30"></a><span class="kw">ORDER</span> <span class="kw">BY</span></span>
+<span id="cb8-31"><a href="#cb8-31"></a>  d.<span class="kw">id</span>;</span></code></pre></div>
       <p>💻<strong>実行結果</strong></p>
       <table>
       <thead>
@@ -2269,7 +2383,7 @@ docker image pull dbgate/dbgate:7.2.6</code></pre>
       には、主に「イメージ」を対象とした操作と、「コンテナ」を対象とした操作があります)。</li>
       </ul>
       <p>イメージが取得できたことを確認します。以下のコマンドを実行してください。</p>
-      <div class="sourceCode" id="cb11"><pre class="sourceCode powershell"><code class="sourceCode powershell"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>docker images</span></code></pre></div>
+      <div class="sourceCode" id="cb12"><pre class="sourceCode powershell"><code class="sourceCode powershell"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>docker images</span></code></pre></div>
       <p>以下のようにリストのなかに <code>postgres:18.6</code> と <code>dbgate/dbgate:7.2.6</code>
       が含まれていれば OK です。</p>
       <pre><code>IMAGE                  ID
