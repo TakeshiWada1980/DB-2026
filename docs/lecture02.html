@@ -115,7 +115,7 @@ class="toc-section-number">7</span> 授業時間外学習の指示 (宿題)</a><
 
     <header class="markdown-body">
       <p>2026-4I データベース工学 第02回 講義資料</p>
-      <p>2026年10月07日 (木) 1時限</p>
+      <p>2026年10月07日 (水) 1時限</p>
     </header>
 
     <main class="markdown-body">
@@ -139,12 +139,12 @@ class="toc-section-number">7</span> 授業時間外学習の指示 (宿題)</a><
       の操作を体験してもらいました。</p>
       <p>また、最後に <a href="https://www.docker.com/ja-jp/products/docker-desktop/">Docker
       Desktop</a> を PC にインストールしてもらいました。そして、動作確認として <a
-      href="https://hub.docker.com/">DockerHub</a> から <code>hello-world</code> という Docker
+      href="https://hub.docker.com/">Docker Hub</a> から <code>hello-world</code> という Docker
       コンテナのイメージを<strong>プル</strong>して
       (＝取得して)、そのイメージをもとにコンテナを作成・起動して、Docker
       が正常に動作するかを確認してもらいました。</p>
       <ul>
-      <li><a href="https://hub.docker.com/">DockerHub</a> とは、公式およびユーザが作成した Docker
+      <li><a href="https://hub.docker.com/">Docker Hub</a> とは、公式およびユーザが作成した Docker
       イメージを公開・共有できる <strong>公式リポジトリ (格納庫)</strong> です。
       <ul>
       <li>PostgreSQL をはじめとする各種 DBMS のイメージのほか、Python・C++・Java・Go・Haskell・OCaml
@@ -160,7 +160,7 @@ class="toc-section-number">7</span> 授業時間外学習の指示 (宿題)</a><
       </ul>
       <p>また、宿題 (＝今回の講義に向けた準備) として、以下のコマンドを用いて
       <code>postgres:18.6</code> と <code>dbgate/dbgate:7.2.6</code> という Docker イメージをプル
-      (取得) をしてもらいました。</p>
+      (取得) してもらいました。</p>
       <pre><code>docker image pull postgres:18.6
 docker image pull dbgate/dbgate:7.2.6</code></pre>
       <p>今回の講義は、以上の作業が完了していることを前提とします。</p>
@@ -325,7 +325,7 @@ hello-world:latest     e2ac70e7319a</code></pre>
       <ul>
       <li><strong>–name pg18</strong>
       <ul>
-      <li>コンテナに <code>pg18</code> という名前をつけけています。コンテナ名には、英数字、ハイフン
+      <li>コンテナに <code>pg18</code> という名前をつけています。コンテナ名には、英数字、ハイフン
       <code>-</code>、アンダーバー <code>_</code>、ピリオド <code>.</code>
       などを使用できます。ただし、先頭文字は英数字にする必要があります。</li>
       </ul></li>
@@ -352,8 +352,8 @@ hello-world:latest     e2ac70e7319a</code></pre>
       </ul></li>
       <li><strong>postgres:18.6</strong>
       <ul>
-      <li>コンテナの雛形として使用する <strong>Docker イメージの名前とタグ (バージョン)
-      </strong>を指定します。</li>
+      <li>コンテナの雛形として使用する <strong>Docker イメージの名前とタグ (バージョン)</strong>
+      を指定します。</li>
       </ul></li>
       </ul>
       <p>このように、Docker
@@ -361,7 +361,7 @@ hello-world:latest     e2ac70e7319a</code></pre>
       Hub 上の各イメージの詳細ページなどに記載されています。</p>
       <ul>
       <li>PostgreSQLの公式イメージの「<strong>How to extend this image</strong>」は <a
-      href="https://hub.docker.com/_/postgres#https://hub.docker.com/_/postgres#how-to-extend-this-image">こちら</a>
+      href="https://hub.docker.com/_/postgres#how-to-extend-this-image">こちら</a>
       (カスタマイズ用の環境変数の設定などが記載されています)。</li>
       </ul>
       <p>なお、PostgreSQL の公式 Docker イメージでは、これらの初期化処理は <u><strong>PostgreSQL
@@ -495,7 +495,7 @@ hello-world:latest     e2ac70e7319a</code></pre>
       とすることもできます。</li>
       </ul>
       <p>コマンドを実行すると、次のような応答が返ってくるはずです。<strong>IMAGE</strong> が
-      <code>postgres:17.6</code>、<strong>NAMES</strong> が <code>pg18</code> (コンテナの作成時に
+      <code>postgres:18.6</code>、<strong>NAMES</strong> が <code>pg18</code> (コンテナの作成時に
       <code>--name</code> で指定した名前)、<strong>STATUS</strong> が <code>Created</code>
       となっている行が存在することを確認してください。</p>
       <pre><code>CONTAINER ID   IMAGE           COMMAND            CREATED         STATUS    PORTS     NAMES
@@ -623,7 +623,7 @@ e14852ebd977   postgres:18.6   8 minutes ago   Up 8 minutes   5432/tcp   pg18</c
       </ul>
       <div class="balloon char-01 face-02 tone-yellow">
       <p><code>docker container exec</code>
-      は、すでに起動しているコンテナのなかで、<strong>指定したコマンドを実行（execute）するためのコマンド＊</strong>
+      は、すでに起動しているコンテナのなかで、<strong>指定したコマンドを実行（execute）するためのコマンド</strong>
       です。</p>
       <p>今回指定している <code>bash</code> は、Linux で広く使われている <strong>シェル</strong>の 1
       つです。そのため、このコマンドでは「<code>pg18</code> コンテナの中で <code>bash</code>
@@ -681,7 +681,7 @@ e14852ebd977   postgres:18.6   8 minutes ago   Up 8 minutes   5432/tcp   pg18</c
       </ul></li>
       <li><code>docker container exec -it pg18 bash</code> の末尾に指定した <code>bash</code>
       は、どのようなソフトウェアか答えよ。また、このコマンドで Bash が実行される場所は「Windows
-      側」「 pg18 コンテナ内」のどちらか答えよ。
+      側」「pg18 コンテナ内」のどちらか答えよ。
       <ul>
       <li><strong>答え</strong>: <span class="masked">Bash は Linux
       で広く使われているシェルの1つ。実行される場所は <code>pg18</code> コンテナ内。</span></li>
@@ -705,8 +705,6 @@ e14852ebd977   postgres:18.6   8 minutes ago   Up 8 minutes   5432/tcp   pg18</c
       コマンドを実行すると、<strong>ターミナルのプロンプト</strong> (＝コンソールに関する文脈では
       <span class="masked">ユーザからの入力を待っていることを示すために表示される文字列</span>
       を意味する) が、次のように切り替わります。</p>
-      <p>先ほどのように <code>docker container exec -it pg18 bash</code>
-      コマンドを実行すると、<strong>ターミナルのプロンプト</strong>が次のように切り替わります。</p>
       <pre><code>root@e14852ebd977:/#</code></pre>
       <p>このようにプロンプトが変わったことで、操作対象が「<strong>Windows の
       PowerShell</strong>」から「<strong>Docker コンテナ内の Linux
@@ -834,7 +832,7 @@ BUG_REPORT_URL=&quot;https://bugs.debian.org/&quot;</code></pre>
       </div>
       <p><strong><i class="fa-solid fa-comment-dots fa-flip-horizontal"></i>プロンプト例</strong></p>
       <blockquote>
-      <p>Unix ドメインソケットってなんですか？ PostgreSQLの接続の文脈ででてきたのですが。</p>
+      <p>Unix ドメインソケットってなんですか？ PostgreSQLの接続の文脈で出てきたのですが。</p>
       </blockquote>
       <p>では、実際に PostgreSQL の公式 CLI クライアントツールである <code>psql</code>
       を使って接続していきます。次のコマンドを実行してください。</p>
@@ -853,20 +851,29 @@ BUG_REPORT_URL=&quot;https://bugs.debian.org/&quot;</code></pre>
 Type &quot;help&quot; for help.
 
 playground=#</code></pre>
+      <ul>
+      <li>Linux の Bash でも root のときに <code>#</code> が表示されましたが、ここで表示されている
+      <code>#</code> は Linux の root ユーザを意味しているわけではありません。現在は psql
+      のなかなので、<span class="masked">PostgreSQL におけるスーパーユーザ</span>
+      であることを示しています。</li>
+      <li>psql の対話モードそのものを終了したい場合 (抜けたい場合) は <code>\q</code>
+      を入力してください。</li>
+      </ul>
+      <div class="balloon char-01 face-04 tone-blue">
       <p>対話モードの利用中に、SQLを入力・実行しても「<strong>反応がない？</strong>」と感じたときは、セミコロン
-      <code>;</code> を入力して Enter
-      キーを入力してみてください。反応がないように見えるとき、たいていは、システムがコマンド終端の
-      <code>;</code>
-      を待っている状態です。それでも解決しなときは、ターミナルを閉じて、再度、<code>docker container exec ...</code>
+      <code>;</code> を入力して Enter キーを押してみてください。</p>
+      <p>反応がないように見えるとき、たいていは、システムがコマンド終端の <code>;</code>
+      を待っている状態です。それでも解決しないときは、ターミナルを閉じて、再度、<code>docker container exec ...</code>
       で接続してください。</p>
+      </div>
       <h3 data-number="3.5.5" id="テーブルの作成-create-table"><span
       class="header-section-number">3.5.5</span> テーブルの作成 (CREATE TABLE)</h3>
-      <p>動作確認として、次に示す <code>s_users</code> というテーブルを作成してみます
-      (<code>s</code>
-      はサンプルという意味でつけています)。RDBMSの「テーブル名」は、前回も説明したように一般的には
-      <span class="masked">複数形で命名してスネークケース</span> で記述します
-      (ただし、チームやプロジェクトの規約が優先)。</p>
-      <p><strong>■ s_users </strong></p>
+      <p>動作確認として、次に示す <strong>s_users</strong> というテーブルを作成してみます
+      (<code>s</code> は「sample」の意味で付けています)。</p>
+      <p>RDBMS における「テーブル名」は、前回も説明したように一般的には <span
+      class="masked">複数形の名前をスネークケースで記述</span>
+      します。ただし、実際の開発では、チームやプロジェクトで定められた命名規則を優先します。</p>
+      <p><strong>■ s_users</strong></p>
       <table>
       <thead>
       <tr>
@@ -889,77 +896,128 @@ playground=#</code></pre>
       </tbody>
       </table>
       <p>まずは、<strong>テーブルのスキーマ</strong> (＝<span
-      class="masked">列構成やデータ型の設計情報</span>) を指定して<strong>テーブルを作成する SQL
-      </strong>を実行します。以下を、コピーして、ターミナルに貼りけて実行してみてください。</p>
+      class="masked">どのような列を持ち、それぞれをどのデータ型で扱うかといったテーブルの構造</span>)
+      を定義して、テーブルを作成します。</p>
+      <p>次の SQL をコピーして、<code>psql</code> の対話モードに貼り付けて実行してください。</p>
       <div class="sourceCode" id="cb20" data-caption="テーブルを作成するSQL"><pre
-      class="sourceCode numberSource sql numberLines"><code class="sourceCode sql"><span id="cb20-1"><a href="#cb20-1"></a><span class="kw">CREATE</span> <span class="kw">TABLE</span> s_users (<span class="kw">id</span> <span class="dt">INT</span> <span class="kw">PRIMARY</span> <span class="kw">KEY</span>, name TEXT <span class="kw">NOT</span> <span class="kw">NULL</span>, age <span class="dt">INT</span>);</span></code></pre></div>
-      <p>成功すると <code>CREATE TABLE</code> のように表示されます。もし
-      <strong>同名のテーブルが既に存在している場合</strong> は
-      <code>ERROR:  relation "s_users" already exists</code> のようなエラーになります。</p>
+      class="sourceCode numberSource sql numberLines"><code class="sourceCode sql"><span id="cb20-1"><a href="#cb20-1"></a><span class="kw">CREATE</span> <span class="kw">TABLE</span> s_users (<span class="kw">id</span> <span class="dt">INTEGER</span> <span class="kw">PRIMARY</span> <span class="kw">KEY</span>, name TEXT <span class="kw">NOT</span> <span class="kw">NULL</span>, age <span class="dt">INTEGER</span>);</span></code></pre></div>
+      <p>正常に作成されると、次のように表示されます。</p>
+      <pre><code>CREATE TABLE</code></pre>
+      <p>一方、すでに <strong>s_users</strong>
+      という名前のテーブルが存在している場合は、次のようなエラーが表示されます。</p>
+      <pre><code>ERROR:  relation &quot;s_users&quot; already exists</code></pre>
       <p><strong><i class="fa-solid fa-comment-dots fa-flip-horizontal"></i>プロンプト例</strong></p>
       <blockquote>
-      <p>PostgreSQL
-      を使用しています。<code>CREATE TABLE s_users (id INT PRIMARY KEY, name TEXT NOT NULL, age INT);</code>
-      という SQL について詳細に解説してください。</p>
+      <p>PostgreSQL を使用しています。次の SQL が何をしているのか、CREATE TABLE、PRIMARY KEY、NOT
+      NULL、INTEGER、TEXT の意味も含めて分かりやすく説明してください。</p>
+      <p><code>CREATE TABLE s_users (id INTEGER PRIMARY KEY, name TEXT NOT NULL, age INTEGER);</code></p>
       </blockquote>
       <h3 data-number="3.5.6" id="レコードの挿入-insert"><span
       class="header-section-number">3.5.6</span> レコードの挿入 (INSERT)</h3>
-      <p>次に、<strong>レコードを挿入する SQL</strong> を実行します。成功すると
-      <code>INSERT 0 2</code> と表示されます。</p>
-      <div class="sourceCode" id="cb21" data-caption="2件のレコードを挿入するSQL"><pre
-      class="sourceCode numberSource sql numberLines"><code class="sourceCode sql"><span id="cb21-1"><a href="#cb21-1"></a><span class="kw">INSERT</span> <span class="kw">INTO</span></span>
-<span id="cb21-2"><a href="#cb21-2"></a>  s_users (<span class="kw">id</span>, name, age)</span>
-<span id="cb21-3"><a href="#cb21-3"></a><span class="kw">VALUES</span></span>
-<span id="cb21-4"><a href="#cb21-4"></a>  (<span class="dv">1</span>, <span class="st">&#39;Alice&#39;</span>, <span class="dv">20</span>),</span>
-<span id="cb21-5"><a href="#cb21-5"></a>  (<span class="dv">2</span>, <span class="st">&#39;Bob&#39;</span>, <span class="dv">25</span>);</span></code></pre></div>
-      <p>SQL では <span class="masked">改行</span> を無視するので
+      <p>次に、作成した <strong>s_users</strong> テーブルに <strong>レコードを挿入する SQL</strong>
+      を実行します。</p>
+      <div class="sourceCode" id="cb23" data-caption="2件のレコードを挿入するSQL"><pre
+      class="sourceCode numberSource sql numberLines"><code class="sourceCode sql"><span id="cb23-1"><a href="#cb23-1"></a><span class="kw">INSERT</span> <span class="kw">INTO</span></span>
+<span id="cb23-2"><a href="#cb23-2"></a>  s_users (<span class="kw">id</span>, name, age)</span>
+<span id="cb23-3"><a href="#cb23-3"></a><span class="kw">VALUES</span></span>
+<span id="cb23-4"><a href="#cb23-4"></a>  (<span class="dv">1</span>, <span class="st">&#39;Alice&#39;</span>, <span class="dv">20</span>),</span>
+<span id="cb23-5"><a href="#cb23-5"></a>  (<span class="dv">2</span>, <span class="st">&#39;Bob&#39;</span>, <span class="dv">25</span>);</span></code></pre></div>
+      <div class="balloon char-01 face-02 tone-yellow">
+      <p>SQL では、通常、「改行」や「複数の空白文字」は <strong>SQL を読みやすくするための区切り
+      (空白)</strong> として扱われるので
       <code>INSERT INTO s_users (id, name, age) VALUES (1, 'Alice', 20), (2, 'Bob', 25);</code>
-      のように1行で与えても問題ありません。</p>
+      のように <strong>1行で記述しても同じ意味</strong> になります。</p>
+      <p>ただし、文字列リテラルのなかなど、改行や空白そのものがデータとして意味を持つ場合もあるため、「SQL
+      はすべての改行や空白を完全に無視するというわけではない」ので注意して下さい。</p>
+      </div>
+      <p>この SQL では <strong>s_users</strong> テーブルの
+      <code>id</code>、<code>name</code>、<code>age</code>
+      の各列に対して、<strong>2件のレコードをまとめて挿入</strong>しています。成功すると
+      <code>INSERT 0 2</code> と表示されます。</p>
       <p><strong><i class="fa-solid fa-comment-dots fa-flip-horizontal"></i>プロンプト例</strong></p>
       <blockquote>
-      <p>PostgreSQL で、テーブルに2件のレコードを挿入したら <code>INSERT 0 2</code>
-      のように表示されました。<code>0</code> と <code>2</code> の意味について解説してください。</p>
+      <p>PostgreSQL で、テーブルに2件のレコードを挿入したところ <code>INSERT 0 2</code>
+      と表示されました。<code>0</code> と <code>2</code> はそれぞれ何を意味していますか。</p>
       </blockquote>
       <div class="note type-tips">
       <p><strong>テーブルから全てのレコードを削除したいときは…</strong></p>
-      <p>指定したテーブルから全てのレコードを削除する場合は <code>DELETE FROM</code>
-      を使用します。</p>
-      <div class="sourceCode" id="cb22" data-caption="すべてのレコードを削除するSQL (1)"><pre
-      class="sourceCode numberSource sql numberLines"><code class="sourceCode sql"><span id="cb22-1"><a href="#cb22-1"></a><span class="kw">DELETE</span> <span class="kw">FROM</span> s_users;</span></code></pre></div>
-      <p>また、<code>TRUNCATE TABLE</code>
-      を使用すると、より高速に全件削除ができます。<strong>IDシーケンス</strong>についてもリセットされます。</p>
-      <div class="sourceCode" id="cb23" data-caption="すべてのレコードを削除するSQL (2)"><pre
-      class="sourceCode numberSource sql numberLines"><code class="sourceCode sql"><span id="cb23-1"><a href="#cb23-1"></a><span class="kw">TRUNCATE</span> <span class="kw">TABLE</span> s_users;</span></code></pre></div>
+      <p>テーブルそのものは残したまま、格納されているすべてのレコードを削除する場合は、<code>DELETE FROM</code>
+      を使用できます。</p>
+      <div class="sourceCode" id="cb24" data-caption="すべてのレコードを削除するSQL (1)"><pre
+      class="sourceCode numberSource sql numberLines"><code class="sourceCode sql"><span id="cb24-1"><a href="#cb24-1"></a><span class="kw">DELETE</span> <span class="kw">FROM</span> s_users;</span></code></pre></div>
+      <p>また、PostgreSQL には <code>TRUNCATE TABLE</code>
+      という命令もあります。<code>TRUNCATE TABLE</code>
+      もテーブル内の全レコードを削除しますが、<code>DELETE FROM</code>
+      とは内部的な処理方法が異なり、大量のレコードを一括して削除する場合に高速に処理できることがあります。</p>
+      <div class="sourceCode" id="cb25" data-caption="すべてのレコードを削除するSQL (2)"><pre
+      class="sourceCode numberSource sql numberLines"><code class="sourceCode sql"><span id="cb25-1"><a href="#cb25-1"></a><span class="kw">TRUNCATE</span> <span class="kw">TABLE</span> s_users;</span></code></pre></div>
       <p><strong><i class="fa-solid fa-comment-dots fa-flip-horizontal"></i>プロンプト例</strong></p>
       <blockquote>
       <p>リレーショナルデータベースにおける <code>DELETE FROM xxx</code> と
-      <code>TRUNCATE TABLE xxxx</code> の違いについて教えてください。</p>
-      </blockquote>
-      <blockquote>
-      <p>リレーショナルデータベースにおける「IDシーケンス」とは何ですか。</p>
+      <code>TRUNCATE TABLE xxxx</code>
+      の違いについて教えてください。どのような場面で使い分けるのかも含めて教えてください。</p>
       </blockquote>
       </div>
       <div class="note type-tips">
       <p><strong>テーブルそのものを削除したいときは…</strong></p>
-      <p>レコードを含めてテーブルそのものを削除する場合は <code>DROP TABLE</code> を使用します。</p>
-      <div class="sourceCode" id="cb24" data-caption="テーブルを削除するSQL"><pre
-      class="sourceCode numberSource sql numberLines"><code class="sourceCode sql"><span id="cb24-1"><a href="#cb24-1"></a><span class="kw">DROP</span> <span class="kw">TABLE</span> s_users;</span></code></pre></div>
+      <p>レコードだけではなく、<strong>列の構成や制約などを含めてテーブルそのものを削除</strong>したい場合は、<code>DROP TABLE</code>
+      を使用します。</p>
+      <div class="sourceCode" id="cb26" data-caption="テーブルを削除するSQL"><pre
+      class="sourceCode numberSource sql numberLines"><code class="sourceCode sql"><span id="cb26-1"><a href="#cb26-1"></a><span class="kw">DROP</span> <span class="kw">TABLE</span> s_users;</span></code></pre></div>
       </div>
-      <h3 data-number="3.5.7" id="レコードの抽出-select"><span
-      class="header-section-number">3.5.7</span> レコードの抽出 (SELECT)</h3>
-      <p>次に、レコード全件を <strong>抽出 (選択) する SQL</strong> を実行します。</p>
-      <div class="sourceCode" id="cb25" data-caption="全件の全列のレコードを抽出するSQL"><pre
-      class="sourceCode numberSource sql numberLines"><code class="sourceCode sql"><span id="cb25-1"><a href="#cb25-1"></a><span class="kw">SELECT</span> <span class="op">*</span> <span class="kw">FROM</span> s_users;</span></code></pre></div>
+      <div class="balloon char-01 face-05 tone-blue">
+      <p>大まかには、次のように考えると分かりやすいと思います。</p>
+      <ul>
+      <li><code>DELETE</code>：<strong>レコードを削除する</strong></li>
+      <li><code>TRUNCATE</code>：<strong>テーブルを空にする</strong></li>
+      <li><code>DROP</code>：<strong>テーブルそのものを削除する</strong></li>
+      </ul>
+      </div>
+      <h3 data-number="3.5.7" id="定着確認-5"><span class="header-section-number">3.5.7</span>
+      定着確認</h3>
+      <ul>
+      <li>PostgreSQL に
+      <code>s_users (id INTEGER PRIMARY KEY, name TEXT NOT NULL, age INTEGER)</code>
+      という定義の空のテーブルがある。<br><code>id=1, name='Alice', age=20</code> と
+      <code>id=2, name='Bob', age=25</code> の2件を、1つの SQL で挿入する命令を答えよ。
+      <ul>
+      <li><strong>答え</strong>: <span
+      class="masked"><code>INSERT INTO s_users (id, name, age) VALUES (1, 'Alice', 20), (2, 'Bob', 25);</code></span></li>
+      </ul></li>
+      <li>PostgreSQL で <code>INSERT</code> によるレコードの挿入が成功し、<code>INSERT 0 5</code>
+      と表示された。この処理により挿入されたレコードの件数を答えよ。
+      <ul>
+      <li><strong>答え</strong>: <span class="masked">5件</span></li>
+      </ul></li>
+      <li><code>s_users</code> テーブルの列構成や制約は残したまま、すべてのレコードを削除する SQL
+      を、<code>DELETE FROM</code> を使って記述せよ。
+      <ul>
+      <li><strong>答え</strong>: <span class="masked"><code>DELETE FROM s_users;</code></span></li>
+      </ul></li>
+      </ul>
+      <h3 data-number="3.5.8" id="レコードの抽出-select"><span
+      class="header-section-number">3.5.8</span> レコードの抽出 (SELECT)</h3>
+      <p>次に、<strong>s_users</strong> テーブルに格納されている全てのレコードを <strong>抽出 (選択)
+      する SQL</strong> を実行します。</p>
+      <div class="sourceCode" id="cb27" data-caption="全件の全列のレコードを抽出するSQL"><pre
+      class="sourceCode numberSource sql numberLines"><code class="sourceCode sql"><span id="cb27-1"><a href="#cb27-1"></a><span class="kw">SELECT</span> <span class="op">*</span> <span class="kw">FROM</span> s_users;</span></code></pre></div>
       <p>実行結果は、次のようになります。</p>
       <pre><code> id | name  | age
 ----+-------+-----
   1 | Alice |  20
   2 | Bob   |  25
 (2 rows)</code></pre>
+      <div class="balloon char-01 face-02 tone-yellow">
+      <p>ここで、<code>SELECT</code> は <strong>取得する列を指定する句</strong>、<code>FROM</code>
+      は <strong>どのテーブルから取得するかを指定する句</strong>
+      となります。また、<code>*</code>（アスタリスク）は「<strong>すべての列</strong>」を意味します。</p>
+      <p>そのため、<code>SELECT * FROM s_users;</code> は <span class="masked">s_users
+      テーブルから、すべての列を取得する</span> という意味になります。</p>
+      </div>
       <hr />
       <p>次のように、<strong>列 (カラム) の出力順を指定して抽出すること</strong> もできます。</p>
-      <div class="sourceCode" id="cb27" data-caption="列を明示して全列のレコードを抽出するSQL"><pre
-      class="sourceCode numberSource sql numberLines"><code class="sourceCode sql"><span id="cb27-1"><a href="#cb27-1"></a><span class="kw">SELECT</span> age, <span class="kw">id</span>, name <span class="kw">FROM</span> s_users;</span></code></pre></div>
+      <div class="sourceCode" id="cb29" data-caption="列を明示して全列のレコードを抽出するSQL"><pre
+      class="sourceCode numberSource sql numberLines"><code class="sourceCode sql"><span id="cb29-1"><a href="#cb29-1"></a><span class="kw">SELECT</span> age, <span class="kw">id</span>, name <span class="kw">FROM</span> s_users;</span></code></pre></div>
       <p>実行結果は、次のようになります。</p>
       <pre><code> age | id | name
 -----+----+-------
@@ -969,8 +1027,57 @@ playground=#</code></pre>
       <p>また、<code>SELECT name, age FROM s_users;</code> とすれば、<code>name</code> と
       <code>age</code> だけを抽出・表示することができます (<code>id</code>
       の列は抽出・表示しない)。</p>
-      <h3 data-number="3.5.8" id="posgresql-の対話モードの終了-と-linuxシェルの終了"><span
-      class="header-section-number">3.5.8</span> PosgreSQL の対話モードの終了 と
+      <h3 data-number="3.5.9" id="定着確認-6"><span class="header-section-number">3.5.9</span>
+      定着確認</h3>
+      <ul>
+      <li>PostgreSQL に <code>id</code>、<code>name</code>、<code>age</code> の3列を持つ
+      <code>s_users</code> テーブルがある。このテーブルの全レコードについて、すべての列を取得する
+      SQL を答えよ。
+      <ul>
+      <li><strong>答え</strong>: <span
+      class="masked"><code>SELECT * FROM s_users;</code></span></li>
+      </ul></li>
+      <li><code>SELECT * FROM s_users;</code> の <code>*</code> (アスタリスク)
+      は何を意味するか答えよ。
+      <ul>
+      <li><strong>答え</strong>: <span class="masked">すべての列。</span></li>
+      </ul></li>
+      <li><code>SELECT name, age FROM s_users;</code>
+      において、取得する列を指定している部分と、取得元のテーブルを指定している部分をそれぞれ答えよ。
+      <ul>
+      <li><strong>答え</strong>: <span class="masked"><code>SELECT name, age</code>
+      が取得する列を指定し、<code>FROM s_users</code> が取得元のテーブルを指定している。</span></li>
+      </ul></li>
+      <li><code>SELECT age, id, name FROM s_users;</code>
+      を実行したとき、結果の列は左からどのような順番で表示されるか答えよ。
+      <ul>
+      <li><strong>答え</strong>: <span
+      class="masked"><code>age</code>、<code>id</code>、<code>name</code> の順番。</span></li>
+      </ul></li>
+      <li>PostgreSQL に <code>id</code>、<code>name</code>、<code>age</code> の3列を持つ
+      <code>s_users</code> テーブルがある。全レコードについて、<code>id</code>
+      は表示せず、<code>name</code> と <code>age</code> だけをこの順番で取得する SQL を答えよ。
+      <ul>
+      <li><strong>答え</strong>: <span
+      class="masked"><code>SELECT name, age FROM s_users;</code></span></li>
+      </ul></li>
+      <li>psql で <code>SELECT * FROM s_users;</code> を実行したところ、結果の末尾に
+      <code>(2 rows)</code> と表示された。この表示は何を意味するか答えよ。
+      <ul>
+      <li><strong>答え</strong>: <span
+      class="masked">取得結果に2件のレコードが含まれていること。</span></li>
+      </ul></li>
+      <li><code>id</code>、<code>name</code>、<code>age</code> の3列を持つ <code>s_users</code>
+      テーブルに対して <code>SELECT name, age FROM s_users;</code>
+      を実行すると、テーブルそのものから <code>id</code>
+      列が削除される。この説明は「適切である」か「適切ではない」か答えよ。
+      <ul>
+      <li><strong>答え</strong>: <span class="masked">適切ではない。取得結果に <code>id</code>
+      列を含めないだけで、テーブルの列構成や格納されているデータは変わらない。</span></li>
+      </ul></li>
+      </ul>
+      <h3 data-number="3.5.10" id="postgresql-の対話モードの終了と-linuxシェルの終了"><span
+      class="header-section-number">3.5.10</span> PostgreSQL の対話モードの終了と
       Linuxシェルの終了</h3>
       <p><strong>psql</strong> で <code>\q</code> (もしくは<code>[Ctrl]+[D]</code>のショートカット)
       を入力すると対話モードが終了して、Linux のシェルに戻ります。</p>
@@ -984,30 +1091,53 @@ playground=#</code></pre>
       </ul>
       <h2 data-number="3.6" id="コンテナの利用-windows-から-psql-を直接実行"><span
       class="header-section-number">3.6</span> コンテナの利用 (Windows から psql を直接実行)</h2>
-      <p>上記の手順では <span class="masked">いったんコンテナのなかに入ってから、シェル経由で psql
-      を実行</span> していました。しかし、<strong>Windows側からコンテナの psql
-      コマンドを直接叩くことも可能</strong> です。</p>
-      <p>例えば、次のような SQL を記述した <code>hoge.sql</code>
-      というファイルをWindows側で用意しておきます。</p>
-      <div class="sourceCode" id="cb29" data-caption="hoge.sql"><pre
-      class="sourceCode numberSource sql numberLines"><code class="sourceCode sql"><span id="cb29-1"><a href="#cb29-1"></a><span class="kw">SELECT</span> <span class="op">*</span> <span class="kw">FROM</span> s_users;</span></code></pre></div>
+      <p>ここまでの手順では、<code>docker container exec -it pg18 bash</code> で <span
+      class="masked">いったんコンテナ内で Bash を起動し、その Bash から <code>psql</code>
+      を実行</span> していました。</p>
+      <p>しかし、<code>docker container exec</code> では実行するコマンドとして <code>bash</code>
+      以外も指定できます。そのため、<strong>Windows 側から、コンテナ内の <code>psql</code>
+      を直接実行する</strong>こともできます。</p>
+      <p>例えば、次のような SQL を記述した <code>hoge.sql</code> というファイルを Windows
+      側で用意しておきます。</p>
+      <div class="sourceCode" id="cb31" data-caption="hoge.sql"><pre
+      class="sourceCode numberSource sql numberLines"><code class="sourceCode sql"><span id="cb31-1"><a href="#cb31-1"></a><span class="kw">SELECT</span> <span class="op">*</span> <span class="kw">FROM</span> s_users;</span></code></pre></div>
       <p>このSQLファイルを、次のように <strong>ファイルリダイレクト</strong> (<code>&lt;</code>)
-      を使って <strong>psql</strong> に流し込むことができます。ここでは、オプションを
-      <code>-it</code> ではなく <code>-i</code> にしている点に注意してください。</p>
-      <pre><code>docker container exec -i pg17 psql -U student -d playground &lt; hoge.sql</code></pre>
-      <p><strong><em>注意</em></strong>: 上記コマンドは <strong>PowerShell
-      ではなくコマンドプロンプト (cmd.exe)</strong> から実行してください。PowerShell
-      ではファイルリダイレクト (<code>&lt;</code>) が利用できません。</p>
-      <p>実行結果は、次のようになります。宿題として授業時間外で試してみてください。</p>
+      を使って <strong>psql</strong> に流し込むことができます。コマンドプロンプト
+      (<strong>cmd.exe</strong>) で、<code>hoge.sql</code>
+      が存在するディレクトリに移動してから、次のコマンドを実行してください。</p>
+      <pre><code>docker container exec -i pg18 psql -U student -d playground &lt; hoge.sql</code></pre>
+      <ul>
+      <li>上記コマンドでは、これまで使用していた <code>-it</code> ではなく、<strong><code>-i</code>
+      のみを指定している</strong>点にも注目してください。</li>
+      <li>上記コマンドは <strong>PowerShell ではなくコマンドプロンプト (cmd.exe)</strong>
+      から実行してください。PowerShell ではファイルリダイレクト (<code>&lt;</code>)
+      が利用できません。</li>
+      </ul>
+      <p>実行結果は、次のようになります。</p>
       <figure>
       <img src="figs/02/cmd-01.png" alt="img" />
       <figcaption aria-hidden="true">img</figcaption>
       </figure>
+      <p>このコマンドでは、<u><strong>大まかに次のような処理</strong></u> が行われています。</p>
+      <ol type="1">
+      <li>Windows 側のコマンドプロンプトが <code>hoge.sql</code> の内容を読み込む</li>
+      <li><code>&lt;</code> によって、その内容を <code>docker container exec</code> の
+      <strong>標準入力</strong>に渡す</li>
+      <li><code>-i</code> によって、その標準入力がコンテナ内で実行される <code>psql</code>
+      まで接続される</li>
+      <li><code>psql</code> が受け取った SQL を PostgreSQL に送信して実行する</li>
+      </ol>
+      <div class="balloon char-01 face-01 tone-pink">
+      <p><code>hoge.sql</code>
+      というファイルそのものをコンテナへコピーしているわけではなく、<strong>Windows
+      側で読み込んだファイルの内容を、標準入力を通してコンテナ内の psql
+      に送り込んでいる</strong>ことに注意してください。</p>
+      </div>
       <p><strong><i class="fa-solid fa-comment-dots fa-flip-horizontal"></i>プロンプト例</strong></p>
       <blockquote>
-      <p>Docker に関する質問です。<code>docker container exec -it pg17 bash</code> では
+      <p>Docker に関する質問です。<code>docker container exec -it pg18 bash</code> では
       <code>-it</code>
-      オプションなのに、<code>docker container exec -i pg17 psql -U student -d playground &lt; hoge.sql</code>
+      オプションなのに、<code>docker container exec -i pg18 psql -U student -d playground &lt; hoge.sql</code>
       では <code>-i</code> オプションにするのはなぜですか。</p>
       </blockquote>
       <blockquote>
@@ -1015,30 +1145,51 @@ playground=#</code></pre>
       </blockquote>
       <h2 data-number="3.7" id="コンテナの停止"><span class="header-section-number">3.7</span>
       コンテナの停止</h2>
-      <p>次のコマンドで <code>pg17</code> のコンテナを停止 (≠削除) します。</p>
-      <pre><code>docker container stop pg17</code></pre>
-      <p>念のために <code>docker ps</code> で起動中のコンテナ一覧に <code>pg17</code>
+      <p>次のコマンドで <code>pg18</code> のコンテナを停止 (≠削除)
+      します。正常に停止すると、応答としてコンテナ名 <code>pg18</code> が表示されます。</p>
+      <pre><code>docker container stop pg18</code></pre>
+      <p>ここで行っているのは、コンテナの <strong>停止</strong>
+      です。コンテナそのものを削除しているわけではありません。</p>
+      <p>念のために <code>docker ps</code> で起動中のコンテナ一覧に <code>pg18</code>
       が含まれていないことを確認してください。</p>
       <h3 data-number="3.7.1" id="演習"><span class="header-section-number">3.7.1</span> 演習</h3>
-      <p>再び <code>pg17</code> コンテナを起動し、そこに接続し <code>psql</code> から
+      <p>再び <code>pg18</code> コンテナを起動し、そこに接続し <code>psql</code> から
       <code>SELECT * FROM s_users;</code>
       を実行し、<strong>テーブルのデータが残っていること</strong> (＝<span
       class="masked">コンテナを停止してもデータが消失しないこと</span>) を確認してください。</p>
       <p><strong><i class="fa-solid fa-comment-dots fa-flip-horizontal"></i>プロンプト例</strong></p>
       <blockquote>
       <p>Docker で
-      <code>docker create --name pg17 -e POSTGRES_USER=hoge -e POSTGRES_PASSWORD=fuga -e POSTGRES_DB=piyo postgres:17.6</code>
-      のようにコンテナを作成しました。<br />
-      このコンテナを起動して、データベースにテーブルを作成して、レコードを挿入しました。その後、このコンテナを停止し、再度、起動すると、テーブルとレコードの情報が消えずに残っていました。これらの情報は、どこに保存されていたのでしょうか。</p>
+      <code>docker create --name pg18 -e POSTGRES_USER=hoge -e POSTGRES_PASSWORD=fuga -e POSTGRES_DB=piyo postgres:18.6</code>
+      のようにコンテナを作成しました。</p>
+      <p>このコンテナを起動して、データベースにテーブルを作成して、レコードを挿入しました。その後、このコンテナを停止し、再度、起動すると、テーブルとレコードの情報が消えずに残っていました。これらの情報は、どこに保存されていたのでしょうか。</p>
       </blockquote>
       <h2 data-number="3.8" id="コンテナの削除"><span class="header-section-number">3.8</span>
       コンテナの削除</h2>
-      <p>次のコマンドで <code>pg17</code>
-      のコンテナを削除します。コンテナを削除すると、データベースの内容 (例えば、先ほど作成した
-      <code>s_users</code> など) も一緒に削除されます。</p>
-      <pre><code>docker container rm pg17</code></pre>
+      <p>次のコマンドで、停止中の <code>pg18</code> コンテナを削除することができます。</p>
+      <p><strong>上記の演習でコンテナを再起動している場合には、先に
+      <code>docker container stop pg18</code>
+      でコンテナを停止してから</strong>、削除を実行してください。</p>
+      <pre><code>docker container rm pg18</code></pre>
+      <div class="balloon char-01 face-01 tone-pink">
+      <p>削除したコンテナは、<code>docker container start</code>
+      で再び起動することはできません。</p>
+      <p>また、再度、以下のコマンドで同じ名前のコンテナを再作成しても、<strong><u>以前のコンテナのデータ
+      (作成したテーブルや挿入したレコード) が引き継がれるわけではありません</u></strong>。</p>
+      <pre><code>docker container create --name pg18 -e POSTGRES_USER=student -e POSTGRES_PASSWORD=secret123 -e POSTGRES_DB=playground postgres:18.6</code></pre>
+      </div>
+      <div class="note type-senior">
+      <p><strong>中級者向け: コンテナを削除すると、DBデータも削除される？</strong></p>
+      <p>PostgreSQL の公式 Docker イメージでは、DBデータは <strong>Docker
+      ボリューム</strong>に保存されます。そのため、<code>docker container rm pg18</code>
+      でコンテナを削除しても、<strong>DBデータ自体はボリュームに残っています</strong>。</p>
+      <p>ただし！同じ名前の <code>pg18</code>
+      コンテナを作り直しても、<strong>以前のボリュームが自動的に再利用されるわけではありません</strong>。そのため、新しいコンテナから見ると、以前のテーブルやレコードは引き継がれていないように見えます。</p>
+      <p>コンテナを作り直しても同じDBデータを使いたい場合は、コンテナ作成時に <code>-v</code>
+      などのオプションを指定し、<strong>利用するボリュームを明示的に指定</strong>する必要があります。</p>
+      </div>
       <p>念のために <code>docker ps -a</code> (<code>-a</code>
-      は停止中のコンテナも含めて表示するオプション) で、<code>pg17</code>
+      は停止中のコンテナも含めて表示するオプション) で、<code>pg18</code>
       が消えていることを確認してください。</p>
       <p>停止中のものも含めて、コンテナが1個も存在しないとき、Docker Desktop
       では以下のような表示となります。</p>
@@ -1046,7 +1197,64 @@ playground=#</code></pre>
       <img src="figs/02/docker-desktop-02.png" alt="img" />
       <figcaption aria-hidden="true">img</figcaption>
       </figure>
-      <h3 data-number="3.8.1" id="演習-1"><span class="header-section-number">3.8.1</span> 演習</h3>
+      <h3 data-number="3.8.1" id="定着確認-7"><span class="header-section-number">3.8.1</span>
+      定着確認</h3>
+      <ul>
+      <li>起動中の Docker コンテナ <code>pg18</code>
+      を停止するコマンドを答えよ。また、正常に停止したときの応答として何が表示されるか答えよ。
+      <ul>
+      <li><strong>答え</strong>: <span
+      class="masked"><code>docker container stop pg18</code>。応答としてコンテナ名の
+      <code>pg18</code> が表示される。</span></li>
+      </ul></li>
+      <li>停止中の Docker コンテナ <code>pg18</code> を削除するコマンドを答えよ。
+      <ul>
+      <li><strong>答え</strong>: <span class="masked"><code>docker container rm pg18</code> もしくは
+      <code>docker rm pg18</code> という省略形も可 (本科目では非推奨)。</span></li>
+      </ul></li>
+      <li>起動中の Docker コンテナ <code>pg18</code> を、強制削除の <code>-f</code>
+      オプションを使わずに削除したい。停止から削除までのコマンドを、実行する順番に答えよ。
+      <ul>
+      <li><strong>答え</strong>: <span class="masked">まず
+      <code>docker container stop pg18</code>、つづいて <code>docker container rm pg18</code>
+      を実行する。</span></li>
+      </ul></li>
+      <li>Docker コンテナ <code>pg18</code> を削除せずに停止した。この <code>pg18</code>
+      は、<code>docker ps</code> と <code>docker ps -a</code> のそれぞれの一覧に表示されるか答えよ。
+      <ul>
+      <li><strong>答え</strong>: <span class="masked"><code>docker ps</code>
+      には表示されず、<code>docker ps -a</code> には表示される。</span></li>
+      </ul></li>
+      <li>PostgreSQL コンテナ <code>pg18</code>
+      でテーブルを作成してレコードを挿入した後、<code>docker container stop pg18</code>
+      で停止した。同じコンテナを再び起動するコマンドを答えよ。また、停止前のテーブルとレコードは残っているか答えよ。
+      <ul>
+      <li><strong>答え</strong>: <span
+      class="masked"><code>docker container start pg18</code>。コンテナを停止しただけなので、テーブルとレコードは残っている。</span></li>
+      </ul></li>
+      <li><code>docker container rm pg18</code> でコンテナを削除した後、同じコンテナを
+      <code>docker container start pg18</code>
+      で再び起動できる。この説明は「適切である」か「適切ではない」か答えよ。
+      <ul>
+      <li><strong>答え</strong>: <span
+      class="masked">適切ではない。削除したコンテナは存在しないため、再び利用するにはコンテナを新しく作成する必要がある。</span></li>
+      </ul></li>
+      <li><code>postgres:18.6</code> から作成した停止中のコンテナ <code>pg18</code> に対して
+      <code>docker container rm pg18</code> を実行すると、元のイメージ <code>postgres:18.6</code>
+      も削除される。この説明は「適切である」か「適切ではない」か答えよ。
+      <ul>
+      <li><strong>答え</strong>: <span
+      class="masked">適切ではない。コンテナを削除しても、元のイメージは残る。</span></li>
+      </ul></li>
+      <li>PostgreSQL のデータを Docker ボリュームに保存している停止中のコンテナ <code>pg18</code>
+      に対して、<code>docker container rm pg18</code>
+      を実行した。このコマンドだけで、ボリュームと、そのなかのデータも削除されるか答えよ。
+      <ul>
+      <li><strong>答え</strong>: <span
+      class="masked">削除されない。コンテナとボリュームは別に管理されており、このコマンドではボリューム内のデータは残る。</span></li>
+      </ul></li>
+      </ul>
+      <h3 data-number="3.8.2" id="演習-1"><span class="header-section-number">3.8.2</span> 演習</h3>
       <p>ここまでの一連の操作 (コンテナの作成👉コンテナの起動👉コンテナの利用
       (psqlからSQLの実行)👉コンテナの停止👉コンテナの削除) を、再度、実行して Docker
       に関する基本的なコマンド操作に慣れてください。</p>
@@ -1057,25 +1265,25 @@ playground=#</code></pre>
       <p><strong>イメージのプル、コンテナの作成・起動をまとめて実行するコマンド</strong></p>
       <p>ここまでは「イメージのプル」「コンテナの作成」「コンテナの起動」を個別に実行しましたが、<code>docker container run</code>
       コマンドでは、<strong>これらの3つをまとめて実行すること</strong> ができます。</p>
-      <pre><code>docker container run --name pg17 `
+      <pre><code>docker container run --name pg18 `
   -e POSTGRES_USER=student `
   -e POSTGRES_PASSWORD=secret123 `
   -e POSTGRES_DB=playground `
   -d `
-  postgres:17.6</code></pre>
+  postgres:18.6</code></pre>
       <p><code>-d</code> オプションによって、コンテナを <strong>デタッチドモード</strong> (Detached
       Mode) で起動します。これにより、コンテナは <strong>バックグラウンドで実行</strong>
       され、ターミナルはすぐに操作可能な状態に戻ります。</p>
-      <p><strong><i class="fa-solid fa-comment-dots fa-flip-horizontal"></i>プロンプト例</strong></p>
-      <blockquote>
-      <p>Docker の <code>docker container run</code>
-      コマンドにおいて「コンテナをデタッチモードで起動する」とは、どういうことですか？デタッチモードで起動しないときの動作はどうなりますか。</p>
-      </blockquote>
       <p>なお、<code>run</code> は、<code>pull</code> <code>create</code> <code>start</code>
       をまとめて実行するものなので、以降は <code>stop</code> で停止、再び起動するときは
       <code>start</code> を使用します。既に同名のコンテナが存在する場合は <code>run</code>
       は失敗するので注意してください。</p>
       </div>
+      <p><strong><i class="fa-solid fa-comment-dots fa-flip-horizontal"></i>プロンプト例</strong></p>
+      <blockquote>
+      <p>Docker の <code>docker container run</code>
+      コマンドにおいて「コンテナをデタッチモードで起動する」とは、どういうことですか？デタッチモードで起動しないときの動作はどうなりますか。</p>
+      </blockquote>
       <h2 data-number="3.9" id="まとめ"><span class="header-section-number">3.9</span> まとめ</h2>
       <p>以上のように Docker を利用することで、<strong>即座に利用可能な PostgreSQL
       環境が簡単に構築・破棄できる</strong>ようになります。Windows に直接 PostgreSQL
@@ -1084,40 +1292,155 @@ playground=#</code></pre>
       <li>参考: <a
       href="https://qiita.com/tom-sato/items/037b8f8cb4b326710f71#インストーラのダウンロード">WindowsネイティブにPostgreSQLをインストールする手順</a></li>
       </ul>
-      <h3 data-number="3.9.1" id="定着確認-5"><span class="header-section-number">3.9.1</span>
+      <h3 data-number="3.9.1" id="定着確認-8"><span class="header-section-number">3.9.1</span>
       定着確認</h3>
       <ul>
-      <li>ターミナルのプロンプトが <code>root@d2196c5352d3:/#</code>
+      <li>ターミナルのプロンプトが <code>root@e14852ebd977:/#</code>
       のように表示されているとき、その操作対象は「Windows の PowerShell」「Docker コンテナ内の Linux
       シェル」「PostgreSQL の対話モード (psql)」のうち、どれと考えることができるか。
       <ul>
       <li><strong>答え</strong>: <span class="masked">Docker コンテナ内の Linux シェル</span></li>
       </ul></li>
-      <li><code>docker ps</code>
-      コマンドによって表示されるのは「停止中のコンテナのみ」と「起動中のコンテナのみ」のどちらか答えよ。
-      <ul>
-      <li><strong>答え</strong>: <span class="masked">起動中のコンテナのみ</span></li>
-      </ul></li>
-      <li>起動中の Docker コンテナ <code>pg17</code>
-      を削除するには、まずコンテナを停止したうえで削除する必要がある。
-      そのための一連のコマンドを答えよ。
+      <li>どのコンテナからも利用されていない Docker イメージ <code>postgres:18.6</code>
+      を削除するコマンドを答えよ。
       <ul>
       <li><strong>答え</strong>: <span
-      class="masked"><code>docker container stop pg17</code>、<code>docker container rm pg17</code></span></li>
+      class="masked"><code>docker image rm postgres:18.6</code></span></li>
       </ul></li>
-      <li>RDB において <code>s_users</code> というテーブルのレコードを全件抽出するSQLを答えよ。
+      <li>Docker
+      コンテナの名前として使えるものを、次のなかからすべて選べ。また、使えない名前については、その理由を答えよ。<strong>A</strong>:
+      <code>pg18_test</code>、<strong>B</strong>: <code>pg18-test</code>、<strong>C</strong>:
+      <code>pg18.test</code>、<strong>D</strong>: <code>_pg18</code>。
       <ul>
       <li><strong>答え</strong>: <span
-      class="masked"><code>SELECT * FROM s_users;</code></span></li>
+      class="masked">A、B、C。アンダーバー、ハイフン、ピリオドは使えるが、先頭文字は英数字にする必要があるため、Dは使えない。</span></li>
       </ul></li>
-      <li>RDB において <code>s_users</code> というテーブルのレコードを全件削除するSQLを答えよ。
+      <li>PostgreSQL の <code>psql</code> は「データを管理するサーバープロセス」「SQL
+      を送信して結果を確認する CLI クライアントツール」のどちらか答えよ。また、CLI
+      は何の略か答えよ。
       <ul>
-      <li><strong>答え</strong>: <span class="masked"><code>DELETE FROM s_users;</code></span>
-      もしくは <span class="masked"><code>TRUNCATE TABLE s_users;</code></span></li>
+      <li><strong>答え</strong>: <span class="masked">SQL を送信して結果を確認する CLI
+      クライアントツール。CLI は Command Line Interface の略。</span></li>
       </ul></li>
-      <li>RDB において <code>s_users</code> というテーブルそのものを削除するSQLを答えよ。
+      <li>PostgreSQL コンテナ内の Bash から、ユーザ <code>student</code> としてデータベース
+      <code>playground</code> に接続し、psql
+      の対話モードを開始するコマンドを答えよ。また、ユーザ名とデータベース名を指定するオプションをそれぞれ答えよ。
       <ul>
-      <li><strong>答え</strong>: <span class="masked"><code>DROP TABLE s_users;</code></span></li>
+      <li><strong>答え</strong>: <span
+      class="masked"><code>psql -U student -d playground</code>。<code>-U</code>
+      がユーザ名、<code>-d</code> がデータベース名を指定する。</span></li>
+      </ul></li>
+      <li>データベースの「テーブルのスキーマ」とは、どのような情報か答えよ。
+      <ul>
+      <li><strong>答え</strong>: <span
+      class="masked">どのような列を持ち、それぞれをどのデータ型で扱うかといった、テーブルの構造を定義する情報。</span></li>
+      </ul></li>
+      <li>PostgreSQL に、<code>id</code> が <code>INTEGER PRIMARY KEY</code>、<code>name</code> が
+      <code>TEXT NOT NULL</code>、<code>age</code> が <code>INTEGER</code> である
+      <code>s_users</code> テーブルを新しく作成する SQL
+      を答えよ。また、正常に作成されたときの応答を答えよ。
+      <ul>
+      <li><strong>答え</strong>: <span
+      class="masked"><code>CREATE TABLE s_users (id INTEGER PRIMARY KEY, name TEXT NOT NULL, age INTEGER);</code>。応答は
+      <code>CREATE TABLE</code>。</span></li>
+      </ul></li>
+      <li>PostgreSQL で
+      <code>CREATE TABLE s_users (id INTEGER PRIMARY KEY, name TEXT NOT NULL, age INTEGER);</code>
+      を実行したところ、<code>ERROR: relation "s_users" already exists</code>
+      と表示された。このエラーは何を意味するか答えよ。
+      <ul>
+      <li><strong>答え</strong>: <span class="masked">作成先に <code>s_users</code>
+      という名前のテーブルなどが既に存在していること。</span></li>
+      </ul></li>
+      <li>PostgreSQL で <code>TRUNCATE TABLE s_users;</code> が正常終了した。<code>s_users</code>
+      のレコードと、テーブルそのものは、それぞれどうなるか答えよ。
+      <ul>
+      <li><strong>答え</strong>: <span
+      class="masked">すべてのレコードが削除され、テーブルは空になる。列構成や制約など、テーブルそのものは残る。</span></li>
+      </ul></li>
+      <li>PostgreSQL で <code>DROP TABLE s_users;</code> が正常終了した。<code>s_users</code>
+      のレコードと、テーブルそのものは、それぞれどうなるか答えよ。
+      <ul>
+      <li><strong>答え</strong>: <span
+      class="masked">レコードを含めてテーブルそのものが削除される。</span></li>
+      </ul></li>
+      <li>SQL
+      は、改行や空白を文字列リテラルのなかも含めてすべて無視する。この説明は「適切である」か「適切ではない」か答えよ。
+      <ul>
+      <li><strong>答え</strong>: <span
+      class="masked">適切ではない。通常は命令や名前などを区切る空白として扱われるが、文字列リテラルのなかでは、改行や空白そのものがデータとして意味を持つ。</span></li>
+      </ul></li>
+      <li>Docker コンテナ内の Bash から psql を起動している。psql の対話モードを終了し、コンテナ内の
+      Bash に戻るために入力するコマンドを答えよ。
+      <ul>
+      <li><strong>答え</strong>: <span class="masked"><code>\q</code></span></li>
+      </ul></li>
+      <li>Windows の PowerShell から <code>docker container exec -it pg18 bash</code>
+      で接続したコンテナ内の Bash
+      を終了するコマンドを答えよ。また、終了後はどこに戻るか、<code>pg18</code>
+      コンテナも停止するか答えよ。
+      <ul>
+      <li><strong>答え</strong>: <span class="masked"><code>exit</code>。Windows の PowerShell
+      に戻る。今回の PostgreSQL コンテナでは、Bash を終了してもコンテナと PostgreSQL
+      サーバーは動作を続ける。</span></li>
+      </ul></li>
+      <li>Windows 側のカレントディレクトリに、実行したい SQL を記述した <strong>hoge.sql</strong>
+      がある。起動中のコンテナ <code>pg18</code> の psql に、ユーザ
+      <code>student</code>、データベース <code>playground</code>
+      を指定し、このファイルの内容を標準入力で送るコマンドを答えよ。また、PowerShell
+      とコマンドプロンプト (cmd.exe) のどちらで実行するか答えよ。
+      <ul>
+      <li><strong>答え</strong>: <span
+      class="masked"><code>docker container exec -i pg18 psql -U student -d playground &lt; hoge.sql</code>。コマンドプロンプト
+      (cmd.exe) で実行する。</span></li>
+      </ul></li>
+      <li>Windows のコマンドプロンプトで
+      <code>docker container exec -i pg18 psql -U student -d playground &lt; hoge.sql</code>
+      を実行した。この操作では、<strong>hoge.sql</strong>
+      というファイルそのものをコンテナ内にコピーしているか答えよ。また、コンテナ内の psql
+      に何が渡されるか答えよ。
+      <ul>
+      <li><strong>答え</strong>: <span
+      class="masked">ファイルそのものをコピーしているわけではない。Windows
+      側で読み込んだファイルの内容が、標準入力を通して psql に渡される。</span></li>
+      </ul></li>
+      <li>SQL ファイルを標準入力から送る
+      <code>docker container exec -i pg18 psql -U student -d playground &lt; hoge.sql</code>
+      では、対話的に Bash を使うときの <code>-it</code> ではなく <code>-i</code>
+      のみを指定している。それぞれのオプションの役割を踏まえ、この理由を答えよ。
+      <ul>
+      <li><strong>答え</strong>: <span class="masked"><code>-i</code> は標準入力を psql
+      に接続するために必要。ファイルの内容を入力として送る処理では、対話操作用の仮想ターミナルを割り当てる
+      <code>-t</code> は不要なため。</span></li>
+      </ul></li>
+      <li>使用する Docker
+      イメージが既にローカルに存在するとき、コンテナの「作成」と「起動」を1つのコマンドで行うための
+      Docker コマンドを答えよ。
+      <ul>
+      <li><strong>答え</strong>: <span class="masked"><code>docker container run</code></span></li>
+      </ul></li>
+      <li><code>docker container run --name pg18 -e POSTGRES_PASSWORD=secret123 -d postgres:18.6</code>
+      の <code>-d</code>
+      は何を指定するオプションか答えよ。また、この指定によってターミナルはどのような状態になるか答えよ。
+      <ul>
+      <li><strong>答え</strong>: <span
+      class="masked">デタッチドモードを指定するオプション。コンテナはバックグラウンドで動作し、ターミナルはすぐに操作可能な状態に戻る。</span></li>
+      </ul></li>
+      <li><code>docker container run</code> で作成・起動した <code>pg18</code>
+      コンテナを停止した。同じコンテナを再び起動するときに使うコマンドを答えよ。また、同じ名前を指定して
+      <code>docker container run --name pg18 ...</code> を再度実行した場合は、どうなるか答えよ。
+      <ul>
+      <li><strong>答え</strong>: <span
+      class="masked"><code>docker container start pg18</code>。<code>run</code>
+      を再度実行すると、新しいコンテナを作成しようとするため、コンテナ名の重複によるエラーとなる。</span></li>
+      </ul></li>
+      <li>明示的にボリュームを指定せずに <code>postgres:18.6</code> から作成したコンテナ
+      <code>pg18</code> に、テーブルやレコードを保存した。そのコンテナを停止して
+      <code>docker container rm pg18</code>
+      で削除し、同じ手順・同じ名前で新しく作成すると、以前のDBデータは自動的に引き継がれるか答えよ。
+      <ul>
+      <li><strong>答え</strong>: <span
+      class="masked">自動的には引き継がれない。以前のボリュームにはデータが残っているが、新しいコンテナではそのボリュームが自動的に再利用されないため。</span></li>
       </ul></li>
       </ul>
       <h1 data-number="4" id="docker-desktop-による-docker-の-gui-操作"><span
@@ -1173,18 +1496,18 @@ playground=#</code></pre>
       のサーバプロセス」と「クライアントツール」の通信が <span
       class="masked">すべて「コンテナの内部」で完結しているもの</span> でした。</p>
       <p>一方で、PostgreSQL
-      のサーバプロセスとは別のホストのクライアントツールから接続するとき、<strong>TypeScript や
-      Python などのプログラムからDB接続するとき</strong> には <span class="masked">TCP/P 接続
-      (ポート通信)</span> を使う必要があります。</p>
+      のサーバプロセスとは別のホストのクライアントツールから接続するときや、<strong>Windows
+      (ホストOS) 上の TypeScript や Python などのプログラムからDBに接続するとき</strong> には <span
+      class="masked">TCP/IP 接続 (ポート通信)</span> を使います。</p>
       <p>Docker Desktop を起動している「Windows (ホストOS)」と「Docker コンテナ」の間での TCP/IP
       接続を有効化するには <code>docker container create</code> コマンドの実行時に、次のように
       <code>-p</code> オプションを指定する必要があります。</p>
-      <pre><code>docker container create --name pg17 `
+      <pre data-caption="ポートのマッピングを指定してコンテナを作成"><code>docker container create --name pg18 `
   -e POSTGRES_USER=student `
   -e POSTGRES_PASSWORD=secret123 `
   -e POSTGRES_DB=playground `
   -p 5432:5432 `
-  postgres:17.6</code></pre>
+  postgres:18.6</code></pre>
       <p>この設定により、</p>
       <ul>
       <li>PostgreSQLのサーバプロセスが稼働しているコンテナの5432番ポート と</li>
@@ -1192,13 +1515,14 @@ playground=#</code></pre>
       </ul>
       <p>マッピングされるようになります。これで、任意のクライアントツールやプログラムから
       5432番ポートを使って PostgreSQL に接続できるようになります。</p>
-      <p>なお、既にホストOS側で別のアプリで 5432 番ポートを使っている場合は
-      <code>-p 5432:5433</code> のようにして、ホスト側のポート番号を 5433
-      に変えることができます。</p>
-      <h3 data-number="5.0.1" id="定着確認-6"><span class="header-section-number">5.0.1</span>
+      <p>なお、既にホストOS側の別のアプリが 5432 番ポートを使っている場合は
+      <code>-p 5433:5432</code> のようにして、ホスト側のポート番号を 5433
+      に変えることができます。<code>-p</code>
+      では「ホスト側のポート番号:コンテナ側のポート番号」の順に指定します。</p>
+      <h3 data-number="5.0.1" id="定着確認-9"><span class="header-section-number">5.0.1</span>
       定着確認</h3>
       <ul>
-      <li>PostgreSQL をはじめとする代表的な RDBMS で使用される標準の通信ポート番号を答えよ。
+      <li>PostgreSQL で使用される標準の通信ポート番号を答えよ。
       <ul>
       <li><strong>答え</strong>: <span class="masked">5432番</span></li>
       </ul></li>
@@ -1215,39 +1539,40 @@ playground=#</code></pre>
       上のクライアントツールから、コンテナ内の PostgreSQL サーバプロセスに接続してみましょう。</p>
       <p><strong><i class="fa-solid fa-comment-dots fa-flip-horizontal"></i>プロンプト例</strong></p>
       <blockquote>
-      <p>Dockerコンテナとホストで「ポートをマッピングをする」とは、どのようなことですか。PostgreSQL
+      <p>Dockerコンテナとホストで「ポートをマッピングする」とは、どのようなことですか。PostgreSQL
       のコンテナを作成する状況を想定して解説してください。</p>
       </blockquote>
       <h3 data-number="5.1.1" id="コンテナ側の準備"><span class="header-section-number">5.1.1</span>
       コンテナ側の準備</h3>
-      <p>まず、<code>pg17</code> という名前のコンテナが存在していれば
-      <code>docker container rm pg17</code> コマンドで削除しておきます。</p>
+      <p>まず、<code>pg18</code> という名前のコンテナが存在していれば
+      <code>docker container rm pg18</code> コマンドで削除しておきます。起動中の場合は、先に
+      <code>docker container stop pg18</code> で停止してください。</p>
       <p>次に、以下の <code>docker container run</code> コマンドで、<strong>5432番ポート
-      (RDBMSの標準ポート) のマッピング設定</strong> を含めてコンテナを作成・起動します。</p>
-      <pre><code>docker container run --name pg17 `
+      (PostgreSQLの標準ポート) のマッピング設定</strong> を含めてコンテナを作成・起動します。</p>
+      <pre><code>docker container run --name pg18 `
   -e POSTGRES_USER=student `
   -e POSTGRES_PASSWORD=secret123 `
   -e POSTGRES_DB=playground `
   -p 5432:5432 `
   -d `
-  postgres:17.6</code></pre>
-      <p>つづいて <code>docker container exec -it pg17 bash</code> コマンドで、<code>pg17</code>
-      コンテナにログインし、<strong>psql</strong> で <code>s_users</code>
+  postgres:18.6</code></pre>
+      <p>つづいて <code>docker container exec -it pg18 bash</code> コマンドで、<code>pg18</code>
+      コンテナ内の Bash を起動し、<strong>psql</strong> で <code>s_users</code>
       テーブルを作成し、いくつかのレコードを挿入しておきます (<a
       href="#テーブルの作成-create-table">参考1</a>、<a
-      href="#コンテナのシェルを利用">参考2</a>)。</p>
+      href="#レコードの挿入-insert">参考2</a>)。</p>
       <div class="note type-tips">
       <p><strong>ホストとコンテナのポート対応の確認</strong></p>
       <p>作成済みコンテナにおいて、どのポートがどのようにマッピングされているか
       (＝ホスト👉コンテナの対応) を確認するためには <code>docker port</code>
       コマンドを使用します。</p>
-      <p><code>docker port pg17</code>
+      <p><code>docker port pg18</code>
       のようにコマンドを実行すると、次のような結果が表示されます。</p>
       <pre><code>5432/tcp -&gt; 0.0.0.0:5432
 5432/tcp -&gt; [::]:5432</code></pre>
       <p><strong>1行目</strong> は、コンテナ内の TCP ポート <code>5432</code> が、ホストOSの
       <strong>IPv4 アドレス</strong> <code>0.0.0.0</code> の <code>5432</code>
-      番ポートに公開されていること、を示しています。ここでの <code>0.0.0.0</code> は「すべての IPv4
+      番ポートに公開されていることを示しています。ここでの <code>0.0.0.0</code> は「すべての IPv4
       アドレスで受け付ける」という特別な指定で、実際には <code>127.0.0.1</code> (ローカルホスト)
       などのすべての IPv4 経路を含みます。</p>
       <ul>
@@ -1256,14 +1581,14 @@ playground=#</code></pre>
       など、いずれの経路からアクセスしてもコンテナ内のポート <code>5432</code>
       に転送されることを意味します。</li>
       </ul>
-      <p><strong>2行目</strong>は **IPv6*+ 向けの設定で、同様に IPv6 のすべてのアドレス
+      <p><strong>2行目</strong>は <strong>IPv6</strong> 向けの設定で、同様に IPv6 のすべてのアドレス
       (<code>[::]</code>) で接続を受け付けていることを示しています。</p>
       </div>
       <h3 data-number="5.1.2" id="ホスト側の準備とtcpip接続"><span
       class="header-section-number">5.1.2</span> ホスト側の準備とTCP/IP接続</h3>
       <p>次に、PostgreSQLに対応し、インストール不要で使える軽量のSQLクライアント「<strong>HeidiSQL</strong>
       (ハイディエスキューエル)」を取得してきます。<a
-      href="https://www.heidisql.com/download.php">こちら</a>から「<strong>Portable Windows version
+      href="https://www.heidisql.com/download.php">こちら</a> から「<strong>Portable Windows version
       (zipped)</strong>」をダウンロードしてきます。</p>
       <figure>
       <img src="figs/02/heidi-sql-01.png" alt="img" />
@@ -1314,24 +1639,25 @@ playground=#</code></pre>
       を使用する予定はないので、ダウンロードしたZipと、展開したフォルダは削除してもらって構いません。</p>
       <h1 data-number="6" id="docker-とは-詳細"><span class="header-section-number">6</span> Docker
       とは (詳細)</h1>
-      <p>以上のハンズオンを通じて、体験的に Docker の概要が把握できたと思います。ここからは、Docker
+      <p>以上のハンズオンを通じて、体験的に <strong>Docker
+      の概要が把握できた</strong>と思います。ここからは、Docker
       について、少しだけ詳しく解説していきたいと思います。</p>
       <hr />
       <p><a
       href="https://ja.wikipedia.org/wiki/Docker">Docker</a>とは「<strong>コンテナ型仮想化技術</strong>」を実装したソフトウェアで、これを利用することで
-      <span class="masked">普段使いのPC環境をクリーンに保ったまま、様々な開発環境を構築</span>
+      <span class="masked">普段使いの PC 環境をクリーンに保ったまま、様々な開発環境を構築</span>
       できるようになります。しかも、<strong>それぞれの開発環境が相互に影響しないようにすること</strong>
       ができるようになります。</p>
       <ul>
       <li>例えば、<strong>プロジェクトA</strong> のために、Python のバージョンを <code>3.10</code>
       から <code>3.13</code> に上げたら、「プロジェクトB
-      で開発中だったアプリが動かなくなった💦」といったトラブルを回避することができるようになります。</li>
+      で開発中だったアプリが動かなくなってしまった💦」といったトラブルを回避することができるようになります。</li>
       </ul>
       <p>Docker
       を利用すると「<strong>なにがうれしいのか</strong>🤔」について、具体的な状況を想定して詳しく考えてみたいと思います。例として、次のような状況を考えていきます。</p>
       <blockquote>
       <p>「データベース工学」の授業で「PostgreSQL
-      17」の環境構築が必要で、同時に「応用専門PBL2」でのプロジェクト開発で「PostgreSQL
+      18」の環境構築が必要で、同時に「応用専門PBL2」でのプロジェクト開発で「PostgreSQL
       15」の環境構築が必要になった。</p>
       </blockquote>
       <p>このようなとき、次のような問題が考えられます。</p>
@@ -1354,16 +1680,19 @@ playground=#</code></pre>
       (例えば PostgreSQL など)</strong>
       を構築し、それぞれのコンテナを必要に応じて立ち上げることができます。メインのOSに直接インストールする場合と違って
       <span class="masked">Windowsレジストリの書き換え</span> などは起きません。</p>
-      <p>また、開発環境が不要になったときは、コンテナごときれいに削除することができます
-      (ゴミが残ることがありません)。また <code>Dockerfile</code> や <code>docker-compose.yaml</code>
-      という軽量の設定ファイル (テキストファイル)
-      を残しておけば、すぐに開発環境を再構築することも可能となります。また、その設定ファイルを使って、別PCに上に開発環境のクローンを構築することも可能になります。</p>
-      <p>このように Docker (コンテナ型仮想化技術) には <span
+      <div class="balloon char-01 face-02 tone-yellow">
+      <p>開発環境が不要になったときは、コンテナごと削除することもできます
+      (イメージやボリュームは別に残ることがあります)。</p>
+      <p>さらに <code>Dockerfile</code> や <code>docker-compose.yaml</code> という軽量の設定ファイル
+      (テキストファイル)
+      を残しておけば、すぐに開発環境を再構築することも可能となります。また、その設定ファイルを使って、別のPC上に開発環境のクローンを構築することも比較的簡単にできます。</p>
+      </div>
+      <p>以上のように Docker (コンテナ型仮想化技術) には <span
       class="masked">普段使いのOS環境に影響を与えず、様々な開発環境を気軽に構築できる</span>
       というメリットがあります。</p>
-      <p>なお、コンテナ型仮想化技術の「詳しい仕組み」については、本科目では解説しないので興味関心がある学生は、書籍や生成AIなどを利用して各自で掘り下げてください。少し古い書籍ですが<a
-      href="https://www.amazon.co.jp/dp/4839972745/">仕組みと使い方がわかる Docker&amp;Kubernetes
-      のきほんのきほん</a>が初心者向けの内容になっており、お勧めです
+      <p>なお、コンテナ型仮想化技術の「詳しい仕組み」については、本科目では解説しないので興味関心がある学生は、書籍や生成AIなどを利用して各自で掘り下げてください。少し古い書籍ですが
+      <a href="https://www.amazon.co.jp/dp/4839972745/">仕組みと使い方がわかる Docker &amp;
+      Kubernetes のきほんのきほん</a> が初心者向けの内容になっており、お勧めです
       (研究室に所蔵しているので、内容を確認したい学生は声をかけてください)。</p>
       <p><strong><i class="fa-solid fa-comment-dots fa-flip-horizontal"></i>プロンプト例</strong></p>
       <blockquote>
@@ -1385,23 +1714,22 @@ playground=#</code></pre>
       3.7、3.8、3.9、3.11
       といった<strong>異なる実行環境でも正常に動作するかを確認したいとき</strong>、Docker
       を利用すると便利です。各バージョンの Python
-      環境をコンテナとして簡単に用意できるため、複数バージョンでの動作確認を1台ので手軽に行うことができます。</p>
+      環境をコンテナとして簡単に用意できるため、複数バージョンでの動作確認を1台のPCで手軽に行うことができます。</p>
       <h3 data-number="6.1.2" id="ケース2"><span class="header-section-number">6.1.2</span>
       ケース2</h3>
       <p>チーム開発のように「<strong>全員の開発環境をそろえたい</strong>」ときにも Docker
       は強力です。OS (Windows/macOS) やライブラリの違いによる「<strong>自分の PC
       では動くのに、他の人のでは動かない…</strong>」というトラブルを防ぐことができます。同じ Docker
-      イメージ (<code>Dockerfile</code> や <code>docker-compose.yaml</code> )
+      イメージや設定ファイル (<strong>Dockerfile</strong> や <strong>docker-compose.yaml</strong>)
       を共有すれば、全員が限りなく同じ環境で開発することができます。</p>
       <h3 data-number="6.1.3" id="参考書籍"><span class="header-section-number">6.1.3</span>
       参考書籍</h3>
-      <p>Docker を使用して開発環境を構築するときは、以下の電子書籍が参考になると思います
-      (KindleUnlimited対象 2025/10/09現在)。</p>
+      <p>Docker を使用して開発環境を構築するときは、以下の電子書籍が参考になると思います。</p>
       <ul>
-      <li><a href="https://www.amazon.co.jp/dp/B0F7WGR9RW/">Docker Desktop for
-      Windows/Macでつくるクリーンな開発環境構築入門 (Webアプリケーション版) 2025版</a></li>
-      <li><a href="https://www.amazon.co.jp/dp/B08D8TXXHD/">Docker Desktop for
-      Windows/Macでつくるクリーンな開発環境構築入門 (Python版) 2025版</a></li>
+      <li><a href="https://www.amazon.co.jp/dp/B0F7WGR9RW/">Docker Desktop for Windows/Mac
+      でつくるクリーンな開発環境構築入門 (Web アプリケーション版) 2025版</a></li>
+      <li><a href="https://www.amazon.co.jp/dp/B08D8TXXHD/">Docker Desktop for Windows/Mac
+      でつくるクリーンな開発環境構築入門 (Python 版) 2025版</a></li>
       </ul>
       <div class="note type-senior">
       <p><strong>VSCode を Dockerコンテナ 環境に接続して開発</strong></p>
@@ -1450,23 +1778,23 @@ playground=#</code></pre>
       <p><strong><i class="fa-solid fa-comment-dots fa-flip-horizontal"></i>プロンプト例</strong></p>
       <blockquote>
       <p>いま、Docker コンテナを
-      <code>docker container run --name pg17 -e POSTGRES_USER=student -e POSTGRES_PASSWORD=secret123 -e POSTGRES_DB=playground -p 5432:5432 -d postgres:17.6</code>
+      <code>docker container run --name pg18 -e POSTGRES_USER=student -e POSTGRES_PASSWORD=secret123 -e POSTGRES_DB=playground -p 5432:5432 -d postgres:18.6</code>
       のように起動しています。これを <code>docker-compose.yaml</code>
       を使った方法に切り替えたいです。どのようにすればよいですか。</p>
       </blockquote>
       <ul>
-      <li>講義では、<code>postgres:17.6</code> という PostgreSQL の公式イメージを
+      <li>講義では、<code>postgres:18.6</code> という PostgreSQL の公式イメージを
       <strong>そのまま利用</strong>
       しましたが、実務では要件に合わせて独自のイメージを作成することが多く、その際に使われるのが
       <code>Dockerfile</code>
       となります。たとえば、追加パッケージの導入や、自分で用意した設定ファイル・サンプルデータのコピー、環境変数の設定、初期化スクリプトの配置などを行います。<code>Dockerfile</code>
       を用いた<strong>カスタムイメージ作成</strong>について調べてみてください。
       <ul>
-      <li><a
-      href="https://www.youtube.com/watch?v=B5tSZr_QqXw&amp;t=1366s">Dockerの基本を学んでコンテナ型の仮想環境を作ろう！</a>
-      <span class="citation" data-cites="YouTube">@YouTube</span>
+      <li><a href="https://www.youtube.com/watch?v=B5tSZr_QqXw&amp;t=1366s">Docker
+      の基本を学んでコンテナ型の仮想環境を作ろう！</a> <span class="citation"
+      data-cites="YouTube">@YouTube</span>
       <ul>
-      <li><strong>22:46</strong> ～ Dokcerfile からコンテナを起動する解説</li>
+      <li><strong>22:46</strong> ～ Dockerfile からコンテナを起動する解説</li>
       </ul></li>
       <li>Docker の <code>Dockerfile</code> や <code>docker-compose.yaml</code>
       のように、インフラの構成をプログラムコードとして記述し、管理・自動化する考え方を <span
@@ -1475,8 +1803,8 @@ playground=#</code></pre>
       <li>次の動画では、Dockerの基礎知識から実際に開発環境を構築するまで徹底解説されています。おすすめです。
       <ul>
       <li><a
-      href="https://www.youtube.com/watch?v=B1EQ1oncKak">【図解】これなら分かる!!はじめてのDocker</a><span
-      class="citation" data-cites="YouTube">@YouTube</span></li>
+      href="https://www.youtube.com/watch?v=B1EQ1oncKak">【図解】これなら分かる!!はじめてのDocker</a>
+      <span class="citation" data-cites="YouTube">@YouTube</span></li>
       </ul></li>
       </ul>
       <hr />

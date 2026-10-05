@@ -8,8 +8,9 @@ var:
 
 ## 資料 INDEX
 
-- 第01回講義 09月30日(水) [資料](lecture01.html) <font size="-1">科目概要、PostgreSQL環境構築の準備</font>
-- 第02回講義 10月07日(水) 資料 **_小テスト❶_** <font size="-1">Docker関連の環境構築</font>
+- 第01回講義 09月30日(水) [資料](lecture01.html)&ensp; <font size="-1">科目概要、PostgreSQL環境構築の準備</font>
+- 第02回講義 10月07日(水) [資料](lecture02.html)&ensp; **_小テスト❶_** <font size="-1">Docker関連の環境構築</font>
+- 第03回講義 10月14日(水) 資料&ensp; **_小テスト❷_** <font size="-1">SQL演習演習環境の構築、`SELECT`</font>
 
 ## 参考資料
 

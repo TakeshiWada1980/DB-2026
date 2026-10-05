@@ -1,7 +1,7 @@
 ---
 var:
   header-title: "2026-4I データベース工学 第02回 講義資料"
-  header-date: "2026年10月07日 (木) 1時限"
+  header-date: "2026年10月07日 (水) 1時限"
 ---
 
 # 第02回 4I-データベース工学
@@ -16,13 +16,13 @@ var:
 
 前回講義では「**なぜデータベース (DBMS) を使ったデータ管理が必要なのか**」を学びました。また、リレーショナルデータベースの特長や機能を簡単に紹介し、[DB Fiddle](https://www.db-fiddle.com/) というサービスを使って SQL による RDB の操作を体験してもらいました。
 
-また、最後に [Docker Desktop](https://www.docker.com/ja-jp/products/docker-desktop/) を PC にインストールしてもらいました。そして、動作確認として [DockerHub](https://hub.docker.com/) から `hello-world` という Docker コンテナのイメージを**プル**して (＝取得して)、そのイメージをもとにコンテナを作成・起動して、Docker が正常に動作するかを確認してもらいました。
+また、最後に [Docker Desktop](https://www.docker.com/ja-jp/products/docker-desktop/) を PC にインストールしてもらいました。そして、動作確認として [Docker Hub](https://hub.docker.com/) から `hello-world` という Docker コンテナのイメージを**プル**して (＝取得して)、そのイメージをもとにコンテナを作成・起動して、Docker が正常に動作するかを確認してもらいました。
 
-- [DockerHub](https://hub.docker.com/) とは、公式およびユーザが作成した Docker イメージを公開・共有できる **公式リポジトリ (格納庫)** です。
+- [Docker Hub](https://hub.docker.com/) とは、公式およびユーザが作成した Docker イメージを公開・共有できる **公式リポジトリ (格納庫)** です。
   - PostgreSQL をはじめとする各種 DBMS のイメージのほか、Python・C++・Java・Go・Haskell・OCaml などの **プログラミング言語の実行環境や開発環境のイメージ**、Apache や nginx、**WordPress**、**LaTeX** などのイメージ、さらに **Supabase** などの複合的な開発プラットフォーム向けイメージ群など、様々なイメージが提供されています。
 - Docker では、イメージ (Image) を雛形として、コンテナ (Container) を作成します。これは、オブジェクト指向プログラミングにおいて <span class="masked">「クラス」から「インスタンス」を生成する関係</span> に例えることができます。
 
-また、宿題 (＝今回の講義に向けた準備) として、以下のコマンドを用いて `postgres:18.6` と `dbgate/dbgate:7.2.6` という Docker イメージをプル (取得) をしてもらいました。
+また、宿題 (＝今回の講義に向けた準備) として、以下のコマンドを用いて `postgres:18.6` と `dbgate/dbgate:7.2.6` という Docker イメージをプル (取得) してもらいました。
 
 ```
 docker image pull postgres:18.6
@@ -114,7 +114,7 @@ Dockerイメージの一覧は、**Docker Desktop (GUI)** からも確認でき�
 ::: {.note .type-tips}
 **Dockerイメージ「postgres:18.6」の構成**
 
-皆さんには宿題として `postgres:18.6` というDockerイメージをプルしてもらいました。`postgres:17.6` は **Debian 13** (コードネーム Trixie／トリクシー) の軽量版 (`debian:trixie-slim`) の上で **PostgreSQL 18.6** が動作するように構成された Docker イメージとなります。
+皆さんには宿題として `postgres:18.6` というDockerイメージをプルしてもらいました。`postgres:18.6` は **Debian 13** (コードネーム Trixie／トリクシー) の軽量版 (`debian:trixie-slim`) の上で **PostgreSQL 18.6** が動作するように構成された Docker イメージとなります。
 :::
 
 
@@ -130,13 +130,15 @@ Docker イメージ `postgres:18.6` をもとに、PostgreSQL のユーザ名や
 
 - 「イメージ」は、「コンテナ」を作成するための **雛形（テンプレート）** と考えてください。
 
-次の `docker container create` コマンドを実行してください。
+次の `docker container create` コマンドを実行してください。講義資料上では **表示幅の都合で途中で折り返される場合がありますが、<u>実際には改行せず、1行のコマンドとして入力</u>** してください。
 
-```
+```powershell
 docker container create --name pg18 -e POSTGRES_USER=student -e POSTGRES_PASSWORD=secret123 -e POSTGRES_DB=playground postgres:18.6
 ```
 
-正常に作成されると、Docker から「**コンテナID**」が返されます。
+正常に作成されると、Docker から「**コンテナID**」が返されます。なお、同じコマンドをもう一度実行すると、<span class="masked">既に `pg18` という名前のコンテナが存在している</span> ため、指示されたコンテナが作成できない旨のエラーメッセージが表示されます。
+
+> Error response from daemon: Conflict. The container name "/pg18" is already in use by container "XXX....". You have to remove (or rename) that container to be able to reuse that name.
 
 
 ::: {.balloon .char-01 .face-02 .tone-yellow}
@@ -171,7 +173,7 @@ docker container create --name pg18 `
 ここで、`docker container create` コマンドで指定している各オプションの意味は次の通りです。
 
 - **--name pg18**
-  - コンテナに `pg18` という名前をつけけています。コンテナ名には、英数字、ハイフン `-`、アンダーバー `_`、ピリオド `.` などを使用できます。ただし、先頭文字は英数字にする必要があります。
+  - コンテナに `pg18` という名前をつけています。コンテナ名には、英数字、ハイフン `-`、アンダーバー `_`、ピリオド `.` などを使用できます。ただし、先頭文字は英数字にする必要があります。
 - **-e POSTGRES_USER=student**
   - **環境変数** `POSTGRES_USER` に `student` という値を設定します。
   - PostgreSQL の公式 Docker イメージでは、この環境変数の値をもとに、初期化時に <span class="masked">`student` という名前のスーパーユーザ（＝管理ユーザ）が自動作成</span> されます。
@@ -182,11 +184,11 @@ docker container create --name pg18 `
   - 環境変数 `POSTGRES_DB` に `playground` という値を設定します。
   - これにより、初期化時に <span class="masked">`playground` という名前のデータベースが自動作成</span> されます。
 - **postgres:18.6**
-  - コンテナの雛形として使用する **Docker イメージの名前とタグ (バージョン) **を指定します。
+  - コンテナの雛形として使用する **Docker イメージの名前とタグ (バージョン)** を指定します。
 
 このように、Docker イメージの多くは、**環境変数を指定することで、コンテナを最初に起動するときの初期化処理をカスタマイズ**できるようになっています。利用できる環境変数やその役割は、Docker Hub 上の各イメージの詳細ページなどに記載されています。
 
-- PostgreSQLの公式イメージの「**How to extend this image**」は [こちら](https://hub.docker.com/_/postgres#https://hub.docker.com/_/postgres#how-to-extend-this-image) (カスタマイズ用の環境変数の設定などが記載されています)。
+- PostgreSQLの公式イメージの「**How to extend this image**」は [こちら](https://hub.docker.com/_/postgres#how-to-extend-this-image) (カスタマイズ用の環境変数の設定などが記載されています)。
 
 なお、PostgreSQL の公式 Docker イメージでは、これらの初期化処理は <u>**PostgreSQL のデータを保存する領域がまだ初期化されていない場合にのみ実行**</u> されます。
 
@@ -200,56 +202,82 @@ docker container create --name pg18 `
 
 **<i class="fa-solid fa-comment-dots fa-flip-horizontal"></i>プロンプト例** <font size="-1">(意味や理解が曖昧な事項は生成AIを使って、再確認しておきましょう)</font>
 
-> OS の「環境変数」とは何ですか。
+> OS の「環境変数」とは何ですか。初学者が勘違いしそうなポイントを含めて教えてください。
 
 > Linux における「スーパーユーザ」とは何ですか。
 
-> Docker において「Dockerfile」とは何をするものですか。コンテナの作成に必須ですか。
+> Docker において「Dockerfile」とは何をするものですか。コンテナの作成に必須ですか。初学者が勘違いしそうなポイントを含めて教えてください。
 
 ::: {.note .type-tips}
 **コンテナの削除**
 
-既に同名のコンテナ (`pg17`) が存在するときに、`docker container create ...` を実行すると次のようなエラーが返ってきます。
-
-```
-Error response from daemon: Conflict. The container name "/pg17" is already in use by container "xxxx". You have to remove (or rename) that container to be able to reuse that name.
-```
+先述したように、既に同名のコンテナ (`pg18`) が存在するときに、`docker container create ...` を実行するとエラーとなります。
 
 このときは、**次のコマンドで「既存のコンテナ」を先に削除してから**、再度、`docker container create ...` コマンドを実行してください。`rm` は、remove の略です。
 
-```
-docker container rm pg17
+```powershell 
+docker container rm pg18
 ```
 
-なお、起動中のコンテナを削除する際には `-f` オプションをつけてください (停止中のコンテナの削除に対しては `-f` オプション不要です)。
+なお、**起動中のコンテナを削除する場合**には `-f` オプションをつけてください (停止中のコンテナの削除に対しては `-f` オプション不要です)。
 :::
 
 #### 定着確認
 
 - Docker では、「コンテナ」を雛形として「イメージ」を作成する。この説明は「適切である」か「適切ではない」か答えよ。
   - **答え**: <span class="masked">適切ではない</span>
-- `hoge:3.14` という Docker イメージから、`hoge-fuga` というコンテナを作成するためのコマンド (作成するだけで起動はしない) を答えよ。
-  - **答え**: <span class="masked">`docker container create --name hoge-fuga hoge:3.14`</span> もしくは <span class="masked">`docker create --name hoge-fuga hoge:3.14`</span> という省略形も可 (本科目では非推奨)。
+
+- `hoge:3.14` という Docker イメージから、`hoge-fuga` というコンテナを作成するためのコマンド (コンテナを作成するだけで、コンテナの起動はしないコマンド) を答えよ。
+  - **答え**: <span class="masked">`docker container create --name hoge-fuga hoge:3.14`</span> もしくは <span class="masked">`docker create --name hoge-fuga hoge:3.14`</span> という省略形も可 (本科目のなかでは非推奨)。
+
 - `hoge:3.14` という Docker イメージを Docker Hub からプルするコマンドを答えよ。
-  - **答え**: <span class="masked">`docker image pull hoge:3.14`</span> もしくは <span class="masked">`docker pull hoge:3.14`</span> という省略形も可 (本科目では非推奨)。
+  - **答え**: <span class="masked">`docker image pull hoge:3.14`</span> もしくは <span class="masked">`docker pull hoge:3.14`</span> という省略形も可 (本科目のなかでは非推奨)。
+
 - `hoge-fuga` という Docker コンテナ (停止中) を削除するためのコマンドを答えよ。
-  - **答え**: <span class="masked">`docker container rm hoge-fuga`</span> もしくは <span class="masked">`docker rm hoge-fuga`</span> という省略形も可 (本科目では非推奨)
-- Docker コンテナの「名前」に使うことができる文字を答えよ。
-  - **答え**: <span class="masked">半角の英小文字・数字・ハイフン</span>
+  - **答え**: <span class="masked">`docker container rm hoge-fuga`</span> もしくは <span class="masked">`docker rm hoge-fuga`</span> という省略形も可 (本科目のなかでは非推奨)
+
+- ローカルにダウンロード済みの Docker イメージの一覧を表示するコマンドを答えよ。
+  - **答え**: <span class="masked">`docker images`</span> もしくは <span class="masked">`docker image ls`</span>。
+
+- Windows で `docker images` を実行したところ、Docker Engine に接続できないというエラーが表示された。Docker Desktop について、まず何を確認すべきか答えよ。
+  - **答え**: <span class="masked">Docker Desktop が起動済みで、ステータスが「Running」になっていること。</span>
+
+- Docker イメージの指定 `postgres:18.6` において、`postgres` と `18.6` はそれぞれ何を表すか答えよ。
+  - **答え**: <span class="masked">`postgres` はイメージの名前、`18.6` はタグ (この例ではバージョン) を表す。</span>
+  
+- Docker コンテナの作成時に、環境変数 `POSTGRES_DB` に `playground` という値を設定するためのコマンドオプションを答えよ。
+  - **答え**: <span class="masked">`-e POSTGRES_DB=playground`</span>。
+
+- `docker container create` が正常終了すると返される「コンテナID」は、どのような識別子か答えよ。また、同じイメージから各学生がコンテナを作成したとき、全員のIDが同じになるか答えよ。
+  - **答え**: <span class="masked">Docker がコンテナごとに自動的に割り当てる64文字の16進数の識別子。同じイメージを使っても、コンテナごとに異なるIDになる。</span>
+
+- 長いコマンドを複数行に分けて入力するとき、行末に付ける記号を PowerShell、Bash、コマンドプロンプト (cmd.exe) のそれぞれについて答えよ。
+  - **答え**: <span class="masked">PowerShell はバッククォート (`` ` ``)、Bash はバックスラッシュ (`\`)、コマンドプロンプトはキャレット (`^`)。</span>
+
+- Docker の `Dockerfile` は「カスタマイズしたイメージを作成するための設計図」「コンテナを作成するたびに必ず用意するファイル」のどちらか答えよ。
+  - **答え**: <span class="masked">カスタマイズしたイメージを作成するための設計図。既存のイメージからコンテナを作成するだけなら、用意する必要はない。</span>
+
+- `pg18` という名前の停止中の Docker コンテナが既に存在する。同じ名前で `docker container create --name pg18 postgres:18.6` を実行すると、どうなるか答えよ。
+  - **答え**: <span class="masked">コンテナ名の重複を示すエラーとなり、新しいコンテナは作成されない。</span>
+
+- 起動中の Docker コンテナ `pg18` を強制的に削除するためのコマンドを答えよ。
+  - **答え**: <span class="masked">`docker container rm -f pg18`</span>。
 
 ### コンテナの状態確認
 
-存在している**コンテナの一覧 (リスト)** は、次のコマンドで確認できます。`ps` とは <span class="masked">process status (プロセスの状態)</span> の略です。`--all` (Long Option) は、`-a` (Short Option) とすることもできます。
+存在している**コンテナの一覧 (リスト)** は、次のコマンドで確認できます。`ps` とは <span class="masked">process status (プロセスの状態)</span> の略です。
 
-```
+```powershell
 docker ps --all
 ```
 
-コマンドを実行すると、次のような応答が返ってくるはずです。**IMAGE** が `postgres:17.6`、**NAMES** が `pg17` (コンテナの作成時に `--name` で指定した名前)、**STATUS** が `Created` となっている行が存在することを確認してください。 
+- `--all` (Long Option) は、`-a` (Short Option) とすることもできます。
+
+コマンドを実行すると、次のような応答が返ってくるはずです。**IMAGE** が `postgres:18.6`、**NAMES** が `pg18` (コンテナの作成時に `--name` で指定した名前)、**STATUS** が `Created` となっている行が存在することを確認してください。
 
 ```
 CONTAINER ID   IMAGE           COMMAND            CREATED         STATUS    PORTS     NAMES
-d2196c5352d3   postgres:17.6   "docker-entry…"    2 seconds ago   Created             pg17
+e14852ebd977   postgres:18.6   "docker-entry…"    2 seconds ago   Created             pg18
 ```
 
 なお、(停止中のコンテナは除外して) **起動中のコンテナだけ**を表示したい場合は `--all` のオプションを外して次のようにしてください。
@@ -258,7 +286,7 @@ d2196c5352d3   postgres:17.6   "docker-entry…"    2 seconds ago   Created     
 docker ps
 ```
 
-現時点では `pg17` というコンテナを作成しただけで、まだ「**コンテナの起動はしていない状態**」なのでリストには何も表示されないはずです (別途、Claude の MCP などで、コンテナを起動しているときは、それが表示されることがあります)。
+現時点では `pg18` というコンテナを作成しただけで、まだ「**コンテナの起動はしていない状態**」なのでリストには何も表示されないはずです (別途、Claude の MCP などで、コンテナを起動しているときは、それが表示されることがあります)。
 
 #### 定着確認
 
@@ -267,17 +295,40 @@ docker ps
 - Docker で停止中のものを含めてコンテナの一覧を表示するコマンドを答えよ。
   - **答え**: <span  class="masked">`docker ps -a`もしくは`docker ps --all`</span>
 
+- Docker の `docker ps` コマンドにおいて、`ps` は何の略か答えよ。
+  - **答え**: <span class="masked">process status (プロセスの状態)。</span>
+
+- `docker ps --all` の `--all` を、同じ意味の Short Option に書き換えたコマンドを答えよ。
+  - **答え**: <span class="masked">`docker ps -a`</span>。
+
+- `docker ps -a` の実行結果で、あるコンテナの **STATUS** が `Created` となっていた。このコンテナはどのような状態か答えよ。
+  - **答え**: <span class="masked">コンテナは作成済みだが、まだ一度も起動していない状態。</span>
+
+- `docker container create --name pg18 postgres:18.6` でコンテナを正常に作成したが、まだ起動していない。この `pg18` は、`docker ps` と `docker ps -a` のそれぞれの一覧に表示されるか答えよ。
+  - **答え**: <span class="masked">`docker ps` には表示されず、`docker ps -a` には表示される。</span>
+
+- `docker ps` を実行したところ、コンテナの行が1件も表示されなかった。この結果だけで「コンテナが1つも存在しない」と判断してよいか答えよ。また、停止中のコンテナも含めて存在を確認するコマンドを答えよ。
+  - **答え**: <span class="masked">判断してはいけない。`docker ps` は起動中のコンテナだけを表示するため、停止中のコンテナが存在する可能性がある。`docker ps -a` または `docker ps --all` で確認する。</span>
+
+- `docker ps -a` の実行結果で、ある行の **IMAGE** が `postgres:18.6`、**NAMES** が `pg18` となっていた。この2つの値は、それぞれ何を表しているか答えよ。
+  - **答え**: <span class="masked">`postgres:18.6` はコンテナの作成に使用したイメージの名前とタグ、`pg18` はコンテナの名前。</span>
+
 ### コンテナの起動
 
-コンテナを起動するときは、次のように **コンテナの名前** (例えば `pg17`) を指定して `docker container start` コマンドを実行します。
+コンテナを起動するときは、次のように **コンテナ名** (ここでは `pg18`) を指定して `docker container start` コマンドを実行します。
+
+```powershell
+docker container start pg18
+```
+
+正常に起動すると、応答としてコンテナ名 `pg18` が表示されます。
+
+コンテナが起動したことを確認するために `docker ps` コマンドを実行し、`pg18` コンテナの **STATUS** が <span class="masked">「Up」</span> になっていることを確認してください (以下の実行例では、一部の列の表示を省略しています)。
 
 ```
-docker container start pg17
+CONTAINER ID   IMAGE           CREATED         STATUS         PORTS      NAMES
+e14852ebd977   postgres:18.6   8 minutes ago   Up 8 minutes   5432/tcp   pg18
 ```
-
-成功すると「コンテナ名」が応答として返ってきます。
-
-コンテナが起動したことを確認するために `docker ps` コマンドを実行し、`pg17` コンテナの **STATUS** が <span class="masked">「Up」</span> になっていることを確認してください。
 
 なお、Dockerコンテナの状況 (一覧・起動・停止) は、**Docker Desktop (GUI)** からも確認することができます。起動中のコンテナは、**Name** の項目の前に緑色の <font color="#2c7b70">●</font> マークがついて、**Actions** の項目が 停止マーク <font color="#1d63ed"><i class="fa-solid fa-stop"></i></font> になります。
 
@@ -289,21 +340,49 @@ docker container start pg17
 - `hoge:3.14` という Docker イメージから `hoge-fuga` というコンテナが作成済みのとき、そのコンテナを起動するためのコマンドを答えよ。
   - **答え**: <span class="masked">`docker container start hoge-fuga`</span> もしくは <span class="masked">`docker start hoge-fuga`</span> という省略形も可 (本科目では非推奨)。
 
+- 停止中の Docker コンテナ `pg18` に対して `docker container start pg18` を実行し、正常に起動できた。このとき、コマンドの応答として何が表示されるか答えよ。
+  - **答え**: <span class="masked">コンテナ名の `pg18` が表示される。</span>
+
+- Docker コンテナ `pg18` を起動した。起動中のコンテナ一覧を表示するコマンドと、その一覧で `pg18` の起動を確認するために確認すべき列と、その表示を答えよ。
+  - **答え**: <span class="masked">`docker ps` を実行し、NAMES が「pg18」の行で STATUS が「Up」になっていることを確認する。</span>
+
+- Docker Desktop (GUI) で、あるコンテナの Name の前に緑色の <font color="#2c7b70">●</font> があり、Actions に停止マークが表示されていた。このコンテナは「起動中」と「停止中」のどちらか答えよ。
+  - **答え**: <span class="masked">起動中。</span>
+
 ### コンテナの利用 (Bash経由)
 
-ここまでの操作で `pg17` というコンテナが起動し、そこで <span class="masked">PostgreSQL 17 (RDBMS) が起動している状態</span> となりました。実際にこれを使用していきたいと思います。
+ここまでの操作で `pg18` というコンテナが起動し、そのコンテナ内では <span class="masked">PostgreSQL 18（RDBMS）が動作している状態</span> となっています。ここからは、実際にコンテナのなかに入って PostgreSQL を操作していきます。
 
-まずは、次の `docker container exec` コマンドで、コンテナの内部 (Linux) に **ログイン** していきます。
+まずは、次の `docker container exec` コマンドを実行して、**コンテナ内で Bash を起動し、対話的に操作できる状態**にします。
+
 
 ```
-docker container exec -it pg17 bash
+docker container exec -it pg18 bash
 ```
 
-- 上記コマンドは `docker exec -it pg17 bash` のように `container` を省略することも可能です。
+- 上記のコマンドは `docker exec -it pg18 bash` のように `container` を省略して記述することもできます。
 
-`docker container exec` は、既に起動しているコンテナのなかで <span class="masked">任意のコマンドを実行 (execute) する</span> ためのコマンドとなります。付加している `-it` オプションは、**対話的 (Interactive) にターミナルをつなぐためのオプション** となります。
 
-このコマンドを実行すると、**コンテナのなかの Linux (Debian) に接続し、そのシェル環境 (Bash) で対話的にコマンドを実行できる状態** になります。
+::: {.balloon .char-01 .face-02 .tone-yellow}
+`docker container exec` は、すでに起動しているコンテナのなかで、**指定したコマンドを実行（execute）するためのコマンド** です。
+
+今回指定している `bash` は、Linux で広く使われている **シェル**の 1 つです。そのため、このコマンドでは「`pg18` コンテナの中で `bash` を実行する」という指示を Docker に与えていることになります。
+:::
+
+また、`-it` は、コンテナ内で起動した Bash を手元のターミナルから**対話的に操作するためのオプション**です。
+
+
+- `-i`（`--interactive`）：標準入力を開いたままにし、キーボードから入力できるようにする
+- `-t`（`--tty`）：仮想的なターミナル（TTY）を割り当てる
+  - Linux のプログラムのなかには「出力先がターミナルかどうか」によって表示や動作を変えるものがあります。`-t` を指定すると、Bash などが通常のターミナル上で実行されているのと近い状態で動作します。
+
+
+
+::: {.balloon .char-01 .face-01 .tone-pink}
+対象のコンテナが起動していないときは `Error response from daemon: container xxxx is not running` のようなエラーとなります。
+
+また、対象のコンテナが存在しないときは `Error response from daemon: No such container: pg18` のようなエラーとなります。
+:::
 
 **<i class="fa-solid fa-comment-dots fa-flip-horizontal"></i>プロンプト例**
 
@@ -313,16 +392,32 @@ docker container exec -it pg17 bash
 
 > Linuxの操作に関する文脈において「bash」とは何ですか。
 
+> Linux のプログラムのなかには「出力先がターミナルかどうか」によって表示や動作を変えるものがあると聞いたのですが、どういうことですか？
+
+#### 定着確認
+
+- 起動中の Docker コンテナ `pg18` のなかで Bash を起動し、手元のターミナルから対話的に操作するためのコマンドを答えよ。
+  - **答え**: <span class="masked">`docker container exec -it pg18 bash`。`docker exec -it pg18 bash` という省略形も可 (本科目では非推奨)。</span>
+
+- Docker の `docker container exec` は、何をするためのコマンドか答えよ。また、実行対象のコンテナは起動済みである必要があるか答えよ。
+  - **答え**: <span class="masked">起動済みのコンテナのなかで、指定したコマンドを実行するためのコマンド。対象のコンテナは起動済みである必要がある。</span>
+
+- `docker container exec -it pg18 bash` の末尾に指定した `bash` は、どのようなソフトウェアか答えよ。また、このコマンドで Bash が実行される場所は「Windows 側」「pg18 コンテナ内」のどちらか答えよ。
+  - **答え**: <span class="masked">Bash は Linux で広く使われているシェルの1つ。実行される場所は `pg18` コンテナ内。</span>
+
+- `docker container exec -it pg18 bash` の `-it` に含まれる `-i` について、Long Option と、その役割を答えよ。
+  - **答え**: <span class="masked">`--interactive`。標準入力を開いたままにし、キーボードから入力できるようにする。</span>
+
+- `docker container exec -it pg18 bash` の `-it` に含まれる `-t` について、Long Option と、その役割を答えよ。
+  - **答え**: <span class="masked">`--tty`。仮想的なターミナル (TTY) を割り当てる。</span>
+
 #### Linuxシェル (Bash) の操作
 
-上記のように `docker container exec -it pg17 bash` コマンドを実行すると、**ターミナルのプロンプト** (＝コンソールに関する文脈では <span class="masked">ユーザに入力を促すために表示される文字列</span> を意味する) が、次のように切り替わります。
+上記のように `docker container exec -it pg18 bash` コマンドを実行すると、**ターミナルのプロンプト** (＝コンソールに関する文脈では <span class="masked">ユーザからの入力を待っていることを示すために表示される文字列</span> を意味する) が、次のように切り替わります。
 
 ```
-root@d2196c5352d3:/#
+root@e14852ebd977:/#
 ```
-
-- 対象のコンテナが起動していないときは `Error response from daemon: container xxxx is not running` のようなエラーとなります。
-- 対象のコンテナが存在しないときは `Error response from daemon: No such container: pg17` のようなエラーとなります。
 
 このようにプロンプトが変わったことで、操作対象が「**Windows の PowerShell**」から「**Docker コンテナ内の Linux のBash環境**」に**切り替わっていること**が確認できます。
 
@@ -330,15 +425,21 @@ root@d2196c5352d3:/#
 
 **ターミナルに表示されるプロンプトが持つ情報**
 
-Linux の `root@d2196c5352d3:/#` というプロンプトには、次のような情報が含まれています。
+Linux の `root@e14852ebd977:/#` というプロンプトには、次のような情報が含まれています。
 
-- `root`: **ログインしているユーザ名**を表しています。「root」は <span class="masked">管理者 (スーパーユーザ)</span> を意味します。
-- `@d2196c5352d3`: **ホスト名** を表しています。このホスト名は「docker ps」コマンドで確認できるコンテナIDと一致するはずです。
-- `:/`: コロンの右側は **カレントディレクトリ (カレントフォルダ) の位置** を表しています。いまは「/」なので、**ルートディレクトリ** がカレントディレクトリであることを表しています。
-- `#`: 管理者 (スーパーユーザ) であることを表しています。一般ユーザのときは `$` が表示されます。
+- **root**
+  - **ログインしているユーザ名**を表しています。「root」は <span class="masked">管理者 (スーパーユーザ)</span> を意味します。
+- **@e14852ebd977**
+  - `@` の右側は **ホスト名**を表します。
+  - Docker では、ホスト名を特に指定していない場合、通常は **コンテナIDの先頭部分（短縮ID）と同じ値**になります。
+- **:/**
+  - コロンの右側は **カレントディレクトリ (カレントフォルダ) の位置** を表しています。
+  - ここでは `/` なので、Linux のファイルシステムの最上位にあたる **ルートディレクトリ**がカレントディレクトリになっています。
+- **#** :
+  - シャープは 現在のユーザが **root（スーパーユーザ）**であることを示すプロンプト記号です。一般ユーザのときは、通常、`$` が表示されます。
 :::
 
-PostgreSQL コンテナ (`pg17`) の内部が「**どのような Linux 環境で構成されているか**」は、次のコマンドで確認することができます。
+PostgreSQL コンテナ (`pg18`) の内部が「**どのような Linux 環境で構成されているか**」は、次のコマンドで確認することができます。
 
 ```
 cat /etc/os-release
@@ -352,20 +453,70 @@ NAME="Debian GNU/Linux"
 VERSION_ID="13"
 VERSION="13 (trixie)"
 VERSION_CODENAME=trixie
-DEBIAN_VERSION_FULL=13.1
+DEBIAN_VERSION_FULL=13.7
 ID=debian
 HOME_URL="https://www.debian.org/"
 SUPPORT_URL="https://www.debian.org/support"
 BUG_REPORT_URL="https://bugs.debian.org/"
 ```
 
-なお、このコンテナでは `ls` や `pwd`、`cd` などの基本コマンドは使えますが、`nano` や `vim`、`vi` といった**エディタは入っていません**。そのため、コンテナ内部の設定ファイルを編集したい場合などは、別の方法を使う必要があります。
+:::{.note .type-tips}
+**Docker コンテナのなかにも Linux がある？**
+
+Docker コンテナの中には、`ls` や `cat`、`bash` などを実行するための Linux のファイルやコマンドが含まれています。
+
+ただし、一般的な仮想マシンのように、コンテナごとに Linux カーネルまで丸ごと動かしているわけではありません。Docker コンテナは、**ホスト側で動作している Linux カーネルを共有しながら、プロセスやファイルシステムなどを分離して動作**します。
+
+そのため、仮想マシンと比べて比較的軽量に起動できます。
+:::
+
+この **pg18** コンテナでは、`ls`、`pwd`、`cd`、`cat` などの基本的なコマンドは利用できますが、`nano` や `vim`、`vi` といった **テキストエディタは標準ではインストールされていません**。Docker イメージは、<span class="masked">必要な機能だけを含めてできるだけ小さく保つように作られていることが多い</span> ため、普段使っている Linux 環境に入っているコマンドがすべて利用できるとは限らないので注意して下さい。
+
+- コンテナ内の設定ファイルを編集したい場合は、必要に応じて別の方法を利用します。
+
+#### 定着確認
+
+- ターミナルの「プロンプト」とは何か答えよ。
+  - **答え**: <span class="masked">ユーザにコマンドなどの入力を促すために表示される文字列。</span>
+
+- Linux の Bash で、プロンプトが `root@e14852ebd977:/#` と表示されている。`root`、`e14852ebd977`、`/`、`#` がそれぞれ表す情報を答えよ。
+  - **答え**: <span class="masked">「root」はユーザ名、「e14852ebd977」はホスト名、
+  「/」 はカレントディレクトリがルートディレクトリであること、「#」は現在のユーザが root (スーパーユーザ) であることを表す。</span>
+
+- Docker コンテナ内の Bash で、Linux のディストリビューション名やバージョンを確認するために、OS の情報が記載されたファイルの内容を表示するコマンドを答えよ。
+  - **答え**: <span class="masked">`cat /etc/os-release`</span>。
+
+- Linux の Docker コンテナは、一般的な仮想マシンと同じように、コンテナごとに独立した Linux カーネルを起動している。この説明は「適切である」か「適切ではない」か答えよ。
+  - **答え**: <span class="masked">適切ではない。ホスト側で動作している Linux カーネルを共有しながら、プロセスやファイルシステムなどを分離して動作する。</span>
+
+- Docker コンテナ内で `ls` や `cat` が使えれば、`nano` や `vim` といったテキストエディタも必ず使える。この説明は「適切である」か「適切ではない」か答えよ。また、その理由を答えよ。
+  - **答え**: <span class="masked">適切ではない。イメージは必要な機能だけを含めて小さく保つように作られていることが多く、テキストエディタがインストールされているとは限らない。</span>
 
 #### psql の対話モードで PostgreSQL を操作
 
-このコンテナでは、既に「**PostgreSQL のサーバープロセス**」が起動しており、[RDBMSのクライアントツール](lecture01.html#リレーショナルデータベース-rdb)から接続して利用できる状態になっています。サーバの稼働状態は `pg_isready` コマンドから確認できます。
+このコンテナでは、既に「**PostgreSQL のサーバープロセス**」が起動しており、[RDBMSのクライアントツール](lecture01.html#リレーショナルデータベース-rdb) から接続して利用できる状態になっています。
 
-では、実際に PostgreSQL の公式 CLI クライアントツールである `psql` を使って接続していきます。次のコマンドを実行してください。CLI: Command Line Interface
+::: {.balloon .char-01 .face-05 .tone-blue}
+PostgreSQL のサーバーが接続を受け付けられる状態になっているかは `pg_isready` コマンドで確認できます。
+
+```
+root@e14852ebd977:/# pg_isready
+/var/run/postgresql:5432 - accepting connections
+```
+
+**accepting connections** と表示されていれば、PostgreSQL サーバーが起動し、クライアントからの接続を受け付けられる状態です。
+
+表示されている **5432** は、PostgreSQL が標準で使用する <span class="masked">ポート番号</span> です。また、この例の `/var/run/postgresql` は、コンテナ内部から PostgreSQL に接続する際に利用されている **Unix ドメインソケット** の場所を表しています。
+
+:::
+
+**<i class="fa-solid fa-comment-dots fa-flip-horizontal"></i>プロンプト例**
+
+> Unix ドメインソケットってなんですか？ PostgreSQLの接続の文脈で出てきたのですが。
+
+では、実際に PostgreSQL の公式 CLI クライアントツールである `psql` を使って接続していきます。次のコマンドを実行してください。
+
+- CLI: Command Line Interface
 
 ```
 psql -U student -d playground
@@ -376,40 +527,65 @@ psql -U student -d playground
 コマンドを実行すると「**PostgreSQL の対話モード**」が開始し、ターミナルのプロンプトが以下のような表示 (`接続しているデータベース名=#`) になります。これにより、SQL を打ち込んで、データベースを操作する準備が整いました。
 
 ```
-psql (17.6 (Debian 17.6-2.pgdg13+1))
+psql (18.6 (Debian 18.6-1.pgdg13+2))
 Type "help" for help.
 
 playground=#
 ```
 
-対話モードの利用中に、SQLを入力・実行しても「**反応がない？**」と感じたときは、セミコロン `;` を入力して Enter キーを入力してみてください。反応がないように見えるとき、たいていは、システムがコマンド終端の `;` を待っている状態です。それでも解決しなときは、ターミナルを閉じて、再度、`docker container exec ...` で接続してください。
+- Linux の Bash でも root のときに `#` が表示されましたが、ここで表示されている `#` は Linux の root ユーザを意味しているわけではありません。現在は psql のなかなので、<span class="masked" >PostgreSQL におけるスーパーユーザ</span> であることを示しています。
+- psql の対話モードそのものを終了したい場合 (抜けたい場合) は `\q` を入力してください。
+
+::: {.balloon .char-01 .face-04 .tone-blue}
+対話モードの利用中に、SQLを入力・実行しても「**反応がない？**」と感じたときは、セミコロン `;` を入力して Enter キーを押してみてください。
+
+反応がないように見えるとき、たいていは、システムがコマンド終端の `;` を待っている状態です。それでも解決しないときは、ターミナルを閉じて、再度、`docker container exec ...` で接続してください。
+:::
 
 #### テーブルの作成 (CREATE TABLE)
 
-動作確認として、次に示す `s_users` というテーブルを作成してみます (`s` はサンプルという意味でつけています)。RDBMSの「テーブル名」は、前回も説明したように一般的には <span class="masked">複数形で命名してスネークケース</span> で記述します (ただし、チームやプロジェクトの規約が優先)。
+動作確認として、次に示す **s_users** というテーブルを作成してみます (`s` は「sample」の意味で付けています)。
 
-**■ s_users **
+RDBMS における「テーブル名」は、前回も説明したように一般的には <span class="masked">複数形の名前をスネークケースで記述</span> します。ただし、実際の開発では、チームやプロジェクトで定められた命名規則を優先します。
+
+**■ s_users**
 
 | id | name  | age |
 |:--:|:------|:---:|
 |  1 | Alice | 20  |
 |  2 | Bob   | 25  |
 
-まずは、**テーブルのスキーマ** (＝<span class="masked">列構成やデータ型の設計情報</span>) を指定して**テーブルを作成する SQL **を実行します。以下を、コピーして、ターミナルに貼りけて実行してみてください。
+
+まずは、**テーブルのスキーマ** (＝<span class="masked">どのような列を持ち、それぞれをどのデータ型で扱うかといったテーブルの構造</span>) を定義して、テーブルを作成します。
+
+次の SQL をコピーして、`psql` の対話モードに貼り付けて実行してください。
 
 ```sql{.numberLines caption="テーブルを作成するSQL"}
-CREATE TABLE s_users (id INT PRIMARY KEY, name TEXT NOT NULL, age INT);
+CREATE TABLE s_users (id INTEGER PRIMARY KEY, name TEXT NOT NULL, age INTEGER);
 ```
 
-成功すると `CREATE TABLE` のように表示されます。もし **同名のテーブルが既に存在している場合** は `ERROR:  relation "s_users" already exists` のようなエラーになります。
+正常に作成されると、次のように表示されます。
+
+```
+CREATE TABLE
+```
+
+一方、すでに **s_users** という名前のテーブルが存在している場合は、次のようなエラーが表示されます。
+
+```
+ERROR:  relation "s_users" already exists
+```
+
 
 **<i class="fa-solid fa-comment-dots fa-flip-horizontal"></i>プロンプト例**
 
-> PostgreSQL を使用しています。`CREATE TABLE s_users (id INT PRIMARY KEY, name TEXT NOT NULL, age INT);` という SQL について詳細に解説してください。
+> PostgreSQL を使用しています。次の SQL が何をしているのか、CREATE TABLE、PRIMARY KEY、NOT NULL、INTEGER、TEXT の意味も含めて分かりやすく説明してください。  
+>  
+> `CREATE TABLE s_users (id INTEGER PRIMARY KEY, name TEXT NOT NULL, age INTEGER);`
 
 #### レコードの挿入 (INSERT)
 
-次に、**レコードを挿入する SQL** を実行します。成功すると `INSERT 0 2` と表示されます。
+次に、作成した **s_users** テーブルに **レコードを挿入する SQL** を実行します。
 
 ```sql{.numberLines caption="2件のレコードを挿入するSQL"}
 INSERT INTO
@@ -419,23 +595,30 @@ VALUES
   (2, 'Bob', 25);
 ```
 
-SQL では <span class="masked">改行</span> を無視するので `INSERT INTO s_users (id, name, age) VALUES (1, 'Alice', 20), (2, 'Bob', 25);` のように1行で与えても問題ありません。 
+::: {.balloon .char-01 .face-02 .tone-yellow}
+SQL では、通常、「改行」や「複数の空白文字」は **SQL を読みやすくするための区切り (空白)** として扱われるので `INSERT INTO s_users (id, name, age) VALUES (1, 'Alice', 20), (2, 'Bob', 25);` のように **1行で記述しても同じ意味** になります。
+
+ただし、文字列リテラルのなかなど、改行や空白そのものがデータとして意味を持つ場合もあるため、「SQL はすべての改行や空白を完全に無視するというわけではない」ので注意して下さい。
+:::
+
+この SQL では **s_users** テーブルの `id`、`name`、`age` の各列に対して、**2件のレコードをまとめて挿入**しています。成功すると `INSERT 0 2` と表示されます。
 
 **<i class="fa-solid fa-comment-dots fa-flip-horizontal"></i>プロンプト例**
 
-> PostgreSQL で、テーブルに2件のレコードを挿入したら `INSERT 0 2` のように表示されました。`0` と `2` の意味について解説してください。
+> PostgreSQL で、テーブルに2件のレコードを挿入したところ `INSERT 0 2` と表示されました。`0` と `2` はそれぞれ何を意味していますか。
 
 ::: {.note .type-tips}
 
 **テーブルから全てのレコードを削除したいときは...**
 
-指定したテーブルから全てのレコードを削除する場合は `DELETE FROM` を使用します。
+テーブルそのものは残したまま、格納されているすべてのレコードを削除する場合は、`DELETE FROM` を使用できます。
 
 ```sql{.numberLines caption="すべてのレコードを削除するSQL (1)"}
 DELETE FROM s_users;
 ```
 
-また、`TRUNCATE TABLE` を使用すると、より高速に全件削除ができます。**IDシーケンス**についてもリセットされます。
+また、PostgreSQL には `TRUNCATE TABLE` という命令もあります。`TRUNCATE TABLE` もテーブル内の全レコードを削除しますが、`DELETE FROM` とは内部的な処理方法が異なり、大量のレコードを一括して削除する場合に高速に処理できることがあります。
+
 
 ```sql{.numberLines caption="すべてのレコードを削除するSQL (2)"}
 TRUNCATE TABLE s_users;
@@ -443,25 +626,43 @@ TRUNCATE TABLE s_users;
 
 **<i class="fa-solid fa-comment-dots fa-flip-horizontal"></i>プロンプト例**
 
-> リレーショナルデータベースにおける `DELETE FROM xxx` と `TRUNCATE TABLE xxxx` の違いについて教えてください。
-
-> リレーショナルデータベースにおける「IDシーケンス」とは何ですか。
-
+> リレーショナルデータベースにおける `DELETE FROM xxx` と `TRUNCATE TABLE xxxx` の違いについて教えてください。どのような場面で使い分けるのかも含めて教えてください。
 :::
 
 ::: {.note .type-tips}
 **テーブルそのものを削除したいときは...**
 
-レコードを含めてテーブルそのものを削除する場合は `DROP TABLE` を使用します。
+レコードだけではなく、**列の構成や制約などを含めてテーブルそのものを削除**したい場合は、`DROP TABLE` を使用します。
 
 ```sql{.numberLines caption="テーブルを削除するSQL"}
 DROP TABLE s_users;
 ```
 :::
 
+
+::: {.balloon .char-01 .face-05 .tone-blue}
+大まかには、次のように考えると分かりやすいと思います。
+
+- `DELETE`：**レコードを削除する**
+- `TRUNCATE`：**テーブルを空にする**
+- `DROP`：**テーブルそのものを削除する**
+:::
+
+#### 定着確認
+
+- PostgreSQL に `s_users (id INTEGER PRIMARY KEY, name TEXT NOT NULL, age INTEGER)` という定義の空のテーブルがある。<br>`id=1, name='Alice', age=20` と `id=2, name='Bob', age=25` の2件を、1つの SQL で挿入する命令を答えよ。
+  - **答え**: <span class="masked">`INSERT INTO s_users (id, name, age) VALUES (1, 'Alice', 20), (2, 'Bob', 25);`</span>
+
+- PostgreSQL で `INSERT` によるレコードの挿入が成功し、`INSERT 0 5` と表示された。この処理により挿入されたレコードの件数を答えよ。
+  - **答え**: <span class="masked">5件</span>
+
+- `s_users` テーブルの列構成や制約は残したまま、すべてのレコードを削除する SQL を、`DELETE FROM` を使って記述せよ。
+  - **答え**: <span class="masked">`DELETE FROM s_users;`</span>
+
 #### レコードの抽出 (SELECT)
 
-次に、レコード全件を **抽出 (選択) する SQL** を実行します。
+次に、**s_users** テーブルに格納されている全てのレコードを **抽出 (選択) する SQL** を実行します。
+
 
 ```sql{.numberLines caption="全件の全列のレコードを抽出するSQL"}
 SELECT * FROM s_users;
@@ -476,6 +677,12 @@ SELECT * FROM s_users;
   2 | Bob   |  25
 (2 rows)
 ```
+
+::: {.balloon .char-01 .face-02 .tone-yellow}
+ここで、`SELECT` は **取得する列を指定する句**、`FROM` は **どのテーブルから取得するかを指定する句** となります。また、`*`（アスタリスク）は「**すべての列**」を意味します。
+
+そのため、`SELECT * FROM s_users;` は <span class="masked">s_users テーブルから、すべての列を取得する</span> という意味になります。
+:::
 
 ---
 
@@ -497,7 +704,30 @@ SELECT age, id, name FROM s_users;
 
 また、`SELECT name, age FROM s_users;` とすれば、`name` と `age` だけを抽出・表示することができます (`id` の列は抽出・表示しない)。
 
-#### PosgreSQL の対話モードの終了 と Linuxシェルの終了
+#### 定着確認
+
+- PostgreSQL に `id`、`name`、`age` の3列を持つ `s_users` テーブルがある。このテーブルの全レコードについて、すべての列を取得する SQL を答えよ。
+  - **答え**: <span class="masked">`SELECT * FROM s_users;`</span>
+
+- `SELECT * FROM s_users;` の `*` (アスタリスク) は何を意味するか答えよ。
+  - **答え**: <span class="masked">すべての列。</span>
+
+- `SELECT name, age FROM s_users;` において、取得する列を指定している部分と、取得元のテーブルを指定している部分をそれぞれ答えよ。
+  - **答え**: <span class="masked">`SELECT name, age` が取得する列を指定し、`FROM s_users` が取得元のテーブルを指定している。</span>
+
+- `SELECT age, id, name FROM s_users;` を実行したとき、結果の列は左からどのような順番で表示されるか答えよ。
+  - **答え**: <span class="masked">`age`、`id`、`name` の順番。</span>
+
+- PostgreSQL に `id`、`name`、`age` の3列を持つ `s_users` テーブルがある。全レコードについて、`id` は表示せず、`name` と `age` だけをこの順番で取得する SQL を答えよ。
+  - **答え**: <span class="masked">`SELECT name, age FROM s_users;`</span>
+
+- psql で `SELECT * FROM s_users;` を実行したところ、結果の末尾に `(2 rows)` と表示された。この表示は何を意味するか答えよ。
+  - **答え**: <span class="masked">取得結果に2件のレコードが含まれていること。</span>
+
+- `id`、`name`、`age` の3列を持つ `s_users` テーブルに対して `SELECT name, age FROM s_users;` を実行すると、テーブルそのものから `id` 列が削除される。この説明は「適切である」か「適切ではない」か答えよ。
+  - **答え**: <span class="masked">適切ではない。取得結果に `id` 列を含めないだけで、テーブルの列構成や格納されているデータは変わらない。</span>
+
+#### PostgreSQL の対話モードの終了と Linuxシェルの終了
 
 **psql** で `\q` (もしくは`[Ctrl]+[D]`のショートカット) を入力すると対話モードが終了して、Linux のシェルに戻ります。
 
@@ -509,64 +739,131 @@ SELECT age, id, name FROM s_users;
 
 ### コンテナの利用 (Windows から psql を直接実行)
 
-上記の手順では <span class="masked">いったんコンテナのなかに入ってから、シェル経由で psql を実行</span> していました。しかし、**Windows側からコンテナの psql コマンドを直接叩くことも可能** です。
+ここまでの手順では、`docker container exec -it pg18 bash` で <span class="masked">いったんコンテナ内で Bash を起動し、その Bash から `psql` を実行</span> していました。
 
-例えば、次のような SQL を記述した `hoge.sql` というファイルをWindows側で用意しておきます。
+しかし、`docker container exec` では実行するコマンドとして `bash` 以外も指定できます。そのため、**Windows 側から、コンテナ内の `psql` を直接実行する**こともできます。
+
+例えば、次のような SQL を記述した `hoge.sql` というファイルを Windows 側で用意しておきます。
 
 ```sql{.numberLines caption="hoge.sql"}
 SELECT * FROM s_users;
 ```
 
-このSQLファイルを、次のように **ファイルリダイレクト** (`<`) を使って **psql** に流し込むことができます。ここでは、オプションを `-it` ではなく `-i` にしている点に注意してください。 
+このSQLファイルを、次のように **ファイルリダイレクト** (`<`) を使って **psql** に流し込むことができます。コマンドプロンプト (**cmd.exe**) で、`hoge.sql` が存在するディレクトリに移動してから、次のコマンドを実行してください。
 
 ```
-docker container exec -i pg17 psql -U student -d playground < hoge.sql
+docker container exec -i pg18 psql -U student -d playground < hoge.sql
 ```
 
-**_注意_**: 上記コマンドは **PowerShell ではなくコマンドプロンプト (cmd.exe)** から実行してください。PowerShell ではファイルリダイレクト (`<`) が利用できません。
+- 上記コマンドでは、これまで使用していた `-it` ではなく、**`-i` のみを指定している**点にも注目してください。
+- 上記コマンドは **PowerShell ではなくコマンドプロンプト (cmd.exe)** から実行してください。PowerShell ではファイルリダイレクト (`<`) が利用できません。
 
-実行結果は、次のようになります。宿題として授業時間外で試してみてください。
+実行結果は、次のようになります。
 
 ![img](figs/02/cmd-01.png)
 
+このコマンドでは、<u>**大まかに次のような処理**</u> が行われています。
+
+1. Windows 側のコマンドプロンプトが `hoge.sql` の内容を読み込む
+2. `<` によって、その内容を `docker container exec` の **標準入力**に渡す
+3. `-i` によって、その標準入力がコンテナ内で実行される `psql` まで接続される
+4. `psql` が受け取った SQL を PostgreSQL に送信して実行する
+
+::: {.balloon .char-01 .face-01 .tone-pink}
+`hoge.sql` というファイルそのものをコンテナへコピーしているわけではなく、**Windows 側で読み込んだファイルの内容を、標準入力を通してコンテナ内の psql に送り込んでいる**ことに注意してください。
+:::
+
+
 **<i class="fa-solid fa-comment-dots fa-flip-horizontal"></i>プロンプト例**
 
-> Docker に関する質問です。`docker container exec -it pg17 bash` では `-it` オプションなのに、`docker container exec -i pg17 psql -U student -d playground < hoge.sql` では `-i` オプションにするのはなぜですか。
+> Docker に関する質問です。`docker container exec -it pg18 bash` では `-it` オプションなのに、`docker container exec -i pg18 psql -U student -d playground < hoge.sql` では `-i` オプションにするのはなぜですか。
 
 > Linuxなどのシェルに関する文脈において「ファイルリダイレクト」とは何ですか？
 
 ### コンテナの停止
 
-次のコマンドで `pg17` のコンテナを停止 (≠削除) します。
+次のコマンドで `pg18` のコンテナを停止 (≠削除) します。正常に停止すると、応答としてコンテナ名 `pg18` が表示されます。
 
 ```
-docker container stop pg17
+docker container stop pg18
 ```
 
-念のために `docker ps` で起動中のコンテナ一覧に `pg17` が含まれていないことを確認してください。
+ここで行っているのは、コンテナの **停止** です。コンテナそのものを削除しているわけではありません。
+
+
+念のために `docker ps` で起動中のコンテナ一覧に `pg18` が含まれていないことを確認してください。
 
 #### 演習
 
-再び `pg17` コンテナを起動し、そこに接続し `psql` から `SELECT * FROM s_users;` を実行し、**テーブルのデータが残っていること** (＝<span class="masked">コンテナを停止してもデータが消失しないこと</span>) を確認してください。
+再び `pg18` コンテナを起動し、そこに接続し `psql` から `SELECT * FROM s_users;` を実行し、**テーブルのデータが残っていること** (＝<span class="masked">コンテナを停止してもデータが消失しないこと</span>) を確認してください。
 
 **<i class="fa-solid fa-comment-dots fa-flip-horizontal"></i>プロンプト例**
 
-> Docker で `docker create --name pg17 -e POSTGRES_USER=hoge -e POSTGRES_PASSWORD=fuga -e POSTGRES_DB=piyo postgres:17.6` のようにコンテナを作成しました。  
+> Docker で `docker create --name pg18 -e POSTGRES_USER=hoge -e POSTGRES_PASSWORD=fuga -e POSTGRES_DB=piyo postgres:18.6` のようにコンテナを作成しました。  
+>  
 > このコンテナを起動して、データベースにテーブルを作成して、レコードを挿入しました。その後、このコンテナを停止し、再度、起動すると、テーブルとレコードの情報が消えずに残っていました。これらの情報は、どこに保存されていたのでしょうか。
 
 ### コンテナの削除
 
-次のコマンドで `pg17` のコンテナを削除します。コンテナを削除すると、データベースの内容 (例えば、先ほど作成した `s_users` など) も一緒に削除されます。
+次のコマンドで、停止中の `pg18` コンテナを削除することができます。
+
+**上記の演習でコンテナを再起動している場合には、先に `docker container stop pg18` でコンテナを停止してから**、削除を実行してください。
 
 ```
-docker container rm pg17
+docker container rm pg18
 ```
 
-念のために `docker ps -a` (`-a` は停止中のコンテナも含めて表示するオプション) で、`pg17` が消えていることを確認してください。
+::: {.balloon .char-01 .face-01 .tone-pink}
+削除したコンテナは、`docker container start` で再び起動することはできません。
+
+また、再度、以下のコマンドで同じ名前のコンテナを再作成しても、**<u>以前のコンテナのデータ (作成したテーブルや挿入したレコード) が引き継がれるわけではありません</u>**。
+
+```
+docker container create --name pg18 -e POSTGRES_USER=student -e POSTGRES_PASSWORD=secret123 -e POSTGRES_DB=playground postgres:18.6
+```
+:::
+
+::: {.note .type-senior}
+**中級者向け: コンテナを削除すると、DBデータも削除される？**
+
+PostgreSQL の公式 Docker イメージでは、DBデータは **Docker ボリューム**に保存されます。そのため、`docker container rm pg18` でコンテナを削除しても、**DBデータ自体はボリュームに残っています**。
+
+ただし！同じ名前の `pg18` コンテナを作り直しても、**以前のボリュームが自動的に再利用されるわけではありません**。そのため、新しいコンテナから見ると、以前のテーブルやレコードは引き継がれていないように見えます。
+
+コンテナを作り直しても同じDBデータを使いたい場合は、コンテナ作成時に `-v` などのオプションを指定し、**利用するボリュームを明示的に指定**する必要があります。
+:::
+
+念のために `docker ps -a` (`-a` は停止中のコンテナも含めて表示するオプション) で、`pg18` が消えていることを確認してください。
 
 停止中のものも含めて、コンテナが1個も存在しないとき、Docker Desktop では以下のような表示となります。
 
 ![img](figs/02/docker-desktop-02.png)
+
+#### 定着確認
+
+- 起動中の Docker コンテナ `pg18` を停止するコマンドを答えよ。また、正常に停止したときの応答として何が表示されるか答えよ。
+  - **答え**: <span class="masked">`docker container stop pg18`。応答としてコンテナ名の `pg18` が表示される。</span>
+
+- 停止中の Docker コンテナ `pg18` を削除するコマンドを答えよ。
+  - **答え**: <span class="masked">`docker container rm pg18` もしくは `docker rm pg18` という省略形も可 (本科目では非推奨)。</span>
+
+- 起動中の Docker コンテナ `pg18` を、強制削除の `-f` オプションを使わずに削除したい。停止から削除までのコマンドを、実行する順番に答えよ。
+  - **答え**: <span class="masked">まず `docker container stop pg18`、つづいて `docker container rm pg18` を実行する。</span>
+
+- Docker コンテナ `pg18` を削除せずに停止した。この `pg18` は、`docker ps` と `docker ps -a` のそれぞれの一覧に表示されるか答えよ。
+  - **答え**: <span class="masked">`docker ps` には表示されず、`docker ps -a` には表示される。</span>
+
+- PostgreSQL コンテナ `pg18` でテーブルを作成してレコードを挿入した後、`docker container stop pg18` で停止した。同じコンテナを再び起動するコマンドを答えよ。また、停止前のテーブルとレコードは残っているか答えよ。
+  - **答え**: <span class="masked">`docker container start pg18`。コンテナを停止しただけなので、テーブルとレコードは残っている。</span>
+
+- `docker container rm pg18` でコンテナを削除した後、同じコンテナを `docker container start pg18` で再び起動できる。この説明は「適切である」か「適切ではない」か答えよ。
+  - **答え**: <span class="masked">適切ではない。削除したコンテナは存在しないため、再び利用するにはコンテナを新しく作成する必要がある。</span>
+
+- `postgres:18.6` から作成した停止中のコンテナ `pg18` に対して `docker container rm pg18` を実行すると、元のイメージ `postgres:18.6` も削除される。この説明は「適切である」か「適切ではない」か答えよ。
+  - **答え**: <span class="masked">適切ではない。コンテナを削除しても、元のイメージは残る。</span>
+
+- PostgreSQL のデータを Docker ボリュームに保存している停止中のコンテナ `pg18` に対して、`docker container rm pg18` を実行した。このコマンドだけで、ボリュームと、そのなかのデータも削除されるか答えよ。
+  - **答え**: <span class="masked">削除されない。コンテナとボリュームは別に管理されており、このコマンドではボリューム内のデータは残る。</span>
 
 #### 演習
 
@@ -581,23 +878,24 @@ docker container rm pg17
 ここまでは「イメージのプル」「コンテナの作成」「コンテナの起動」を個別に実行しましたが、`docker container run` コマンドでは、**これらの3つをまとめて実行すること** ができます。
 
 ```
-docker container run --name pg17 `
+docker container run --name pg18 `
   -e POSTGRES_USER=student `
   -e POSTGRES_PASSWORD=secret123 `
   -e POSTGRES_DB=playground `
   -d `
-  postgres:17.6
+  postgres:18.6
 ```
 
 `-d` オプションによって、コンテナを **デタッチドモード** (Detached Mode) で起動します。これにより、コンテナは **バックグラウンドで実行** され、ターミナルはすぐに操作可能な状態に戻ります。
 
-**<i class="fa-solid fa-comment-dots fa-flip-horizontal"></i>プロンプト例**
-
-> Docker の `docker container run` コマンドにおいて「コンテナをデタッチモードで起動する」とは、どういうことですか？デタッチモードで起動しないときの動作はどうなりますか。
-
 なお、`run` は、`pull` `create` `start` をまとめて実行するものなので、以降は `stop` で停止、再び起動するときは `start` を使用します。既に同名のコンテナが存在する場合は `run` は失敗するので注意してください。
 
 :::
+
+
+**<i class="fa-solid fa-comment-dots fa-flip-horizontal"></i>プロンプト例**
+
+> Docker の `docker container run` コマンドにおいて「コンテナをデタッチモードで起動する」とは、どういうことですか？デタッチモードで起動しないときの動作はどうなりますか。
 
 ### まとめ
 
@@ -607,19 +905,65 @@ docker container run --name pg17 `
 
 #### 定着確認
 
-- ターミナルのプロンプトが `root@d2196c5352d3:/#` のように表示されているとき、その操作対象は「Windows の PowerShell」「Docker コンテナ内の Linux シェル」「PostgreSQL の対話モード (psql)」のうち、どれと考えることができるか。
+- ターミナルのプロンプトが `root@e14852ebd977:/#` のように表示されているとき、その操作対象は「Windows の PowerShell」「Docker コンテナ内の Linux シェル」「PostgreSQL の対話モード (psql)」のうち、どれと考えることができるか。
   - **答え**: <span class="masked">Docker コンテナ内の Linux シェル</span>
-- `docker ps` コマンドによって表示されるのは「停止中のコンテナのみ」と「起動中のコンテナのみ」のどちらか答えよ。
-  - **答え**: <span class="masked">起動中のコンテナのみ</span>
-- 起動中の Docker コンテナ `pg17` を削除するには、まずコンテナを停止したうえで削除する必要がある。
-そのための一連のコマンドを答えよ。
-  - **答え**: <span class="masked">`docker container stop pg17`、`docker container rm pg17`</span>
-- RDB において `s_users` というテーブルのレコードを全件抽出するSQLを答えよ。
-  - **答え**: <span class="masked">`SELECT * FROM s_users;`</span>
-- RDB において `s_users` というテーブルのレコードを全件削除するSQLを答えよ。
-  - **答え**: <span class="masked">`DELETE FROM s_users;`</span> もしくは <span class="masked">`TRUNCATE TABLE s_users;`</span> 
-- RDB において `s_users` というテーブルそのものを削除するSQLを答えよ。
-  - **答え**: <span class="masked">`DROP TABLE s_users;`</span>
+
+- どのコンテナからも利用されていない Docker イメージ `postgres:18.6` を削除するコマンドを答えよ。
+  - **答え**: <span class="masked">`docker image rm postgres:18.6`</span>
+
+- Docker コンテナの名前として使えるものを、次のなかからすべて選べ。また、使えない名前については、その理由を答えよ。**A**: `pg18_test`、**B**: `pg18-test`、**C**: `pg18.test`、**D**: `_pg18`。
+  - **答え**: <span class="masked">A、B、C。アンダーバー、ハイフン、ピリオドは使えるが、先頭文字は英数字にする必要があるため、Dは使えない。</span>
+
+- PostgreSQL の `psql` は「データを管理するサーバープロセス」「SQL を送信して結果を確認する CLI クライアントツール」のどちらか答えよ。また、CLI は何の略か答えよ。
+  - **答え**: <span class="masked">SQL を送信して結果を確認する CLI クライアントツール。CLI は Command Line Interface の略。</span>
+
+- PostgreSQL コンテナ内の Bash から、ユーザ `student` としてデータベース `playground` に接続し、psql の対話モードを開始するコマンドを答えよ。また、ユーザ名とデータベース名を指定するオプションをそれぞれ答えよ。
+  - **答え**: <span class="masked">`psql -U student -d playground`。`-U` がユーザ名、`-d` がデータベース名を指定する。</span>
+
+- データベースの「テーブルのスキーマ」とは、どのような情報か答えよ。
+  - **答え**: <span class="masked">どのような列を持ち、それぞれをどのデータ型で扱うかといった、テーブルの構造を定義する情報。</span>
+
+- PostgreSQL に、`id` が `INTEGER PRIMARY KEY`、`name` が `TEXT NOT NULL`、`age` が `INTEGER` である `s_users` テーブルを新しく作成する SQL を答えよ。また、正常に作成されたときの応答を答えよ。
+  - **答え**: <span class="masked">`CREATE TABLE s_users (id INTEGER PRIMARY KEY, name TEXT NOT NULL, age INTEGER);`。応答は `CREATE TABLE`。</span>
+
+- PostgreSQL で `CREATE TABLE s_users (id INTEGER PRIMARY KEY, name TEXT NOT NULL, age INTEGER);` を実行したところ、`ERROR: relation "s_users" already exists` と表示された。このエラーは何を意味するか答えよ。
+  - **答え**: <span class="masked">作成先に `s_users` という名前のテーブルなどが既に存在していること。</span>
+
+- PostgreSQL で `TRUNCATE TABLE s_users;` が正常終了した。`s_users` のレコードと、テーブルそのものは、それぞれどうなるか答えよ。
+  - **答え**: <span class="masked">すべてのレコードが削除され、テーブルは空になる。列構成や制約など、テーブルそのものは残る。</span>
+
+- PostgreSQL で `DROP TABLE s_users;` が正常終了した。`s_users` のレコードと、テーブルそのものは、それぞれどうなるか答えよ。
+  - **答え**: <span class="masked">レコードを含めてテーブルそのものが削除される。</span>
+
+- SQL は、改行や空白を文字列リテラルのなかも含めてすべて無視する。この説明は「適切である」か「適切ではない」か答えよ。
+  - **答え**: <span class="masked">適切ではない。通常は命令や名前などを区切る空白として扱われるが、文字列リテラルのなかでは、改行や空白そのものがデータとして意味を持つ。</span>
+
+- Docker コンテナ内の Bash から psql を起動している。psql の対話モードを終了し、コンテナ内の Bash に戻るために入力するコマンドを答えよ。
+  - **答え**: <span class="masked">`\q`</span>
+
+- Windows の PowerShell から `docker container exec -it pg18 bash` で接続したコンテナ内の Bash を終了するコマンドを答えよ。また、終了後はどこに戻るか、`pg18` コンテナも停止するか答えよ。
+  - **答え**: <span class="masked">`exit`。Windows の PowerShell に戻る。今回の PostgreSQL コンテナでは、Bash を終了してもコンテナと PostgreSQL サーバーは動作を続ける。</span>
+
+- Windows 側のカレントディレクトリに、実行したい SQL を記述した **hoge.sql** がある。起動中のコンテナ `pg18` の psql に、ユーザ `student`、データベース `playground` を指定し、このファイルの内容を標準入力で送るコマンドを答えよ。また、PowerShell とコマンドプロンプト (cmd.exe) のどちらで実行するか答えよ。
+  - **答え**: <span class="masked">`docker container exec -i pg18 psql -U student -d playground < hoge.sql`。コマンドプロンプト (cmd.exe) で実行する。</span>
+
+- Windows のコマンドプロンプトで `docker container exec -i pg18 psql -U student -d playground < hoge.sql` を実行した。この操作では、**hoge.sql** というファイルそのものをコンテナ内にコピーしているか答えよ。また、コンテナ内の psql に何が渡されるか答えよ。
+  - **答え**: <span class="masked">ファイルそのものをコピーしているわけではない。Windows 側で読み込んだファイルの内容が、標準入力を通して psql に渡される。</span>
+
+- SQL ファイルを標準入力から送る `docker container exec -i pg18 psql -U student -d playground < hoge.sql` では、対話的に Bash を使うときの `-it` ではなく `-i` のみを指定している。それぞれのオプションの役割を踏まえ、この理由を答えよ。
+  - **答え**: <span class="masked">`-i` は標準入力を psql に接続するために必要。ファイルの内容を入力として送る処理では、対話操作用の仮想ターミナルを割り当てる `-t` は不要なため。</span>
+
+- 使用する Docker イメージが既にローカルに存在するとき、コンテナの「作成」と「起動」を1つのコマンドで行うための Docker コマンドを答えよ。
+  - **答え**: <span class="masked">`docker container run`</span>
+
+- `docker container run --name pg18 -e POSTGRES_PASSWORD=secret123 -d postgres:18.6` の `-d` は何を指定するオプションか答えよ。また、この指定によってターミナルはどのような状態になるか答えよ。
+  - **答え**: <span class="masked">デタッチドモードを指定するオプション。コンテナはバックグラウンドで動作し、ターミナルはすぐに操作可能な状態に戻る。</span>
+
+- `docker container run` で作成・起動した `pg18` コンテナを停止した。同じコンテナを再び起動するときに使うコマンドを答えよ。また、同じ名前を指定して `docker container run --name pg18 ...` を再度実行した場合は、どうなるか答えよ。
+  - **答え**: <span class="masked">`docker container start pg18`。`run` を再度実行すると、新しいコンテナを作成しようとするため、コンテナ名の重複によるエラーとなる。</span>
+
+- 明示的にボリュームを指定せずに `postgres:18.6` から作成したコンテナ `pg18` に、テーブルやレコードを保存した。そのコンテナを停止して `docker container rm pg18` で削除し、同じ手順・同じ名前で新しく作成すると、以前のDBデータは自動的に引き継がれるか答えよ。
+  - **答え**: <span class="masked">自動的には引き継がれない。以前のボリュームにはデータが残っているが、新しいコンテナではそのボリュームが自動的に再利用されないため。</span>
 
 ## Docker Desktop による Docker の GUI 操作
 
@@ -661,17 +1005,17 @@ docker container run --name pg17 `
 
 つまり、ここまでの範囲で説明した使い方は、「PostgreSQL のサーバプロセス」と「クライアントツール」の通信が <span class="masked">すべて「コンテナの内部」で完結しているもの</span> でした。
 
-一方で、PostgreSQL のサーバプロセスとは別のホストのクライアントツールから接続するとき、**TypeScript や Python などのプログラムからDB接続するとき** には <span class="masked">TCP/P 接続 (ポート通信)</span> を使う必要があります。
+一方で、PostgreSQL のサーバプロセスとは別のホストのクライアントツールから接続するときや、**Windows (ホストOS) 上の TypeScript や Python などのプログラムからDBに接続するとき** には <span class="masked">TCP/IP 接続 (ポート通信)</span> を使います。
 
-Docker Desktop を起動している「Windows (ホストOS)」と「Docker コンテナ」の間での TCP/IP 接続を有効化するには `docker container create ` コマンドの実行時に、次のように `-p` オプションを指定する必要があります。
+Docker Desktop を起動している「Windows (ホストOS)」と「Docker コンテナ」の間での TCP/IP 接続を有効化するには `docker container create` コマンドの実行時に、次のように `-p` オプションを指定する必要があります。
 
-```
-docker container create --name pg17 `
+```{caption="ポートのマッピングを指定してコンテナを作成"}
+docker container create --name pg18 `
   -e POSTGRES_USER=student `
   -e POSTGRES_PASSWORD=secret123 `
   -e POSTGRES_DB=playground `
   -p 5432:5432 `
-  postgres:17.6
+  postgres:18.6
 ```
 
 この設定により、
@@ -681,11 +1025,11 @@ docker container create --name pg17 `
 
 マッピングされるようになります。これで、任意のクライアントツールやプログラムから 5432番ポートを使って PostgreSQL に接続できるようになります。
 
-なお、既にホストOS側で別のアプリで 5432 番ポートを使っている場合は `-p 5432:5433` のようにして、ホスト側のポート番号を 5433 に変えることができます。
+なお、既にホストOS側の別のアプリが 5432 番ポートを使っている場合は `-p 5433:5432` のようにして、ホスト側のポート番号を 5433 に変えることができます。`-p` では「ホスト側のポート番号:コンテナ側のポート番号」の順に指定します。
 
 #### 定着確認
 
-- PostgreSQL をはじめとする代表的な RDBMS で使用される標準の通信ポート番号を答えよ。
+- PostgreSQL で使用される標準の通信ポート番号を答えよ。
   - **答え**: <span class="masked">5432番</span>
 - Linux や macOS などの UNIX 系 OS において、同一ホスト内のプロセス間通信に使われ、PostgreSQL のローカル接続にも利用される仕組みを何というか答えよ。
   - **答え**: <span class="masked">UNIXドメインソケット</span>
@@ -696,25 +1040,25 @@ TCP/IP ポートのマッピング設定を含めて Docker コンテナを作�
 
 **<i class="fa-solid fa-comment-dots fa-flip-horizontal"></i>プロンプト例**
 
-> Dockerコンテナとホストで「ポートをマッピングをする」とは、どのようなことですか。PostgreSQL のコンテナを作成する状況を想定して解説してください。
+> Dockerコンテナとホストで「ポートをマッピングする」とは、どのようなことですか。PostgreSQL のコンテナを作成する状況を想定して解説してください。
 
 #### コンテナ側の準備
 
-まず、`pg17` という名前のコンテナが存在していれば `docker container rm pg17` コマンドで削除しておきます。
+まず、`pg18` という名前のコンテナが存在していれば `docker container rm pg18` コマンドで削除しておきます。起動中の場合は、先に `docker container stop pg18` で停止してください。
 
-次に、以下の `docker container run` コマンドで、**5432番ポート (RDBMSの標準ポート) のマッピング設定** を含めてコンテナを作成・起動します。
+次に、以下の `docker container run` コマンドで、**5432番ポート (PostgreSQLの標準ポート) のマッピング設定** を含めてコンテナを作成・起動します。
 
 ```
-docker container run --name pg17 `
+docker container run --name pg18 `
   -e POSTGRES_USER=student `
   -e POSTGRES_PASSWORD=secret123 `
   -e POSTGRES_DB=playground `
   -p 5432:5432 `
   -d `
-  postgres:17.6
+  postgres:18.6
 ```
 
-つづいて `docker container exec -it pg17 bash` コマンドで、`pg17` コンテナにログインし、**psql** で `s_users` テーブルを作成し、いくつかのレコードを挿入しておきます ([参考1](#テーブルの作成-create-table)、[参考2](#コンテナのシェルを利用))。
+つづいて `docker container exec -it pg18 bash` コマンドで、`pg18` コンテナ内の Bash を起動し、**psql** で `s_users` テーブルを作成し、いくつかのレコードを挿入しておきます ([参考1](#テーブルの作成-create-table)、[参考2](#レコードの挿入-insert))。
 
 ::: {.note .type-tips}
 
@@ -722,24 +1066,24 @@ docker container run --name pg17 `
 
 作成済みコンテナにおいて、どのポートがどのようにマッピングされているか (＝ホスト👉コンテナの対応) を確認するためには `docker port` コマンドを使用します。
 
-`docker port pg17` のようにコマンドを実行すると、次のような結果が表示されます。
+`docker port pg18` のようにコマンドを実行すると、次のような結果が表示されます。
 
 ```
 5432/tcp -> 0.0.0.0:5432
 5432/tcp -> [::]:5432
 ```
 
-**1行目** は、コンテナ内の TCP ポート `5432` が、ホストOSの **IPv4 アドレス** `0.0.0.0` の `5432` 番ポートに公開されていること、を示しています。ここでの `0.0.0.0` は「すべての IPv4 アドレスで受け付ける」という特別な指定で、実際には `127.0.0.1` (ローカルホスト) などのすべての IPv4 経路を含みます。
+**1行目** は、コンテナ内の TCP ポート `5432` が、ホストOSの **IPv4 アドレス** `0.0.0.0` の `5432` 番ポートに公開されていることを示しています。ここでの `0.0.0.0` は「すべての IPv4 アドレスで受け付ける」という特別な指定で、実際には `127.0.0.1` (ローカルホスト) などのすべての IPv4 経路を含みます。
 
 - たとえば、ホストマシンの IP アドレスが `192.168.1.8` の場合、`192.168.1.8:5432`、`127.0.0.1:5432`、`localhost:5432` など、いずれの経路からアクセスしてもコンテナ内のポート `5432` に転送されることを意味します。
 
-**2行目**は **IPv6*+ 向けの設定で、同様に IPv6 のすべてのアドレス (`[::]`) で接続を受け付けていることを示しています。
+**2行目**は **IPv6** 向けの設定で、同様に IPv6 のすべてのアドレス (`[::]`) で接続を受け付けていることを示しています。
 
 :::
 
 #### ホスト側の準備とTCP/IP接続
 
-次に、PostgreSQLに対応し、インストール不要で使える軽量のSQLクライアント「**HeidiSQL** (ハイディエスキューエル)」を取得してきます。[こちら](https://www.heidisql.com/download.php)から「**Portable Windows version (zipped)**」をダウンロードしてきます。
+次に、PostgreSQLに対応し、インストール不要で使える軽量のSQLクライアント「**HeidiSQL** (ハイディエスキューエル)」を取得してきます。[こちら](https://www.heidisql.com/download.php) から「**Portable Windows version (zipped)**」をダウンロードしてきます。
 
 ![img](figs/02/heidi-sql-01.png)
 
@@ -777,17 +1121,17 @@ HeidiSQL の起動後、新規の**DB接続設定**を作成するために、�
 
 ## Docker とは (詳細)
 
-以上のハンズオンを通じて、体験的に Docker の概要が把握できたと思います。ここからは、Docker について、少しだけ詳しく解説していきたいと思います。
+以上のハンズオンを通じて、体験的に **Docker の概要が把握できた**と思います。ここからは、Docker について、少しだけ詳しく解説していきたいと思います。
 
 ---
 
-[Docker](https://ja.wikipedia.org/wiki/Docker)とは「**コンテナ型仮想化技術**」を実装したソフトウェアで、これを利用することで <span class="masked">普段使いのPC環境をクリーンに保ったまま、様々な開発環境を構築</span> できるようになります。しかも、**それぞれの開発環境が相互に影響しないようにすること** ができるようになります。
+[Docker](https://ja.wikipedia.org/wiki/Docker)とは「**コンテナ型仮想化技術**」を実装したソフトウェアで、これを利用することで <span class="masked">普段使いの PC 環境をクリーンに保ったまま、様々な開発環境を構築</span> できるようになります。しかも、**それぞれの開発環境が相互に影響しないようにすること** ができるようになります。
 
-- 例えば、**プロジェクトA** のために、Python のバージョンを `3.10` から `3.13` に上げたら、「プロジェクトB で開発中だったアプリが動かなくなった💦」といったトラブルを回避することができるようになります。
+- 例えば、**プロジェクトA** のために、Python のバージョンを `3.10` から `3.13` に上げたら、「プロジェクトB で開発中だったアプリが動かなくなってしまった💦」といったトラブルを回避することができるようになります。
 
 Docker を利用すると「**なにがうれしいのか**🤔」について、具体的な状況を想定して詳しく考えてみたいと思います。例として、次のような状況を考えていきます。
 
->「データベース工学」の授業で「PostgreSQL 17」の環境構築が必要で、同時に「応用専門PBL2」でのプロジェクト開発で「PostgreSQL 15」の環境構築が必要になった。
+>「データベース工学」の授業で「PostgreSQL 18」の環境構築が必要で、同時に「応用専門PBL2」でのプロジェクト開発で「PostgreSQL 15」の環境構築が必要になった。
 
 このようなとき、次のような問題が考えられます。
 
@@ -800,11 +1144,17 @@ Docker を利用すると「**なにがうれしいのか**🤔」について�
 
 Dockerでは **_コンテナ_** と呼ばれる独立した「箱」を用意し、各コンテナの内部に **最小限のOSと必要な開発環境 (例えば PostgreSQL など)** を構築し、それぞれのコンテナを必要に応じて立ち上げることができます。メインのOSに直接インストールする場合と違って <span class="masked">Windowsレジストリの書き換え</span> などは起きません。
 
-また、開発環境が不要になったときは、コンテナごときれいに削除することができます (ゴミが残ることがありません)。また `Dockerfile` や `docker-compose.yaml` という軽量の設定ファイル (テキストファイル) を残しておけば、すぐに開発環境を再構築することも可能となります。また、その設定ファイルを使って、別PCに上に開発環境のクローンを構築することも可能になります。
 
-このように Docker (コンテナ型仮想化技術) には <span class="masked">普段使いのOS環境に影響を与えず、様々な開発環境を気軽に構築できる</span> というメリットがあります。
+::: {.balloon .char-01 .face-02 .tone-yellow}
+開発環境が不要になったときは、コンテナごと削除することもできます (イメージやボリュームは別に残ることがあります)。
 
-なお、コンテナ型仮想化技術の「詳しい仕組み」については、本科目では解説しないので興味関心がある学生は、書籍や生成AIなどを利用して各自で掘り下げてください。少し古い書籍ですが[仕組みと使い方がわかる Docker&Kubernetes のきほんのきほん](https://www.amazon.co.jp/dp/4839972745/)が初心者向けの内容になっており、お勧めです (研究室に所蔵しているので、内容を確認したい学生は声をかけてください)。
+さらに `Dockerfile` や `docker-compose.yaml` という軽量の設定ファイル (テキストファイル) を残しておけば、すぐに開発環境を再構築することも可能となります。また、その設定ファイルを使って、別のPC上に開発環境のクローンを構築することも比較的簡単にできます。
+:::
+
+
+以上のように Docker (コンテナ型仮想化技術) には <span class="masked">普段使いのOS環境に影響を与えず、様々な開発環境を気軽に構築できる</span> というメリットがあります。
+
+なお、コンテナ型仮想化技術の「詳しい仕組み」については、本科目では解説しないので興味関心がある学生は、書籍や生成AIなどを利用して各自で掘り下げてください。少し古い書籍ですが [仕組みと使い方がわかる Docker & Kubernetes のきほんのきほん](https://www.amazon.co.jp/dp/4839972745/) が初心者向けの内容になっており、お勧めです (研究室に所蔵しているので、内容を確認したい学生は声をかけてください)。
 
 **<i class="fa-solid fa-comment-dots fa-flip-horizontal"></i>プロンプト例**
 
@@ -818,18 +1168,18 @@ Docker は、次のようなケースで、特に便利に利用することが�
 
 #### ケース1
 
-例えば Python **3.10** でアプリを開発していたとします。このアプリが Python 3.7、3.8、3.9、3.11 といった**異なる実行環境でも正常に動作するかを確認したいとき**、Docker を利用すると便利です。各バージョンの Python 環境をコンテナとして簡単に用意できるため、複数バージョンでの動作確認を1台ので手軽に行うことができます。
+例えば Python **3.10** でアプリを開発していたとします。このアプリが Python 3.7、3.8、3.9、3.11 といった**異なる実行環境でも正常に動作するかを確認したいとき**、Docker を利用すると便利です。各バージョンの Python 環境をコンテナとして簡単に用意できるため、複数バージョンでの動作確認を1台のPCで手軽に行うことができます。
 
 #### ケース2
 
-チーム開発のように「**全員の開発環境をそろえたい**」ときにも Docker は強力です。OS (Windows/macOS) やライブラリの違いによる「**自分の PC では動くのに、他の人のでは動かない…**」というトラブルを防ぐことができます。同じ Docker イメージ (`Dockerfile` や `docker-compose.yaml` ) を共有すれば、全員が限りなく同じ環境で開発することができます。
+チーム開発のように「**全員の開発環境をそろえたい**」ときにも Docker は強力です。OS (Windows/macOS) やライブラリの違いによる「**自分の PC では動くのに、他の人のでは動かない…**」というトラブルを防ぐことができます。同じ Docker イメージや設定ファイル (**Dockerfile** や **docker-compose.yaml**) を共有すれば、全員が限りなく同じ環境で開発することができます。
 
 #### 参考書籍
 
-Docker を使用して開発環境を構築するときは、以下の電子書籍が参考になると思います (KindleUnlimited対象 2025/10/09現在)。
+Docker を使用して開発環境を構築するときは、以下の電子書籍が参考になると思います。
 
-- [Docker Desktop for Windows/Macでつくるクリーンな開発環境構築入門 (Webアプリケーション版) 2025版](https://www.amazon.co.jp/dp/B0F7WGR9RW/)
-- [Docker Desktop for Windows/Macでつくるクリーンな開発環境構築入門 (Python版) 2025版](https://www.amazon.co.jp/dp/B08D8TXXHD/)
+- [Docker Desktop for Windows/Mac でつくるクリーンな開発環境構築入門 (Web アプリケーション版) 2025版](https://www.amazon.co.jp/dp/B0F7WGR9RW/)
+- [Docker Desktop for Windows/Mac でつくるクリーンな開発環境構築入門 (Python 版) 2025版](https://www.amazon.co.jp/dp/B08D8TXXHD/)
 
 ::: {.note .type-senior}
 
@@ -862,14 +1212,14 @@ Docker を使用して開発環境を構築するときは、以下の電子書�
 
 **<i class="fa-solid fa-comment-dots fa-flip-horizontal"></i>プロンプト例**
 
-> いま、Docker コンテナを `docker container run --name pg17 -e POSTGRES_USER=student -e POSTGRES_PASSWORD=secret123 -e POSTGRES_DB=playground -p 5432:5432 -d postgres:17.6` のように起動しています。これを `docker-compose.yaml` を使った方法に切り替えたいです。どのようにすればよいですか。
+> いま、Docker コンテナを `docker container run --name pg18 -e POSTGRES_USER=student -e POSTGRES_PASSWORD=secret123 -e POSTGRES_DB=playground -p 5432:5432 -d postgres:18.6` のように起動しています。これを `docker-compose.yaml` を使った方法に切り替えたいです。どのようにすればよいですか。
 
-- 講義では、`postgres:17.6` という PostgreSQL の公式イメージを **そのまま利用** しましたが、実務では要件に合わせて独自のイメージを作成することが多く、その際に使われるのが `Dockerfile` となります。たとえば、追加パッケージの導入や、自分で用意した設定ファイル・サンプルデータのコピー、環境変数の設定、初期化スクリプトの配置などを行います。`Dockerfile` を用いた**カスタムイメージ作成**について調べてみてください。
-  - [Dockerの基本を学んでコンテナ型の仮想環境を作ろう！](https://www.youtube.com/watch?v=B5tSZr_QqXw&t=1366s) @YouTube
-    - **22:46** ～ Dokcerfile からコンテナを起動する解説 
+- 講義では、`postgres:18.6` という PostgreSQL の公式イメージを **そのまま利用** しましたが、実務では要件に合わせて独自のイメージを作成することが多く、その際に使われるのが `Dockerfile` となります。たとえば、追加パッケージの導入や、自分で用意した設定ファイル・サンプルデータのコピー、環境変数の設定、初期化スクリプトの配置などを行います。`Dockerfile` を用いた**カスタムイメージ作成**について調べてみてください。
+  - [Docker の基本を学んでコンテナ型の仮想環境を作ろう！](https://www.youtube.com/watch?v=B5tSZr_QqXw&t=1366s) @YouTube
+    - **22:46** ～ Dockerfile からコンテナを起動する解説 
   - Docker の `Dockerfile` や `docker-compose.yaml` のように、インフラの構成をプログラムコードとして記述し、管理・自動化する考え方を <span class="masked">IaC（Infrastructure as Code）</span> といいます。
 - 次の動画では、Dockerの基礎知識から実際に開発環境を構築するまで徹底解説されています。おすすめです。
-  - [【図解】これなら分かる!!はじめてのDocker](https://www.youtube.com/watch?v=B1EQ1oncKak)@YouTube
+  - [【図解】これなら分かる!!はじめてのDocker](https://www.youtube.com/watch?v=B1EQ1oncKak) @YouTube
 
 ---
 
