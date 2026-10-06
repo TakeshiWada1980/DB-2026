@@ -148,7 +148,9 @@ class="toc-section-number">7</span> 授業時間外学習の指示 (宿題)</a><
       への接続などができるようにします。SQL についても、VS Code
       のエディタ上で記述し、キーボードショートカットから実行できる環境を使います。</p>
       <div class="balloon char-01 face-02 tone-yellow">
-      <p>最初から便利な方法だけを使うと、その裏で何が行われているのかが「ブラックボックス」になりがちです。そこで今回は、<strong>あえて基本的なコマンドを1つずつ実行し、コンテナの作成・起動・接続・SQL実行が、どのような仕組みで成り立っているのかを確認することを重視</strong>して、このような内容としています。</p>
+      <p>最初から便利な方法だけを使うと、その裏で何が行われているのかが「ブラックボックス」になりがちです。そこで今回は、<strong>あえて基本的なコマンドを1つずつ実行し、コンテナの作成・起動・接続・SQLの実行が、それぞれどのような仕組みで成り立っているのかを確認することを重視</strong>して、このような内容としています。</p>
+      <p>こうした仕組みを自分の操作と結びつけて理解しておくことで、<strong>「どこからアクセスできるのか」「どの処理を経由しているのか」「別の経路から操作できる可能性はないか」といったことを具体的に考えられるようになります。</strong>
+      セキュリティでは、このようにシステムの構造を理解したうえで、どこに問題が起こり得るのかを見つける力が重要です。</p>
       </div>
       <h1 data-number="2" id="前回講義の振返りと確認"><span class="header-section-number">2</span>
       前回講義の振返りと確認</h1>
@@ -271,7 +273,6 @@ hello-world:latest     e2ac70e7319a</code></pre>
       <img src="figs/02/docker-desktop-03.png" alt="img" />
       <figcaption aria-hidden="true">img</figcaption>
       </figure>
-      <!-- 要更新 -->
       <div class="note type-tips">
       <p><strong>Dockerイメージ「postgres:18.6」の構成</strong></p>
       <p>皆さんには宿題として <code>postgres:18.6</code>
@@ -885,6 +886,16 @@ BUG_REPORT_URL=&quot;https://bugs.debian.org/&quot;</code></pre>
       <p>ここで <code>-U</code> は <span
       class="masked">ログインする「ユーザ名」</span>、<code>-d</code> は <span
       class="masked">接続する「データベース名」</span> を指定するためのオプションとなります。</p>
+      <ul>
+      <li>psql のオプションは、大文字と小文字を区別するので注意してください。ユーザ名の指定には
+      <code>-U</code> を使います。<code>-u</code> は有効なオプションではありません。</li>
+      </ul>
+      <div class="note type-senior">
+      <p><strong>psql のロングオプション</strong></p>
+      <p><code>psql -U student -d playground</code>
+      は、次のようにロングオプションでも指定可能です。</p>
+      <div class="sourceCode" id="cb19"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="ex">psql</span> <span class="at">--username</span><span class="op">=</span>student <span class="at">--dbname</span><span class="op">=</span>playground</span></code></pre></div>
+      </div>
       <p>コマンドを実行すると「<strong>PostgreSQL
       の対話モード</strong>」が開始し、ターミナルのプロンプトが以下のような表示
       (<code>接続しているデータベース名=#</code>) になります。これにより、SQL
@@ -908,8 +919,44 @@ playground=#</code></pre>
       を待っている状態です。それでも解決しないときは、ターミナルを閉じて、再度、<code>docker container exec ...</code>
       で接続してください。</p>
       </div>
-      <h3 data-number="3.5.5" id="テーブルの作成-create-table"><span
-      class="header-section-number">3.5.5</span> テーブルの作成 (CREATE TABLE)</h3>
+      <h3 data-number="3.5.5" id="定着確認-5"><span class="header-section-number">3.5.5</span>
+      定着確認</h3>
+      <ul>
+      <li><code>psql -U student -d playground</code> において、<code>-U</code> と <code>-d</code>
+      は、それぞれ何を指定するオプションか答えよ。
+      <ul>
+      <li><strong>答え</strong>: <span class="masked"><code>-U</code>
+      は接続するユーザ名、<code>-d</code> は接続するデータベース名を指定する。</span></li>
+      </ul></li>
+      <li>PostgreSQL コンテナ内の Bash から、ユーザ <code>student</code> としてデータベース
+      <code>playground</code> に接続したい。ショートオプションを使って、psql
+      を起動するコマンドを答えよ。
+      <ul>
+      <li><strong>答え</strong>: <span
+      class="masked"><code>psql -U student -d playground</code></span></li>
+      </ul></li>
+      <li>PostgreSQL コンテナ内の Bash で、ユーザ <code>student</code> としてデータベース
+      <code>playground</code> に接続するために <code>psql -u student -d playground</code>
+      と入力した。このコマンドの誤りを説明し、正しいコマンドを答えよ。
+      <ul>
+      <li><strong>答え</strong>: <span class="masked">psql
+      のオプションは大文字と小文字を区別し、<code>-u</code>
+      は有効なオプションではない。ユーザ名は大文字の <code>-U</code> で指定する。正しくは
+      <code>psql -U student -d playground</code>。</span></li>
+      </ul></li>
+      <li><code>psql</code> の <code>-d</code> オプションは、psql
+      をバックグラウンドで実行するためのオプションである。この説明は「適切である」か「適切ではない」か答えよ。
+      <ul>
+      <li><strong>答え</strong>: <span class="masked">適切ではない。</span></li>
+      </ul></li>
+      <li><code>psql</code> の <code>-U</code> は、psql に Unix ドメインソケット
+      で接続するためのオプションである。この説明は「適切である」か「適切ではない」か答えよ。
+      <ul>
+      <li><strong>答え</strong>: <span class="masked">適切ではない。</span></li>
+      </ul></li>
+      </ul>
+      <h3 data-number="3.5.6" id="テーブルの作成-create-table"><span
+      class="header-section-number">3.5.6</span> テーブルの作成 (CREATE TABLE)</h3>
       <p>動作確認として、次に示す <strong>s_users</strong> というテーブルを作成してみます
       (<code>s</code> は「sample」の意味で付けています)。</p>
       <p>RDBMS における「テーブル名」は、前回も説明したように一般的には <span
@@ -941,8 +988,8 @@ playground=#</code></pre>
       class="masked">どのような列を持ち、それぞれをどのデータ型で扱うかといったテーブルの構造</span>)
       を定義して、テーブルを作成します。</p>
       <p>次の SQL をコピーして、<code>psql</code> の対話モードに貼り付けて実行してください。</p>
-      <div class="sourceCode" id="cb20" data-caption="テーブルを作成するSQL"><pre
-      class="sourceCode numberSource sql numberLines"><code class="sourceCode sql"><span id="cb20-1"><a href="#cb20-1"></a><span class="kw">CREATE</span> <span class="kw">TABLE</span> s_users (<span class="kw">id</span> <span class="dt">INTEGER</span> <span class="kw">PRIMARY</span> <span class="kw">KEY</span>, name TEXT <span class="kw">NOT</span> <span class="kw">NULL</span>, age <span class="dt">INTEGER</span>);</span></code></pre></div>
+      <div class="sourceCode" id="cb21" data-caption="テーブルを作成するSQL"><pre
+      class="sourceCode numberSource sql numberLines"><code class="sourceCode sql"><span id="cb21-1"><a href="#cb21-1"></a><span class="kw">CREATE</span> <span class="kw">TABLE</span> s_users (<span class="kw">id</span> <span class="dt">INTEGER</span> <span class="kw">PRIMARY</span> <span class="kw">KEY</span>, name TEXT <span class="kw">NOT</span> <span class="kw">NULL</span>, age <span class="dt">INTEGER</span>);</span></code></pre></div>
       <p>正常に作成されると、次のように表示されます。</p>
       <pre><code>CREATE TABLE</code></pre>
       <p>一方、すでに <strong>s_users</strong>
@@ -954,16 +1001,20 @@ playground=#</code></pre>
       NULL、INTEGER、TEXT の意味も含めて分かりやすく説明してください。</p>
       <p><code>CREATE TABLE s_users (id INTEGER PRIMARY KEY, name TEXT NOT NULL, age INTEGER);</code></p>
       </blockquote>
-      <h3 data-number="3.5.6" id="レコードの挿入-insert"><span
-      class="header-section-number">3.5.6</span> レコードの挿入 (INSERT)</h3>
+      <div class="balloon char-01 face-05 tone-blue">
+      <p>「テーブルの作成」については「📖<strong>教科書
+      pp.30–36</strong>」にも説明があります。講義資料とあわせて読み、理解を深めてください。</p>
+      </div>
+      <h3 data-number="3.5.7" id="レコードの挿入-insert"><span
+      class="header-section-number">3.5.7</span> レコードの挿入 (INSERT)</h3>
       <p>次に、作成した <strong>s_users</strong> テーブルに <strong>レコードを挿入する SQL</strong>
       を実行します。</p>
-      <div class="sourceCode" id="cb23" data-caption="2件のレコードを挿入するSQL"><pre
-      class="sourceCode numberSource sql numberLines"><code class="sourceCode sql"><span id="cb23-1"><a href="#cb23-1"></a><span class="kw">INSERT</span> <span class="kw">INTO</span></span>
-<span id="cb23-2"><a href="#cb23-2"></a>  s_users (<span class="kw">id</span>, name, age)</span>
-<span id="cb23-3"><a href="#cb23-3"></a><span class="kw">VALUES</span></span>
-<span id="cb23-4"><a href="#cb23-4"></a>  (<span class="dv">1</span>, <span class="st">&#39;Alice&#39;</span>, <span class="dv">20</span>),</span>
-<span id="cb23-5"><a href="#cb23-5"></a>  (<span class="dv">2</span>, <span class="st">&#39;Bob&#39;</span>, <span class="dv">25</span>);</span></code></pre></div>
+      <div class="sourceCode" id="cb24" data-caption="2件のレコードを挿入するSQL"><pre
+      class="sourceCode numberSource sql numberLines"><code class="sourceCode sql"><span id="cb24-1"><a href="#cb24-1"></a><span class="kw">INSERT</span> <span class="kw">INTO</span></span>
+<span id="cb24-2"><a href="#cb24-2"></a>  s_users (<span class="kw">id</span>, name, age)</span>
+<span id="cb24-3"><a href="#cb24-3"></a><span class="kw">VALUES</span></span>
+<span id="cb24-4"><a href="#cb24-4"></a>  (<span class="dv">1</span>, <span class="st">&#39;Alice&#39;</span>, <span class="dv">20</span>),</span>
+<span id="cb24-5"><a href="#cb24-5"></a>  (<span class="dv">2</span>, <span class="st">&#39;Bob&#39;</span>, <span class="dv">25</span>);</span></code></pre></div>
       <div class="balloon char-01 face-02 tone-yellow">
       <p>SQL では、通常、「改行」や「複数の空白文字」は <strong>SQL を読みやすくするための区切り
       (空白)</strong> として扱われるので
@@ -985,14 +1036,14 @@ playground=#</code></pre>
       <p><strong>テーブルから全てのレコードを削除したいときは…</strong></p>
       <p>テーブルそのものは残したまま、格納されているすべてのレコードを削除する場合は、<code>DELETE FROM</code>
       を使用できます。</p>
-      <div class="sourceCode" id="cb24" data-caption="すべてのレコードを削除するSQL (1)"><pre
-      class="sourceCode numberSource sql numberLines"><code class="sourceCode sql"><span id="cb24-1"><a href="#cb24-1"></a><span class="kw">DELETE</span> <span class="kw">FROM</span> s_users;</span></code></pre></div>
+      <div class="sourceCode" id="cb25" data-caption="すべてのレコードを削除するSQL (1)"><pre
+      class="sourceCode numberSource sql numberLines"><code class="sourceCode sql"><span id="cb25-1"><a href="#cb25-1"></a><span class="kw">DELETE</span> <span class="kw">FROM</span> s_users;</span></code></pre></div>
       <p>また、PostgreSQL には <code>TRUNCATE TABLE</code>
       という命令もあります。<code>TRUNCATE TABLE</code>
       もテーブル内の全レコードを削除しますが、<code>DELETE FROM</code>
       とは内部的な処理方法が異なり、大量のレコードを一括して削除する場合に高速に処理できることがあります。</p>
-      <div class="sourceCode" id="cb25" data-caption="すべてのレコードを削除するSQL (2)"><pre
-      class="sourceCode numberSource sql numberLines"><code class="sourceCode sql"><span id="cb25-1"><a href="#cb25-1"></a><span class="kw">TRUNCATE</span> <span class="kw">TABLE</span> s_users;</span></code></pre></div>
+      <div class="sourceCode" id="cb26" data-caption="すべてのレコードを削除するSQL (2)"><pre
+      class="sourceCode numberSource sql numberLines"><code class="sourceCode sql"><span id="cb26-1"><a href="#cb26-1"></a><span class="kw">TRUNCATE</span> <span class="kw">TABLE</span> s_users;</span></code></pre></div>
       <p><strong><i class="fa-solid fa-comment-dots fa-flip-horizontal"></i>プロンプト例</strong></p>
       <blockquote>
       <p>リレーショナルデータベースにおける <code>DELETE FROM xxx</code> と
@@ -1004,8 +1055,8 @@ playground=#</code></pre>
       <p><strong>テーブルそのものを削除したいときは…</strong></p>
       <p>レコードだけではなく、<strong>列の構成や制約などを含めてテーブルそのものを削除</strong>したい場合は、<code>DROP TABLE</code>
       を使用します。</p>
-      <div class="sourceCode" id="cb26" data-caption="テーブルを削除するSQL"><pre
-      class="sourceCode numberSource sql numberLines"><code class="sourceCode sql"><span id="cb26-1"><a href="#cb26-1"></a><span class="kw">DROP</span> <span class="kw">TABLE</span> s_users;</span></code></pre></div>
+      <div class="sourceCode" id="cb27" data-caption="テーブルを削除するSQL"><pre
+      class="sourceCode numberSource sql numberLines"><code class="sourceCode sql"><span id="cb27-1"><a href="#cb27-1"></a><span class="kw">DROP</span> <span class="kw">TABLE</span> s_users;</span></code></pre></div>
       </div>
       <div class="balloon char-01 face-05 tone-blue">
       <p>大まかには、次のように考えると分かりやすいと思います。</p>
@@ -1015,7 +1066,7 @@ playground=#</code></pre>
       <li><code>DROP</code>：<strong>テーブルそのものを削除する</strong></li>
       </ul>
       </div>
-      <h3 data-number="3.5.7" id="定着確認-5"><span class="header-section-number">3.5.7</span>
+      <h3 data-number="3.5.8" id="定着確認-6"><span class="header-section-number">3.5.8</span>
       定着確認</h3>
       <ul>
       <li>PostgreSQL に
@@ -1037,12 +1088,12 @@ playground=#</code></pre>
       <li><strong>答え</strong>: <span class="masked"><code>DELETE FROM s_users;</code></span></li>
       </ul></li>
       </ul>
-      <h3 data-number="3.5.8" id="レコードの抽出-select"><span
-      class="header-section-number">3.5.8</span> レコードの抽出 (SELECT)</h3>
+      <h3 data-number="3.5.9" id="レコードの抽出-select"><span
+      class="header-section-number">3.5.9</span> レコードの抽出 (SELECT)</h3>
       <p>次に、<strong>s_users</strong> テーブルに格納されている全てのレコードを <strong>抽出 (選択)
       する SQL</strong> を実行します。</p>
-      <div class="sourceCode" id="cb27" data-caption="全件の全列のレコードを抽出するSQL"><pre
-      class="sourceCode numberSource sql numberLines"><code class="sourceCode sql"><span id="cb27-1"><a href="#cb27-1"></a><span class="kw">SELECT</span> <span class="op">*</span> <span class="kw">FROM</span> s_users;</span></code></pre></div>
+      <div class="sourceCode" id="cb28" data-caption="全件の全列のレコードを抽出するSQL"><pre
+      class="sourceCode numberSource sql numberLines"><code class="sourceCode sql"><span id="cb28-1"><a href="#cb28-1"></a><span class="kw">SELECT</span> <span class="op">*</span> <span class="kw">FROM</span> s_users;</span></code></pre></div>
       <p>実行結果は、次のようになります。</p>
       <pre><code> id | name  | age
 ----+-------+-----
@@ -1058,8 +1109,8 @@ playground=#</code></pre>
       </div>
       <hr />
       <p>次のように、<strong>列 (カラム) の出力順を指定して抽出すること</strong> もできます。</p>
-      <div class="sourceCode" id="cb29" data-caption="列を明示して全列のレコードを抽出するSQL"><pre
-      class="sourceCode numberSource sql numberLines"><code class="sourceCode sql"><span id="cb29-1"><a href="#cb29-1"></a><span class="kw">SELECT</span> age, <span class="kw">id</span>, name <span class="kw">FROM</span> s_users;</span></code></pre></div>
+      <div class="sourceCode" id="cb30" data-caption="列を明示して全列のレコードを抽出するSQL"><pre
+      class="sourceCode numberSource sql numberLines"><code class="sourceCode sql"><span id="cb30-1"><a href="#cb30-1"></a><span class="kw">SELECT</span> age, <span class="kw">id</span>, name <span class="kw">FROM</span> s_users;</span></code></pre></div>
       <p>実行結果は、次のようになります。</p>
       <pre><code> age | id | name
 -----+----+-------
@@ -1067,9 +1118,12 @@ playground=#</code></pre>
   25 |  2 | Bob
 (2 rows)</code></pre>
       <p>また、<code>SELECT name, age FROM s_users;</code> とすれば、<code>name</code> と
-      <code>age</code> だけを抽出・表示することができます (<code>id</code>
-      の列は抽出・表示しない)。</p>
-      <h3 data-number="3.5.9" id="定着確認-6"><span class="header-section-number">3.5.9</span>
+      <code>age</code> だけを抽出・表示することができます。</p>
+      <div class="balloon char-01 face-05 tone-blue">
+      <p><strong>SELECT</strong> 文の基本については「📖<strong>教科書
+      p.45以降</strong>」で解説されています。講義資料とあわせて読んでおいてください。詳細は、今後の授業のなかでじっくりと学んでいきます。</p>
+      </div>
+      <h3 data-number="3.5.10" id="定着確認-7"><span class="header-section-number">3.5.10</span>
       定着確認</h3>
       <ul>
       <li>PostgreSQL に <code>id</code>、<code>name</code>、<code>age</code> の3列を持つ
@@ -1118,8 +1172,8 @@ playground=#</code></pre>
       列を含めないだけで、テーブルの列構成や格納されているデータは変わらない。</span></li>
       </ul></li>
       </ul>
-      <h3 data-number="3.5.10" id="postgresql-の対話モードの終了と-linuxシェルの終了"><span
-      class="header-section-number">3.5.10</span> PostgreSQL の対話モードの終了と
+      <h3 data-number="3.5.11" id="postgresql-の対話モードの終了と-linuxシェルの終了"><span
+      class="header-section-number">3.5.11</span> PostgreSQL の対話モードの終了と
       Linuxシェルの終了</h3>
       <p><strong>psql</strong> で <code>\q</code> (もしくは<code>[Ctrl]+[D]</code>のショートカット)
       を入力すると対話モードが終了して、Linux のシェルに戻ります。</p>
@@ -1141,8 +1195,8 @@ playground=#</code></pre>
       を直接実行する</strong>こともできます。</p>
       <p>例えば、次のような SQL を記述した <code>hoge.sql</code> というファイルを Windows
       側で用意しておきます。</p>
-      <div class="sourceCode" id="cb31" data-caption="hoge.sql"><pre
-      class="sourceCode numberSource sql numberLines"><code class="sourceCode sql"><span id="cb31-1"><a href="#cb31-1"></a><span class="kw">SELECT</span> <span class="op">*</span> <span class="kw">FROM</span> s_users;</span></code></pre></div>
+      <div class="sourceCode" id="cb32" data-caption="hoge.sql"><pre
+      class="sourceCode numberSource sql numberLines"><code class="sourceCode sql"><span id="cb32-1"><a href="#cb32-1"></a><span class="kw">SELECT</span> <span class="op">*</span> <span class="kw">FROM</span> s_users;</span></code></pre></div>
       <p>このSQLファイルを、次のように <strong>ファイルリダイレクト</strong> (<code>&lt;</code>)
       を使って <strong>psql</strong> に流し込むことができます。コマンドプロンプト
       (<strong>cmd.exe</strong>) で、<code>hoge.sql</code>
@@ -1242,7 +1296,7 @@ playground=#</code></pre>
       <img src="figs/02/docker-desktop-02.png" alt="img" />
       <figcaption aria-hidden="true">img</figcaption>
       </figure>
-      <h3 data-number="3.8.1" id="定着確認-7"><span class="header-section-number">3.8.1</span>
+      <h3 data-number="3.8.1" id="定着確認-8"><span class="header-section-number">3.8.1</span>
       定着確認</h3>
       <ul>
       <li>起動中の Docker コンテナ <code>pg18</code>
@@ -1337,7 +1391,7 @@ playground=#</code></pre>
       <li>参考: <a
       href="https://qiita.com/tom-sato/items/037b8f8cb4b326710f71#インストーラのダウンロード">WindowsネイティブにPostgreSQLをインストールする手順</a></li>
       </ul>
-      <h3 data-number="3.9.1" id="定着確認-8"><span class="header-section-number">3.9.1</span>
+      <h3 data-number="3.9.1" id="定着確認-9"><span class="header-section-number">3.9.1</span>
       定着確認</h3>
       <ul>
       <li>ターミナルのプロンプトが <code>root@e14852ebd977:/#</code>
@@ -1565,6 +1619,10 @@ playground=#</code></pre>
       (Windows)
       の5432番ポート</strong>」がマッピングされるようになります。これにより、任意のクライアントツールやプログラムから
       5432番ポートを使って PostgreSQL に接続できるようになります。</p>
+      <div class="balloon char-01 face-05 tone-blue">
+      <p>クライアント・サーバ型（C/S型）の RDBMS の仕組みや構成については「📖<strong>教科書
+      pp.20–22</strong>」にも図付きで説明があります。講義資料とあわせて読み、理解を深めてください。</p>
+      </div>
       <p>なお、既にホストOS側の別のアプリが 5432 番ポートを使っている場合は
       <code>-p 5433:5432</code> のようにして、ホスト側のポート番号を任意に設定 (ここでは 5433
       に設定) することができます。</p>
@@ -1575,7 +1633,7 @@ playground=#</code></pre>
       <img src="figs/02/image_01.jpg" alt="img" />
       <figcaption aria-hidden="true">img</figcaption>
       </figure>
-      <h3 data-number="5.0.1" id="定着確認-9"><span class="header-section-number">5.0.1</span>
+      <h3 data-number="5.0.1" id="定着確認-10"><span class="header-section-number">5.0.1</span>
       定着確認</h3>
       <ul>
       <li>PostgreSQL で使用される標準の通信ポート番号を答えよ。
