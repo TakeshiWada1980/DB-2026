@@ -557,9 +557,9 @@ psql -U student -d playground
 ::: {.note .type-senior}
 **psql のロングオプション**
 
-`psql -U student -d playground` は、次のようにロングオプションでも指定可能です。
+`psql -U student -d playground` は、次のようにロングオプションでも指定可能です。ロングオプションでは `=` をつけること、その前後にスペースを入れないことに注意して下さい。
 
-```bash
+```
 psql --username=student --dbname=playground
 ```
 :::

@@ -893,8 +893,9 @@ BUG_REPORT_URL=&quot;https://bugs.debian.org/&quot;</code></pre>
       <div class="note type-senior">
       <p><strong>psql のロングオプション</strong></p>
       <p><code>psql -U student -d playground</code>
-      は、次のようにロングオプションでも指定可能です。</p>
-      <div class="sourceCode" id="cb19"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="ex">psql</span> <span class="at">--username</span><span class="op">=</span>student <span class="at">--dbname</span><span class="op">=</span>playground</span></code></pre></div>
+      は、次のようにロングオプションでも指定可能です。ロングオプションでは <code>=</code>
+      をつけること、その前後にスペースを入れないことに注意して下さい。</p>
+      <pre><code>psql --username=student --dbname=playground</code></pre>
       </div>
       <p>コマンドを実行すると「<strong>PostgreSQL
       の対話モード</strong>」が開始し、ターミナルのプロンプトが以下のような表示
