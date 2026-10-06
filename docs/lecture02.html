@@ -53,7 +53,11 @@
         <!-- ---------------------------------------- -->
          <ul>
 <li><a href="#連絡と概要" id="toc-連絡と概要"><span class="toc-section-number">1</span>
-連絡と概要</a></li>
+連絡と概要</a>
+<ul>
+<li><a href="#今回の達成目標" id="toc-今回の達成目標"><span class="toc-section-number">1.1</span>
+今回の達成目標</a></li>
+</ul></li>
 <li><a href="#前回講義の振返りと確認" id="toc-前回講義の振返りと確認"><span
 class="toc-section-number">2</span> 前回講義の振返りと確認</a></li>
 <li><a href="#docker-上での-postgresql-コンテナの起動と操作"
@@ -131,6 +135,21 @@ class="toc-section-number">7</span> 授業時間外学習の指示 (宿題)</a><
       </ul></li>
       <li>今回の講義は「<strong>Docker関連の環境構築</strong>」がメインとなってきます。</li>
       </ul>
+      <h2 data-number="1.1" id="今回の達成目標"><span class="header-section-number">1.1</span>
+      今回の達成目標</h2>
+      <ul>
+      <li>Docker の基本コマンドを使って、PostgreSQL コンテナの作成・起動・停止・削除ができる。</li>
+      <li>コンテナ内の <code>psql</code>
+      を使って、テーブルの作成、レコードの挿入・抽出ができる。</li>
+      <li>ホストとコンテナのポートをマッピングし、Windows 側のクライアントツールから PostgreSQL
+      に接続できる。</li>
+      </ul>
+      <p>実際には、今後はもっと簡単に、コンテナの起動や PostgreSQL
+      への接続などができるようにします。SQL についても、VS Code
+      のエディタ上で記述し、キーボードショートカットから実行できる環境を使います。</p>
+      <div class="balloon char-01 face-02 tone-yellow">
+      <p>最初から便利な方法だけを使うと、その裏で何が行われているのかが「ブラックボックス」になりがちです。そこで今回は、<strong>あえて基本的なコマンドを1つずつ実行し、コンテナの作成・起動・接続・SQL実行が、どのような仕組みで成り立っているのかを確認することを重視</strong>して、このような内容としています。</p>
+      </div>
       <h1 data-number="2" id="前回講義の振返りと確認"><span class="header-section-number">2</span>
       前回講義の振返りと確認</h1>
       <p>前回講義では「<strong>なぜデータベース (DBMS)
@@ -577,6 +596,29 @@ e14852ebd977   postgres:18.6   8 minutes ago   Up 8 minutes   5432/tcp   pg18</c
       <img src="figs/02/docker-desktop-01.png" alt="img" />
       <figcaption aria-hidden="true">img</figcaption>
       </figure>
+      <div class="note type-senior">
+      <p><strong>DBデータの保存先は？</strong></p>
+      <p>今回使用している <code>postgres:18.6</code>
+      では、コンテナを作成するときに、DBデータの保存先として <strong>匿名ボリューム</strong>
+      が自動作成されます。このあと作成するテーブルや挿入するレコードも、そのボリュームに保存されます。</p>
+      <p>コンテナを起動したら、Docker Desktop
+      の左側にある「<strong>Volumes</strong>」を選択してみてください。次の画像のように、長い英数字の名前を持つボリュームが確認できます。</p>
+      <figure>
+      <img src="figs/02/docker-desktop-09.png"
+      alt="匿名ボリュームを確認する Docker Desktop の Volumes 画面" />
+      <figcaption aria-hidden="true">匿名ボリュームを確認する Docker Desktop の Volumes
+      画面</figcaption>
+      </figure>
+      <p>この名前は、Docker
+      が自動で割り当てたものです。皆さんの画面では、画像とは異なる名前になります。このボリュームが、今回の
+      PostgreSQL のDBデータ全体の保存先になります。</p>
+      </div>
+      <p><strong><i class="fa-solid fa-comment-dots fa-flip-horizontal"></i>プロンプト例</strong></p>
+      <blockquote>
+      <p>Docker
+      の文脈において「ボリューム」とは何ですか。また、<code>docker container create --name pg18 -e POSTGRES_USER=xxx -e POSTGRES_PASSWORD=xxx -e POSTGRES_DB=xxx postgres:18.6</code>
+      のようなコマンドを実行すると「匿名ボリューム」が作成されると説明されました。「匿名ボリューム」とは何ですか？</p>
+      </blockquote>
       <h3 data-number="3.4.1" id="定着確認-2"><span class="header-section-number">3.4.1</span>
       定着確認</h3>
       <ul>
@@ -1177,6 +1219,9 @@ playground=#</code></pre>
       <p>また、再度、以下のコマンドで同じ名前のコンテナを再作成しても、<strong><u>以前のコンテナのデータ
       (作成したテーブルや挿入したレコード) が引き継がれるわけではありません</u></strong>。</p>
       <pre><code>docker container create --name pg18 -e POSTGRES_USER=student -e POSTGRES_PASSWORD=secret123 -e POSTGRES_DB=playground postgres:18.6</code></pre>
+      <p>なお、後述する Docker Desktop
+      の削除操作では、コンテナに関連する<strong>匿名ボリュームも一緒に削除されます</strong>。今回の手順で作成した
+      PostgreSQL コンテナでは、そこに保存されているDBデータも削除されることに注意してください。</p>
       </div>
       <div class="note type-senior">
       <p><strong>中級者向け: コンテナを削除すると、DBデータも削除される？</strong></p>
@@ -1405,7 +1450,7 @@ playground=#</code></pre>
       側で読み込んだファイルの内容が、標準入力を通して psql に渡される。</span></li>
       </ul></li>
       <li>SQL ファイルを標準入力から送る
-      <code>docker container exec -i pg18 psql -U student -d playground &lt; hoge.sql</code>
+      <code>docker container exec -i pg18 psql -U student -d playground &lt;u hoge.sql</code>
       では、対話的に Bash を使うときの <code>-it</code> ではなく <code>-i</code>
       のみを指定している。それぞれのオプションの役割を踏まえ、この理由を答えよ。
       <ul>
@@ -1475,11 +1520,16 @@ playground=#</code></pre>
       </figure>
       <h2 data-number="4.4" id="コンテナの削除-1"><span class="header-section-number">4.4</span>
       コンテナの削除</h2>
-      <p><code>docker container rm xxxx</code> コマンド相当の操作</p>
+      <p>コンテナと、関連する匿名ボリュームを削除する操作</p>
       <figure>
       <img src="figs/02/docker-desktop-06.png" alt="img" />
       <figcaption aria-hidden="true">img</figcaption>
       </figure>
+      <div class="balloon char-01 face-01 tone-pink">
+      <p>この操作では、コンテナに関連する<strong>匿名ボリュームも一緒に削除されます</strong>。CLI
+      で停止中のコンテナに対して <code>docker container rm -v xxxx</code>
+      を実行する場合と同様です。なお、名前付きボリュームは、この操作では削除されません。</p>
+      </div>
       <h1 data-number="5" id="docker-環境での-postgresql-のポート通信設定"><span
       class="header-section-number">5</span> Docker 環境での PostgreSQL のポート通信設定</h1>
       <p>ここまでの説明では <code>docker container exec</code> を使って、コンテナ内の
@@ -1487,18 +1537,21 @@ playground=#</code></pre>
       のサーバプロセスを利用しました。<strong>psql</strong> は
       <code>psql -U student -d playground</code> のように起動したとき、<span
       class="masked">UNIXドメインソケット</span> というものを介して、PostgreSQL
-      のサーバプロセスと通信をします。</p>
-      <p><strong>UNIXドメインソケット</strong> とは、Linux や macOS
-      のようなUNIX系OSで使われるプロセス間通信 (IPC: Inter-Process Communication)
+      のサーバプロセスと通信するように振る舞います。</p>
+      <div class="note type-tips">
+      <p><strong>UNIXドメインソケット</strong></p>
+      <p>UNIXドメインソケットとは、<strong>Linux</strong> や <strong>macOS</strong> のような UNIX 系
+      OS で使われるプロセス間通信 (IPC: Inter-Process Communication)
       の仕組みで、<strong>同じホスト上で動作するプログラム同士が、ネットワークを経由せずに高速に直接データをやり取りするための方法</strong>
       です。</p>
-      <p>つまり、ここまでの範囲で説明した使い方は、「PostgreSQL
+      </div>
+      <p>ここまでの範囲で説明した使い方は、「PostgreSQL
       のサーバプロセス」と「クライアントツール」の通信が <span
       class="masked">すべて「コンテナの内部」で完結しているもの</span> でした。</p>
-      <p>一方で、PostgreSQL
-      のサーバプロセスとは別のホストのクライアントツールから接続するときや、<strong>Windows
-      (ホストOS) 上の TypeScript や Python などのプログラムからDBに接続するとき</strong> には <span
-      class="masked">TCP/IP 接続 (ポート通信)</span> を使います。</p>
+      <p>一方で、<span class="masked">PostgreSQL
+      のサーバプロセスとは別のホストのクライアントツールから接続</span> するときや、<strong>Windows
+      (ホストOS) 上の TypeScript や Python などのプログラムからDBに接続するとき</strong>
+      には「<strong><u>TCP/IP 接続 (ポート通信)</u></strong>」を使用することになります。</p>
       <p>Docker Desktop を起動している「Windows (ホストOS)」と「Docker コンテナ」の間での TCP/IP
       接続を有効化するには <code>docker container create</code> コマンドの実行時に、次のように
       <code>-p</code> オプションを指定する必要があります。</p>
@@ -1508,17 +1561,20 @@ playground=#</code></pre>
   -e POSTGRES_DB=playground `
   -p 5432:5432 `
   postgres:18.6</code></pre>
-      <p>この設定により、</p>
-      <ul>
-      <li>PostgreSQLのサーバプロセスが稼働しているコンテナの5432番ポート と</li>
-      <li>ホストOS (Windows) の5432番ポート が</li>
-      </ul>
-      <p>マッピングされるようになります。これで、任意のクライアントツールやプログラムから
+      <p>この設定により「<strong>PostgreSQLのサーバプロセスが稼働しているコンテナの5432番ポート</strong>」と「<strong>ホストOS
+      (Windows)
+      の5432番ポート</strong>」がマッピングされるようになります。これにより、任意のクライアントツールやプログラムから
       5432番ポートを使って PostgreSQL に接続できるようになります。</p>
       <p>なお、既にホストOS側の別のアプリが 5432 番ポートを使っている場合は
-      <code>-p 5433:5432</code> のようにして、ホスト側のポート番号を 5433
-      に変えることができます。<code>-p</code>
-      では「ホスト側のポート番号:コンテナ側のポート番号」の順に指定します。</p>
+      <code>-p 5433:5432</code> のようにして、ホスト側のポート番号を任意に設定 (ここでは 5433
+      に設定) することができます。</p>
+      <ul>
+      <li><code>-p</code> では「ホスト側のポート番号:コンテナ側のポート番号」の順に指定します。</li>
+      </ul>
+      <figure>
+      <img src="figs/02/image_01.jpg" alt="img" />
+      <figcaption aria-hidden="true">img</figcaption>
+      </figure>
       <h3 data-number="5.0.1" id="定着確認-9"><span class="header-section-number">5.0.1</span>
       定着確認</h3>
       <ul>
@@ -1531,6 +1587,52 @@ playground=#</code></pre>
       のローカル接続にも利用される仕組みを何というか答えよ。
       <ul>
       <li><strong>答え</strong>: <span class="masked">UNIXドメインソケット</span></li>
+      </ul></li>
+      <li>Windows (ホストOS) 上のクライアントツールから、Docker コンテナ内の PostgreSQL
+      サーバーに接続するときに使う通信方式を答えよ。
+      <ul>
+      <li><strong>答え</strong>: <span class="masked">TCP/IP 接続 (ポート通信)。</span></li>
+      </ul></li>
+      <li>Docker のコンテナ作成コマンドで、<code>-p</code>
+      オプションは何を設定するものか答えよ。また、コロン <code>:</code>
+      で区切る2つのポート番号を、どの順番で指定するか答えよ。
+      <ul>
+      <li><strong>答え</strong>: <span
+      class="masked">ホスト側とコンテナ側のポートのマッピングを設定するもの。「ホスト側のポート番号:コンテナ側のポート番号」の順に指定する。</span></li>
+      </ul></li>
+      <li>Docker コンテナの作成時に <code>-p 5432:5432</code>
+      を指定した。この指定は、どちら側の何番ポートと、どちら側の何番ポートをマッピングするものか答えよ。
+      <ul>
+      <li><strong>答え</strong>: <span
+      class="masked">ホスト側の5432番ポートと、コンテナ側の5432番ポート。</span></li>
+      </ul></li>
+      <li>Docker コンテナ内の PostgreSQL
+      は5432番ポートで接続を受け付けている。ホスト側の15432番ポートから接続できるようにするため、コンテナ作成時に指定する
+      <code>-p</code> オプションを、ポート番号を含めて答えよ。
+      <ul>
+      <li><strong>答え</strong>: <span class="masked"><code>-p 15432:5432</code></span></li>
+      </ul></li>
+      <li>PostgreSQL コンテナを <code>-p 5433:5432</code> を指定して作成・起動した。Windows
+      (ホストOS) 上のクライアントツールから、接続先ホストを <code>localhost</code>
+      として接続するときに指定するポート番号を答えよ。
+      <ul>
+      <li><strong>答え</strong>: <span
+      class="masked">5433番。クライアントツールには、ホスト側のポート番号を指定する。</span></li>
+      </ul></li>
+      <li>ホスト側の5432番ポートは別のアプリが使用しているが、5433番ポートは空いている。コンテナ内の
+      PostgreSQL が使う5432番ポートは変更せずに、ホスト側の5433番ポートから接続するための
+      <code>-p</code> オプションを答えよ。
+      <ul>
+      <li><strong>答え</strong>: <span class="masked"><code>-p 5433:5432</code></span></li>
+      </ul></li>
+      <li>コンテナ内の PostgreSQL
+      は5432番ポートで接続を受け付けている。ホスト側の5433番ポートから接続したいので、コンテナ作成時に
+      <code>-p 5432:5433</code>
+      を指定した。この指定は目的に対して適切か答えよ。また、適切ではない場合は、正しい指定を答えよ。
+      <ul>
+      <li><strong>答え</strong>: <span
+      class="masked">適切ではない。指定が逆で、ホスト側の5432番ポートとコンテナ側の5433番ポートをマッピングしている。正しくは
+      <code>-p 5433:5432</code>。</span></li>
       </ul></li>
       </ul>
       <h2 data-number="5.1" id="演習-宿題授業時間外"><span class="header-section-number">5.1</span>

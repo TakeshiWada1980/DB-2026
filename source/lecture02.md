@@ -346,6 +346,22 @@ e14852ebd977   postgres:18.6   8 minutes ago   Up 8 minutes   5432/tcp   pg18
 
 ![img](figs/02/docker-desktop-01.png)
 
+::: {.note .type-senior}
+**DBデータの保存先は？**
+
+今回使用している `postgres:18.6` では、コンテナを作成するときに、DBデータの保存先として **匿名ボリューム** が自動作成されます。このあと作成するテーブルや挿入するレコードも、そのボリュームに保存されます。
+
+コンテナを起動したら、Docker Desktop の左側にある「**Volumes**」を選択してみてください。次の画像のように、長い英数字の名前を持つボリュームが確認できます。
+
+![匿名ボリュームを確認する Docker Desktop の Volumes 画面](figs/02/docker-desktop-09.png)
+
+この名前は、Docker が自動で割り当てたものです。皆さんの画面では、画像とは異なる名前になります。このボリュームが、今回の PostgreSQL のDBデータ全体の保存先になります。
+:::
+
+**<i class="fa-solid fa-comment-dots fa-flip-horizontal"></i>プロンプト例**
+
+> Docker の文脈において「ボリューム」とは何ですか。また、`docker container create --name pg18 -e POSTGRES_USER=xxx -e POSTGRES_PASSWORD=xxx -e POSTGRES_DB=xxx postgres:18.6` のようなコマンドを実行すると「匿名ボリューム」が作成されると説明されました。「匿名ボリューム」とは何ですか？
+
 
 #### 定着確認
 
@@ -833,6 +849,9 @@ docker container rm pg18
 ```
 docker container create --name pg18 -e POSTGRES_USER=student -e POSTGRES_PASSWORD=secret123 -e POSTGRES_DB=playground postgres:18.6
 ```
+
+なお、後述する Docker Desktop の削除操作では、コンテナに関連する**匿名ボリュームも一緒に削除されます**。今回の手順で作成した PostgreSQL コンテナでは、そこに保存されているDBデータも削除されることに注意してください。
+
 :::
 
 ::: {.note .type-senior}
@@ -962,7 +981,7 @@ docker container run --name pg18 `
 - Windows のコマンドプロンプトで `docker container exec -i pg18 psql -U student -d playground < hoge.sql` を実行した。この操作では、**hoge.sql** というファイルそのものをコンテナ内にコピーしているか答えよ。また、コンテナ内の psql に何が渡されるか答えよ。
   - **答え**: <span class="masked">ファイルそのものをコピーしているわけではない。Windows 側で読み込んだファイルの内容が、標準入力を通して psql に渡される。</span>
 
-- SQL ファイルを標準入力から送る `docker container exec -i pg18 psql -U student -d playground < hoge.sql` では、対話的に Bash を使うときの `-it` ではなく `-i` のみを指定している。それぞれのオプションの役割を踏まえ、この理由を答えよ。
+- SQL ファイルを標準入力から送る `docker container exec -i pg18 psql -U student -d playground <u hoge.sql` では、対話的に Bash を使うときの `-it` ではなく `-i` のみを指定している。それぞれのオプションの役割を踏まえ、この理由を答えよ。
   - **答え**: <span class="masked">`-i` は標準入力を psql に接続するために必要。ファイルの内容を入力として送る処理では、対話操作用の仮想ターミナルを割り当てる `-t` は不要なため。</span>
 
 - 使用する Docker イメージが既にローカルに存在するとき、コンテナの「作成」と「起動」を1つのコマンドで行うための Docker コマンドを答えよ。
@@ -1005,19 +1024,28 @@ docker container run --name pg18 `
 
 ### コンテナの削除
 
-`docker container rm xxxx` コマンド相当の操作
+コンテナと、関連する匿名ボリュームを削除する操作
 
 ![img](figs/02/docker-desktop-06.png)
 
+::: {.balloon .char-01 .face-01 .tone-pink}
+この操作では、コンテナに関連する**匿名ボリュームも一緒に削除されます**。CLI で停止中のコンテナに対して `docker container rm -v xxxx` を実行する場合と同様です。なお、名前付きボリュームは、この操作では削除されません。
+:::
+
+
 ## Docker 環境での PostgreSQL のポート通信設定
 
-ここまでの説明では `docker container exec` を使って、コンテナ内の **psql** (クライアントツール) から PostgreSQL のサーバプロセスを利用しました。**psql** は `psql -U student -d playground` のように起動したとき、<span class="masked">UNIXドメインソケット</span> というものを介して、PostgreSQL のサーバプロセスと通信をします。
+ここまでの説明では `docker container exec` を使って、コンテナ内の **psql** (クライアントツール) から PostgreSQL のサーバプロセスを利用しました。**psql** は `psql -U student -d playground` のように起動したとき、<span class="masked">UNIXドメインソケット</span> というものを介して、PostgreSQL のサーバプロセスと通信するように振る舞います。
 
-**UNIXドメインソケット** とは、Linux や macOS のようなUNIX系OSで使われるプロセス間通信 (IPC: Inter-Process Communication) の仕組みで、**同じホスト上で動作するプログラム同士が、ネットワークを経由せずに高速に直接データをやり取りするための方法** です。
+:::{.note .type-tips}
+**UNIXドメインソケット** 
 
-つまり、ここまでの範囲で説明した使い方は、「PostgreSQL のサーバプロセス」と「クライアントツール」の通信が <span class="masked">すべて「コンテナの内部」で完結しているもの</span> でした。
+UNIXドメインソケットとは、**Linux** や **macOS** のような UNIX 系 OS で使われるプロセス間通信 (IPC: Inter-Process Communication) の仕組みで、**同じホスト上で動作するプログラム同士が、ネットワークを経由せずに高速に直接データをやり取りするための方法** です。
+:::
 
-一方で、PostgreSQL のサーバプロセスとは別のホストのクライアントツールから接続するときや、**Windows (ホストOS) 上の TypeScript や Python などのプログラムからDBに接続するとき** には <span class="masked">TCP/IP 接続 (ポート通信)</span> を使います。
+ここまでの範囲で説明した使い方は、「PostgreSQL のサーバプロセス」と「クライアントツール」の通信が <span class="masked">すべて「コンテナの内部」で完結しているもの</span> でした。
+
+一方で、<span class="masked">PostgreSQL のサーバプロセスとは別のホストのクライアントツールから接続</span> するときや、**Windows (ホストOS) 上の TypeScript や Python などのプログラムからDBに接続するとき** には「**<u>TCP/IP 接続 (ポート通信)</u>**」を使用することになります。
 
 Docker Desktop を起動している「Windows (ホストOS)」と「Docker コンテナ」の間での TCP/IP 接続を有効化するには `docker container create` コマンドの実行時に、次のように `-p` オプションを指定する必要があります。
 
@@ -1030,14 +1058,13 @@ docker container create --name pg18 `
   postgres:18.6
 ```
 
-この設定により、
+この設定により「**PostgreSQLのサーバプロセスが稼働しているコンテナの5432番ポート**」と「**ホストOS (Windows) の5432番ポート**」がマッピングされるようになります。これにより、任意のクライアントツールやプログラムから 5432番ポートを使って PostgreSQL に接続できるようになります。
 
-- PostgreSQLのサーバプロセスが稼働しているコンテナの5432番ポート と
-- ホストOS (Windows) の5432番ポート が
+なお、既にホストOS側の別のアプリが 5432 番ポートを使っている場合は `-p 5433:5432` のようにして、ホスト側のポート番号を任意に設定 (ここでは 5433 に設定) することができます。
 
-マッピングされるようになります。これで、任意のクライアントツールやプログラムから 5432番ポートを使って PostgreSQL に接続できるようになります。
+- `-p` では「ホスト側のポート番号:コンテナ側のポート番号」の順に指定します。
 
-なお、既にホストOS側の別のアプリが 5432 番ポートを使っている場合は `-p 5433:5432` のようにして、ホスト側のポート番号を 5433 に変えることができます。`-p` では「ホスト側のポート番号:コンテナ側のポート番号」の順に指定します。
+![img](figs/02/image_01.jpg)
 
 #### 定着確認
 
@@ -1045,6 +1072,27 @@ docker container create --name pg18 `
   - **答え**: <span class="masked">5432番</span>
 - Linux や macOS などの UNIX 系 OS において、同一ホスト内のプロセス間通信に使われ、PostgreSQL のローカル接続にも利用される仕組みを何というか答えよ。
   - **答え**: <span class="masked">UNIXドメインソケット</span>
+
+- Windows (ホストOS) 上のクライアントツールから、Docker コンテナ内の PostgreSQL サーバーに接続するときに使う通信方式を答えよ。
+  - **答え**: <span class="masked">TCP/IP 接続 (ポート通信)。</span>
+
+- Docker のコンテナ作成コマンドで、`-p` オプションは何を設定するものか答えよ。また、コロン `:` で区切る2つのポート番号を、どの順番で指定するか答えよ。
+  - **答え**: <span class="masked">ホスト側とコンテナ側のポートのマッピングを設定するもの。「ホスト側のポート番号:コンテナ側のポート番号」の順に指定する。</span>
+
+- Docker コンテナの作成時に `-p 5432:5432` を指定した。この指定は、どちら側の何番ポートと、どちら側の何番ポートをマッピングするものか答えよ。
+  - **答え**: <span class="masked">ホスト側の5432番ポートと、コンテナ側の5432番ポート。</span>
+
+- Docker コンテナ内の PostgreSQL は5432番ポートで接続を受け付けている。ホスト側の15432番ポートから接続できるようにするため、コンテナ作成時に指定する `-p` オプションを、ポート番号を含めて答えよ。
+  - **答え**: <span class="masked">`-p 15432:5432`</span>
+
+- PostgreSQL コンテナを `-p 5433:5432` を指定して作成・起動した。Windows (ホストOS) 上のクライアントツールから、接続先ホストを `localhost` として接続するときに指定するポート番号を答えよ。
+  - **答え**: <span class="masked">5433番。クライアントツールには、ホスト側のポート番号を指定する。</span>
+
+- ホスト側の5432番ポートは別のアプリが使用しているが、5433番ポートは空いている。コンテナ内の PostgreSQL が使う5432番ポートは変更せずに、ホスト側の5433番ポートから接続するための `-p` オプションを答えよ。
+  - **答え**: <span class="masked">`-p 5433:5432`</span>
+
+- コンテナ内の PostgreSQL は5432番ポートで接続を受け付けている。ホスト側の5433番ポートから接続したいので、コンテナ作成時に `-p 5432:5433` を指定した。この指定は目的に対して適切か答えよ。また、適切ではない場合は、正しい指定を答えよ。
+  - **答え**: <span class="masked">適切ではない。指定が逆で、ホスト側の5432番ポートとコンテナ側の5433番ポートをマッピングしている。正しくは `-p 5433:5432`。</span>
 
 ### 演習 (宿題・授業時間外)
 
