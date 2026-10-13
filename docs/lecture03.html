@@ -520,8 +520,8 @@ upstream  DISABLED (push)</code></pre>
       <li><code>--wait</code>：コンテナが起動状態 (またはヘルスチェックで正常と判定された状態)
       になるまで待機します。</li>
       </ul>
-      <p>なお、<code>docker compose</code>
-      はコンテナを起動するたびに再作成するわけではありません。すでにコンテナが存在する場合は、設定の変更状況などに応じて、既存のコンテナを再利用することもあります。</p>
+      <p>なお、<code>docker compose up</code>
+      は、実行するたびにコンテナを再作成するわけではありません。既存のコンテナがあり、設定などに変更がなければ、そのコンテナを再利用します。</p>
       </div>
       <p><code>docker ps</code> コマンドで起動中のコンテナを確認すると、次のように表示されます
       (紙面の都合で COMMAND、CREATED、STATUS の3項目は省略しています)。</p>
@@ -655,8 +655,9 @@ upstream  DISABLED (push)</code></pre>
       <code>down</code> に <code>-v</code> オプションを付けたコマンドを実行します。</p>
       <div class="sourceCode" id="cb26"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="ex">docker</span> compose <span class="at">-f</span> docker/docker-compose.yaml <span class="at">-p</span> pg18dev down <span class="at">-v</span></span></code></pre></div>
       <ul>
-      <li><code>npm run db:reset</code> を実行すると、この Compose Project の PostgreSQL と DbGate
-      の名前付きボリュームも削除されます。これまでに作成したテーブルやレコードに加え、DbGate
+      <li><code>npm run db:reset</code> を実行すると、<strong><u>この Compose Project の PostgreSQL
+      と DbGate
+      の名前付きボリュームも削除</u></strong>されます。これまでに作成したテーブルやレコードに加え、DbGate
       の保存設定も消去されます。</li>
       </ul>
       <p><strong><i class="fa-solid fa-comment-dots fa-flip-horizontal"></i>プロンプト例</strong></p>
@@ -708,7 +709,7 @@ upstream  DISABLED (push)</code></pre>
 <span id="cb28-8"><a href="#cb28-8"></a><span class="kw">DROP</span> <span class="kw">TABLE</span> <span class="cf">IF</span> <span class="kw">EXISTS</span> users;</span>
 <span id="cb28-9"><a href="#cb28-9"></a></span>
 <span id="cb28-10"><a href="#cb28-10"></a><span class="co">-- ユーザ情報を保持するテーブルを作成する</span></span>
-<span id="cb28-11"><a href="#cb28-11"></a><span class="kw">CREATE</span> <span class="kw">TABLE</span> users (<span class="kw">id</span> <span class="dt">INTEGER</span> <span class="kw">PRIMARY</span> <span class="kw">KEY</span>, name TEXT <span class="kw">NOT</span> <span class="kw">NULL</span>, age <span class="dt">INTEGER</span>);</span>
+<span id="cb28-11"><a href="#cb28-11"></a><span class="kw">CREATE</span> <span class="kw">TABLE</span> users (<span class="kw">id</span> <span class="dt">INTEGER</span> <span class="kw">PRIMARY</span> <span class="kw">KEY</span>, name <span class="dt">VARCHAR</span>(<span class="dv">16</span>) <span class="kw">NOT</span> <span class="kw">NULL</span>, age <span class="dt">INTEGER</span>);</span>
 <span id="cb28-12"><a href="#cb28-12"></a></span>
 <span id="cb28-13"><a href="#cb28-13"></a><span class="co">-- テーブルにレコード（ユーザ情報）を挿入する</span></span>
 <span id="cb28-14"><a href="#cb28-14"></a><span class="kw">INSERT</span> <span class="kw">INTO</span></span>
@@ -1036,31 +1037,30 @@ INSERT 0 2
       から構成されています。このあと、このテーブルに対して問い合わせをする <code>SELECT</code>
       文を書いていくので、概要は簡単に把握しておいてください。</p>
       <ol type="1">
-      <li><code>id</code>: <strong>レコードを一意に識別するID</strong>。整数型。主キー。<span
-      class="masked">自動採番</span> され <code>NULL</code> は不可。</li>
+      <li><code>id</code>: <strong>レコードを一意に識別するID</strong>。整数型
+      (<strong>INTEGER</strong>)。主キー。<span class="masked">自動採番</span> され
+      <code>NULL</code> は不可。</li>
       <li><code>name</code>:
       <strong>キャラクタ名</strong>。最大16文字の可変長文字列型。<code>NULL</code> は不可。
       <ul>
-      <li>標準 SQL において、格納可能な最大文字数が決められた <strong>可変長文字列型</strong> を
-      <span class="masked">VARCHAR型</span> といいます。</li>
+      <li>標準 SQL において、格納可能な最大文字数が決められた <strong>可変長文字列型</strong>
+      (<strong>VARCHAR(16)</strong>) を <span class="masked">VARCHAR型</span> といいます。</li>
       </ul></li>
       <li><code>job</code>: <strong>ジョブ
       (職業)</strong>。最大16文字の可変長文字列型。<code>NULL</code> は不可。</li>
       <li><code>level</code>: <strong>レベル</strong>。整数型で、1〜99
       の範囲に制約。<code>NULL</code> は不可。</li>
       <li><code>buff</code>: <strong>バフ（能力補正係数）</strong>。全体で3桁、小数部 2
-      桁の固定小数点数型。<code>NULL</code> は不可。
+      桁の固定小数点数型 (<strong>NUMERIC(3, 2)</strong>)。<code>NULL</code> は不可。
       <ul>
       <li>具体的には <code>-9.99</code> 〜 <code>9.99</code> が格納可能。</li>
       </ul></li>
       <li><code>guild</code>: <strong>所属ギルド名</strong>。最大 32 文字の可変長文字列型。</li>
-      <li><code>last_login_at</code>: <strong>最終ログイン日時</strong>。日時型 (TIMESTAMP型)。</li>
-      <li><code>created_on</code>: <strong>キャラクタ作成日</strong>。日付型
-      (時刻情報を含まない)。<code>NULL</code> は不可。
-      <ul>
-      <li>標準 SQL において、時刻を含まず「年月日」を格納するデータ型を <strong>DATE型</strong>
-      といいます。</li>
-      </ul></li>
+      <li><code>last_login_at</code>: <strong>最終ログイン日時</strong>。日時型
+      (<strong>TIMESTAM</strong>`)。</li>
+      <li><code>created_on</code>:
+      <strong>キャラクタ作成日</strong>。時刻情報を含まない「年」「月」「日」のみの日付型
+      (<strong>DATE</strong>)。<code>NULL</code> は不可。</li>
       </ol>
       <div class="note type-tips">
       <p><strong>TIMESTAMP型 と TIMESTAMPTZ型</strong></p>
@@ -1097,6 +1097,10 @@ INSERT 0 2
       <blockquote>
       <p>PostgreSQL の
       TIMESTAMPTZ型は「タイムゾーン情報付き」の型なので、入力時の「日本時間」「ニューヨーク時間」といった地域名や時差も、そのまま保存されると思っていました。この理解は正しいですか。実際に保存されるものと保存されないもの、表示時に参照される設定を整理し、TIMESTAMP型との違いも説明してください。</p>
+      </blockquote>
+      <blockquote>
+      <p>PostgreSQL における主要なデータ型 (標準 SQL と互換性のあるもの)
+      について紹介してください。</p>
       </blockquote>
       <h3 data-number="7.1.1" id="定着確認-4"><span class="header-section-number">7.1.1</span>
       定着確認</h3>

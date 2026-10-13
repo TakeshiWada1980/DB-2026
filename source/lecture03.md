@@ -353,7 +353,7 @@ Docker Compose とは <span class="masked">複数の Docker コンテナをま�
 - `-d`：コンテナをバックグラウンドで実行します。
 - `--wait`：コンテナが起動状態 (またはヘルスチェックで正常と判定された状態) になるまで待機します。
 
-なお、`docker compose` はコンテナを起動するたびに再作成するわけではありません。すでにコンテナが存在する場合は、設定の変更状況などに応じて、既存のコンテナを再利用することもあります。
+なお、`docker compose up` は、実行するたびにコンテナを再作成するわけではありません。既存のコンテナがあり、設定などに変更がなければ、そのコンテナを再利用します。
 :::
 
 
@@ -463,7 +463,7 @@ npm run db:reset
 docker compose -f docker/docker-compose.yaml -p pg18dev down -v
 ```
 
-- `npm run db:reset` を実行すると、この Compose Project の PostgreSQL と DbGate の名前付きボリュームも削除されます。これまでに作成したテーブルやレコードに加え、DbGate の保存設定も消去されます。
+- `npm run db:reset` を実行すると、**<u>この Compose Project の PostgreSQL と DbGate の名前付きボリュームも削除</u>**されます。これまでに作成したテーブルやレコードに加え、DbGate の保存設定も消去されます。
 
 **<i class="fa-solid fa-comment-dots fa-flip-horizontal"></i>プロンプト例**
 
@@ -512,7 +512,7 @@ SET search_path TO w03;
 DROP TABLE IF EXISTS users;
 
 -- ユーザ情報を保持するテーブルを作成する
-CREATE TABLE users (id INTEGER PRIMARY KEY, name TEXT NOT NULL, age INTEGER);
+CREATE TABLE users (id INTEGER PRIMARY KEY, name VARCHAR(16) NOT NULL, age INTEGER);
 
 -- テーブルにレコード（ユーザ情報）を挿入する
 INSERT INTO
@@ -799,18 +799,17 @@ npm run sql:en [ファイル名]
 
 この **characters** (キャラクタ) テーブルは、次のような **8つのカラム** から構成されています。このあと、このテーブルに対して問い合わせをする `SELECT` 文を書いていくので、概要は簡単に把握しておいてください。
 
-1. `id`: **レコードを一意に識別するID**。整数型。主キー。<span class="masked">自動採番</span> され `NULL` は不可。
+1. `id`: **レコードを一意に識別するID**。整数型 (**INTEGER**)。主キー。<span class="masked">自動採番</span> され `NULL` は不可。
 2. `name`: **キャラクタ名**。最大16文字の可変長文字列型。`NULL` は不可。
-    - 標準 SQL において、格納可能な最大文字数が決められた **可変長文字列型** を <span class="masked">VARCHAR型</span> といいます。
+    - 標準 SQL において、格納可能な最大文字数が決められた **可変長文字列型** (**VARCHAR(16)**) を <span class="masked">VARCHAR型</span> といいます。
 3. `job`: **ジョブ (職業)**。最大16文字の可変長文字列型。`NULL` は不可。
 4. `level`: **レベル**。整数型で、1〜99 の範囲に制約。`NULL` は不可。
-5. `buff`: **バフ（能力補正係数）**。全体で3桁、小数部 2 桁の固定小数点数型。`NULL` は不可。
+5. `buff`: **バフ（能力補正係数）**。全体で3桁、小数部 2 桁の固定小数点数型 (**NUMERIC(3, 2)**)。`NULL` は不可。
     - 具体的には `-9.99` 〜 `9.99` が格納可能。
 6. `guild`: **所属ギルド名**。最大 32 文字の可変長文字列型。
-7. `last_login_at`: **最終ログイン日時**。日時型 (TIMESTAMP型)。
-8. `created_on`: **キャラクタ作成日**。日付型 (時刻情報を含まない)。`NULL` は不可。
-    - 標準 SQL において、時刻を含まず「年月日」を格納するデータ型を **DATE型** といいます。
-
+7. `last_login_at`: **最終ログイン日時**。日時型 (**TIMESTAM**`)。
+8. `created_on`: **キャラクタ作成日**。時刻情報を含まない「年」「月」「日」のみの日付型 (**DATE**)。`NULL` は不可。
+ 
 ::: {.note .type-tips}
 
 **TIMESTAMP型 と TIMESTAMPTZ型**
@@ -832,6 +831,8 @@ npm run sql:en [ファイル名]
 **<i class="fa-solid fa-comment-dots fa-flip-horizontal"></i>プロンプト例**
 
 > PostgreSQL の TIMESTAMPTZ型は「タイムゾーン情報付き」の型なので、入力時の「日本時間」「ニューヨーク時間」といった地域名や時差も、そのまま保存されると思っていました。この理解は正しいですか。実際に保存されるものと保存されないもの、表示時に参照される設定を整理し、TIMESTAMP型との違いも説明してください。
+
+> PostgreSQL における主要なデータ型 (標準 SQL と互換性のあるもの) について紹介してください。
 
 #### 定着確認
 
