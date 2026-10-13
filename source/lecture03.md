@@ -353,7 +353,7 @@ Docker Compose とは <span class="masked">複数の Docker コンテナをま�
 - `-d`：コンテナをバックグラウンドで実行します。
 - `--wait`：コンテナが起動状態 (またはヘルスチェックで正常と判定された状態) になるまで待機します。
 
-なお、`docker compose` はコンテナを起動するたびに新しく作り直すわけではありません。すでにコンテナが存在する場合は、設定の変更状況などに応じて、既存のコンテナを再利用することもあります。
+なお、`docker compose` はコンテナを起動するたびに再作成するわけではありません。すでにコンテナが存在する場合は、設定の変更状況などに応じて、既存のコンテナを再利用することもあります。
 :::
 
 
@@ -477,11 +477,11 @@ docker compose -f docker/docker-compose.yaml -p pg18dev down -v
 npm run db:up
 ```
 
-第02回講義では、PostgreSQL の「CLI クライアントツール」である `psql` psql の対話モードで、SQL 文を直接入力 (またはコピー＆ペースト) して実行しました ( [参照](lecture02.html#psql-の対話モードで-postgresql-を操作) )。
+第02回講義では、PostgreSQL の「CLI クライアントツール」である `psql` の対話モードで、SQL 文を直接入力 (またはコピー＆ペースト) して実行しました ( [参照](lecture02.html#psql-の対話モードで-postgresql-を操作) )。
 
 しかし、この方法では、SQL の <span class="masked">再利用や修正がしづらく、実行内容の記録や共有にも適していません</span>。
 
-そこで、**SQL をファイルに記述し、そのファイルを `psql` に読み込ませて実行する方法** を使います。
+そこで、**SQL をファイルに記述し、そのファイルを `psql` に読み込ませて実行する方法** を使用します。
 
 ::: {.balloon .char-01 .face-02 .tone-yellow}
 Python にも対話モードがありますが、ある程度まとまったプログラムを作成するときは、通常、`.py` ファイルにコードを書いて実行しますよね。
@@ -767,7 +767,7 @@ npx tsx src/samples/drizzleSample.ts
 
 ## レコードの抽出
 
-ここからは 本格的に **SQL** (**Structured Query Language**) について学んでいきます。
+ここからは、本格的に **SQL** (**Structured Query Language**) について学んでいきます。
 
 まずは、RDB に対する各種操作 (クエリ) のなかでも、利用頻度の最も高い **レコードの抽出操作** (`SELECT` 文) について学んでいきます。
 
@@ -815,7 +815,7 @@ npm run sql:en [ファイル名]
 
 **TIMESTAMP型 と TIMESTAMPTZ型**
 
-標準 SQL において、タイムゾーン情報を含まず、年・月・日と時刻 (時・分・秒) を格納するデータ型を **_TIMESTAMP型_** といいます。このテーブルの **characters** テーブルの `last_login_at` カラムには、この型を使用しています。
+標準 SQL において、タイムゾーン情報を含まず、年・月・日と時刻 (時・分・秒) を格納するデータ型を **_TIMESTAMP型_** といいます。この **characters** テーブルの `last_login_at` カラムには、この型を使用しています。
 
 一方、PostgreSQL には **_TIMESTAMPTZ型_** もあり、こちらは、入力した日時を UTC (Coordinated Universal Time、協定世界時) に変換して保存し、<u>表示するときには</u> **現在のセッションに設定されているタイムゾーン** に合わせて変換する型です。入力時のタイムゾーン名や時差そのものは保存されません。
 
@@ -1012,7 +1012,7 @@ PostgreSQL では、エイリアスをダブルクォートで囲むことで、
   5 | Ivan    |
 ```
 
-- レコードの表示順は、この上記と異なる場合があります。
+- レコードの表示順は、上記と異なる場合があります。
 - `name AS "名前"` を `name AS '名前'` のように、**ダブルクォート** ではなく **シングルクォート** で囲んで実行した場合、どのようになるかを確認してください。
 
 #### SQLドリル💻
@@ -1022,7 +1022,7 @@ PostgreSQL では、エイリアスをダブルクォートで囲むことで、
 
 ### SQLの文法上の注意
 
-SQL では、`--` から行末までが **コメント** として扱われます。また、`/*` と `*/` で囲むと、複数行にわたるコメントを記述できます。説明を書き添えたり、SQL の一部を一時的に実行対象から外したりするときに使います。VSCode では <span class="masked">`[Ctrl]+[/]`</span> のショートカットで、行コメントの設定と解除ができます。
+SQL では、`--` から行末までが **コメント** として扱われます。また、`/*` と `*/` で囲むと、複数行にわたるコメントを記述できます。説明を書き添えたり、SQL の一部を一時的に実行対象から外したりするときに使用します。VSCode では <span class="masked">`[Ctrl]+[/]`</span> のショートカットで、行コメントの設定と解除ができます。
 
 SQL では、セミコロン `;` で **1つの文の終わり**を示します。演習でも、各 SQL 文の末尾にセミコロンを付けるようにしてください。実行環境によっては省略できる場合もありますが、<font color="deeppink"><b>本科目 (小テストや試験を含む) のなかでは必ずセミコロンを付けてください</b></font> (セミコロン抜けは誤答や減点とします)。
 
@@ -1058,7 +1058,7 @@ VALUES
 
 #### 定着確認
 
-- PostgreSQL の **w03.users** テーブルには `id`、`name`、`age`  という名前のカラムが存在する。次の SQL 文を実行したところ構文エラー (Syntax Error) が発生した。SQL 文のどこに問題があるのかを説明せよ。
+- PostgreSQL の **w03.users** テーブルには `id`、`name`、`age` という名前のカラムが存在する。次の SQL 文を実行したところ構文エラー (Syntax Error) が発生した。SQL 文のどこに問題があるのかを説明せよ。
   - **答え**: <span class="masked">`FORM` は誤記であり、正しくは `FROM` である。</span>  
 ```sql{.numberLines caption="定着確認"}
 SELECT id, name FORM w03.users;
@@ -1122,8 +1122,8 @@ FROM
   characters;
 ```
 
-- **数値はクォートで囲まず**、**文字列はシングルクォート** `'` で囲んで記述することに注意して下さい。
-- 本科目では、`AS` のあとのエイリアスを **ダブルクォート** `"` で囲む書き方を基本としていることに注意して下さい。
+- **数値はクォートで囲まず**、**文字列はシングルクォート** `'` で囲んで記述することに注意してください。
+- 本科目では、`AS` のあとのエイリアスを **ダブルクォート** `"` で囲む書き方を基本としていることに注意してください。
 
 実際に実行して、以下のような結果セットが得られることを確認してください。
 
@@ -1248,7 +1248,7 @@ FROM
  ～～ 以下略 ～～
 ``` 
 
-また、**数値型のカラム**については、加算や乗算などの <span class="masked">算術演算</span> を適用することがでます。
+また、**数値型のカラム**については、加算や乗算などの <span class="masked">算術演算</span> を適用することができます。
 
 次の例では、`buff` に `1` を加えて `100` 倍し、最後に `||` で「%」を付けています。例えば、`buff` が `-0.15` であれば「**85.00%**」、`0.10` であれば「**110.00%**」のように出力されるようにしています。
 
@@ -1281,7 +1281,7 @@ FROM
 ::: {.balloon .char-01 .face-02 .tone-yellow}
 
 
-`ROUND(数値, 小数部の桁数)` を使うと、**NUMERIC 型の数値を指定した小数部の桁数で四捨五入** することができます。例えば、小数部の桁数に `0` を指定すると、小数第1位で四捨五入して整数値に丸めることがでいます。
+`ROUND(数値, 小数部の桁数)` を使うと、**NUMERIC 型の数値を指定した小数部の桁数で四捨五入** することができます。例えば、小数部の桁数に `0` を指定すると、小数第1位で四捨五入して整数値に丸めることができます。
 
 例えば、`BuffApplied(%)` の値を「**85%**」や「**110%**」のように、**小数部のないパーセント表記**で出力するためには、次のように記述します。
 
@@ -1363,7 +1363,7 @@ FROM
 
 ### CASE 式を利用する
 
-`SELECT` 句では、`CASE` 式 を使って <span class="masked">条件に応じて異なる値を出力すること</span> ができます。
+`SELECT` 句では、`CASE` 式を使って <span class="masked">条件に応じて異なる値を出力すること</span> ができます。
 
 次の例では、**第08行目** から **第13行目** において **level** カラムの値に応じてキャラクタのクラスを「SS」「S」「A」「B」の4段階に分類しています。
 
@@ -1386,7 +1386,7 @@ FROM
 ```
 
 ::: {.balloon .char-01 .face-02 .tone-yellow}
-`CASE` 式では、`WHEN` の条件が上から順に評価され、**最初に条件を満たした (** `TRUE` **となった)** `THEN` の値 が出力されます。
+`CASE` 式では、`WHEN` の条件が上から順に評価され、**最初に条件を満たした (`TRUE` となった)** `THEN` の値が出力されます。
 
 どの条件も満たさない場合は `ELSE` の値が使われます。例えば、レベル `62` は「60以上」と「40以上」の両方を満たしますが、先に評価される「60以上」の条件によって「S」となります。
 
@@ -1415,7 +1415,7 @@ FROM
 また、複数の条件を組み合わせたいときは `AND` や `OR` が使用できます。
 :::
 
-**値が `NULL` かどうかを判定するには、`= NULL` ではなく  `IS NULL` を使用してください**。
+**値が `NULL` かどうかを判定するには、`= NULL` ではなく `IS NULL` を使用してください**。
 
 - PostgreSQL では、スペースを含めない `ISNULL` も使用できますが、本科目では標準 SQL に準拠した `IS NULL` を基本とします。
 
@@ -1439,7 +1439,7 @@ FROM
 :::{.note .type-caution}
 **NULL との比較は十分に注意**
 
-上記の **第08** 行目において `guild = NULL` では、**guild** が **NULL** かどうかを正しく判定できません。
+上記の **第08行目** において `guild = NULL` では、**guild** が **NULL** かどうかを正しく判定できません。
 
 SQL では、通常の比較演算子 (`=`、`<>`、`<`、`>` など) を使って `NULL` との比較をおこなうと、その結果は `TRUE` でも `FALSE` でもなく、`UNKNOWN` となります。
 
@@ -1536,7 +1536,7 @@ END
 
 ---
 
-- `ex-05_2.sql` 👉 **w03.characters** テーブルのすべてのレコードについて、次に示すようなカラムを出力する SQL 文を記述せよ。]
+- `ex-05_2.sql` 👉 **w03.characters** テーブルのすべてのレコードについて、次に示すようなカラムを出力する SQL 文を記述せよ。
   - `status` は、`buff` が `0` なら「--」、負数なら「debuff」、正数なら「buff」とすること。  
 
 ```
@@ -1727,11 +1727,11 @@ FROM
 (15 行)
 ```
 
-### 日付・時刻関数を利用する (授業時間外学習)
+### 日付・時刻関数を利用する
 
-TIMESTAMP型の値から、「年」「月」「日」「時」「分」「秒」を **数値** として取り出すには、`DATE_PART` を使います。
+TIMESTAMP型の値から、「年」「月」「日」「時」「分」「秒」を 算術演算可能な **数値** として取り出すには、`DATE_PART` 関数を使用します。
 
-次の例では、**w03.characters** を対象に最終ログイン日時を、それぞれの要素に分けて出力しています。なお `last_login_at` が `NULL` のレコードでは、取り出した値も `NULL` となります。
+次の例では、**w03.characters** を対象に「**最終ログイン日時** (TIMESTAMP 型)」を、それぞれの要素に分けて出力しています。なお `last_login_at` が `NULL` のレコードでは、取り出した値は、一律で `NULL` となります。
 
 ```sql{.numberLines caption="日付と時刻の分解"}
 SET
@@ -1750,16 +1750,18 @@ FROM
   characters;
 ```
 
-- `DATE_PART` は、標準 SQL には含まれません。PostgreSQL 固有の関数です。
-- `DATE_PART` 関数は、`DATE` 型のデータから「年」「月」「日」を取得する場合にも使用できます。
+- `DATE_PART` 関数は、標準 SQL には存在しません。PostgreSQL 固有の関数です。
+- `DATE_PART` 関数は、`TIMESTAMP` 型だけではなく `DATE` 型のデータから「年」「月」「日」を取得する場合にも使用できます。
 
 **<i class="fa-solid fa-comment-dots fa-flip-horizontal"></i>プロンプト例**
 
-> PostgreSQL の DATE_PART で、TIMESTAMP型の last_login_at から年・月・日・時・分・秒を取り出す方法を学びました。標準SQLの EXTRACT では、どのように書きますか。短い SQL 例を示し、DATE_PART との構文や戻り値の型の違いも説明してください。
+> PostgreSQL の DATE_PART で、TIMESTAMP型の last_login_at から年・月・日・時・分・秒を取り出す方法を学びました。標準 SQL では、どのようにしますか。実行可能な SQL のサンプルを示し、DATE_PART との構文や戻り値の型の違いも説明してください。
 
 ---
 
-日時を指定した書式の **文字列** に変換するには、`TO_CHAR` を使います。DATE型にも利用できます。次の例では、最終ログイン日時を「**2025/07/24 13時31分00秒**」のような文字列として出力しています。
+TIMESTAMP 型の値を指定した書式で整形した文字列に変換するには、`TO_CHAR` を使用します。DATE型にも利用できます。
+
+次の例では、最終ログイン日時を「**2025/07/24 13時31分00秒**」のような整形文字列に変換して出力しています。
 
 ```sql{.numberLines caption="日時のフォーマット(文字列整形)"}
 SET
@@ -1773,26 +1775,26 @@ FROM
   characters;
 ```
 
-`TO_CHAR` の第2引数にある `YYYY` や `MI` などは「**フォーマット指定子**」です。例えば、`YYYY` は4桁の年、`MM` は月、`MI` は分、`HH24` は24時間表記の時を表します。使用できる指定子は、PostgreSQL 18 の公式ドキュメントで確認してください。
+`TO_CHAR` の 第2引数 に与える `YYYY` や `MI` などは「**フォーマット指定子**」です。例えば、`YYYY` は4桁の年、`MM` は月、`MI` は分、`HH24` は24時間表記の時を表します。使用できる指定子については、以下の公式ドキュメントを参照してください。
 
 - [Table 9.27. Template Patterns for Date/Time Formatting](https://www.postgresql.org/docs/18/functions-formatting.html#FUNCTIONS-FORMATTING-DATETIME-TABLE)
 
 
 ::: {.balloon .char-01 .face-02 .tone-yellow}
-TO_CHAR 関数を利用する際、書式内でそのまま出力したい文字列は、**ダブルクォート** で囲むと、フォーマット指定子として解釈されることを防げます。
+`TO_CHAR` 関数では、**書式指定子として解釈させず、そのまま出力したい文字列をダブルクォートで囲みます**。
 
-上記の **第07行目** では、書式全体を **シングルクォート** で囲み、その内側で「時」「分」「秒」などを **ダブルクォート** で囲んでいる点を確認してください。
+上記の **第07行目** の `TO_CHAR` 関数の「第2引数」では、書式全体を **シングルクォート** で囲み、その内側で「時」「分」「秒」などの文字列を **ダブルクォート** で囲んでいる点に注目してください。
 :::
 
 #### 定着確認
 
-- PostgreSQL において、TIMESTAMP 型の `last_login_at` の値が `2025-07-24 13:31:00` である。`DATE_PART('month', last_login_at)` は、どのような値を返すか答えよ。
+- PostgreSQL において、TIMESTAMP 型の `last_login_at` の値が `2025-07-24 13:31:00` となっている。`DATE_PART('month', last_login_at)` は、どのような値を返すか答えよ。
   - **答え**: <span class="masked">数値の `7`。</span>
 
-- PostgreSQL において、TIMESTAMP 型の `last_login_at` の値が `2025-07-24 13:31:00` である。`DATE_PART('minute', last_login_at)` は、どのような値を返すか答えよ。
+- PostgreSQL において、TIMESTAMP 型の `last_login_at` の値が `2025-07-24 13:31:00` となっている。`DATE_PART('minute', last_login_at)` は、どのような値を返すか答えよ。
   - **答え**: <span class="masked">数値の `31`。</span>
 
-- PostgreSQL において、TIMESTAMP 型の `last_login_at` の値が `NULL` である。`DATE_PART('year', last_login_at)` の結果を答えよ。
+- PostgreSQL において、TIMESTAMP 型の `last_login_at` の値が `NULL` である。`DATE_PART('year', last_login_at)` はどのような値を返すか答えよ。
   - **答え**: <span class="masked">`NULL`。</span>
 
 - PostgreSQL において、TIMESTAMP 型の `last_login_at` の値が `2025-07-24 13:31:00` である。次の式は、どのような文字列を返すか答えよ。
@@ -1801,16 +1803,16 @@ TO_CHAR 関数を利用する際、書式内でそのまま出力したい文字
 TO_CHAR(last_login_at, 'YYYY"/"MM"/"DD HH24"時"MI"分"SS"秒"')
 ```
 
-- PostgreSQL の `TO_CHAR` で日時を文字列に変換するとき、フォーマット指定子 `MM` と `MI` は、それぞれ何を表すか答えよ。
-  - **答え**: <span class="masked">MM は月、MI は分。どちらも2桁で表示され、1桁の値は先頭に0を付けてゼロ埋めされる。例えば、7月は `07`、5分は `05` と表示される。</span>
+- PostgreSQL の `TO_CHAR` 関数を使用して日時を文字列に変換するとき、フォーマット指定子 `MM` と `MI` は、それぞれ何を表すか答えよ。
+  - **答え**: <span class="masked">`MM` は月、`MI` は分。どちらも2桁で表示され、1桁の値は先頭に0を付けてゼロ埋めされる。例えば、7月は `07`、5分は `05` と表示される。</span>
 
-- PostgreSQL の `TO_CHAR` で日時を文字列に変換するとき、24時間表記 (ゼロ埋め2桁) の「時」を指定するフォーマット指定子を答えよ。
+- PostgreSQL の `TO_CHAR` 関数を使用して日時を文字列に変換するとき、24時間表記 (ゼロ埋め2桁) の「時」を指定するフォーマット指定子を答えよ。
   - **答え**: <span class="masked">`HH24`</span>
 
 #### SQLドリル💻
 
-- `ex-08_1.sql` 👉 **w03.characters** テーブルのすべてのレコードについて、次に示すようなカラムを出力する SQL 文を記述せよ。`created_on` は `2020-09-01` 以降とする (平成に対応する必要はない)。
-  - ヒント: 和暦 (令和) の年は、西暦の値から <span class="masked">2018</span> を引くことで求めることができる。
+- `ex-08_1.sql` 👉 **w03.characters** テーブルのすべてのレコードについて、以下に示す形式で各カラムを出力する SQL 文を記述せよ。なお、`created_on` の値はすべて `2020-09-01` 以降であり、「平成」や「元禄」など令和以外の元号への対応は不要とする。
+  - **ヒント**: 和暦 (令和) の年は、西暦から <span class="masked">`2018`</span> を減じることで求められる。
 
 ```
  id |  name   | created_on_1 |  created_on_2   
@@ -1823,20 +1825,58 @@ TO_CHAR(last_login_at, 'YYYY"/"MM"/"DD HH24"時"MI"分"SS"秒"')
  ～～ 以下略 ～～
 ```
 
+- `ex-08_2.sql` 👉 **w03.characters** テーブルのすべてのレコードについて、`last_login_at` から次に示すようなカラムを出力する SQL 文を記述せよ。
+  - 数値の取得には `DATE_PART`、文字列の取得には `TO_CHAR` を使用すること。
+
+```
+ id |  name  | 月(数値)  | 月(文字列)  | 分(数値)  | 分(文字列)
+----+--------+----------+------------+----------+-----------
+  1 | Marvin |        7 | 07         |       31 | 31
+  4 | Tom    |          |            |          |
+ 12 | Dave   |        8 | 08         |        8 | 08
+```
+
+上記の実行結果は、部分的に抜粋したものです。
+
 ### 現在日時と日数・時間の差を計算する
 
-現在の日付や時刻を取得するには、次の日時値関数を使います。
+**現在の日付や時刻** を取得するためには、次の「日時値関数」を使用します。
 
-- **日時**: `LOCALTIMESTAMP` は TIMESTAMP型、`CURRENT_TIMESTAMP` は TIMESTAMPTZ型の値を返します。
-- **時刻**: `LOCALTIME` は TIME型、`CURRENT_TIME` は TIMETZ型の値を返します。
-- **日付**: `CURRENT_DATE` は、時刻を含まない DATE型の値を返します。
+- **日時**: `LOCALTIMESTAMP` は **TIMESTAMP** 型、`CURRENT_TIMESTAMP` は **TIMESTAMP<u>TZ</u>** 型の値を返します。
+- **時刻**: `LOCALTIME` は **TIME** 型、`CURRENT_TIME` は **TIME<u>TZ</u>** 型の値を返します。
+- **日付**: `CURRENT_DATE` は、時刻を含まない **DATE** 型の値を返します。
 
 ::: {.balloon .char-01 .face-01 .tone-pink}
-PostgreSQL では、これらが返す値の基準は **現在のトランザクションの開始時点**です。同じトランザクション内では、処理が進んでも値は変わりません。また、日付や時刻は、現在のセッションに設定されているタイムゾーンに基づきます。
+PostgreSQL では、日時値関数が返す値の基準は **現在のトランザクションの開始時点**です。同じトランザクション内では、処理が進んでも値は変わりません。また、日付や時刻は、現在のセッションに設定されているタイムゾーンに基づきます。
 :::
 
+```sql{.numberLines caption="日時値関数から得られる値の動作確認"}
+SELECT
+  LOCALTIMESTAMP AS "LOCALTIMESTAMP",
+  CURRENT_TIMESTAMP AS "CURRENT_TIMESTAMP";
 
-今回の **w03.characters** テーブルでは、`created_on` は DATE型、`last_login_at` はタイムゾーン情報を含まない TIMESTAMP型です。このため、日付同士の差を求めるときは `CURRENT_DATE`、日時同士の差を求めるときは `LOCALTIMESTAMP` を使うと、カラムと同じ型で計算できます。
+SELECT
+  LOCALTIME AS "LOCALTIME",
+  CURRENT_TIME AS "CURRENT_TIME";
+
+SELECT
+  CURRENT_DATE AS "CURRENT_DATE";
+```
+
+```sql{.numberLines caption="日時値関数から得られる値の型確認"}
+SELECT
+  pg_typeof(LOCALTIMESTAMP) AS "LOCALTIMESTAMP",
+  pg_typeof(CURRENT_TIMESTAMP) AS "CURRENT_TIMESTAMP";
+
+SELECT
+  pg_typeof(LOCALTIME) AS "LOCALTIME",
+  pg_typeof(CURRENT_TIME) AS "CURRENT_TIME";
+
+SELECT
+  pg_typeof(CURRENT_DATE) AS "CURRENT_DATE";
+```
+
+**w03.characters** テーブルでは、`created_on` は DATE型、`last_login_at` はタイムゾーン情報を含まない TIMESTAMP 型でカラムが定義されています。このため、日付同士の差を求めるときは `CURRENT_DATE`、日時同士の差を求めるときは `LOCALTIMESTAMP` を使うと、カラムと同じ型で計算ができます。
 
 - TIMESTAMPTZ型のカラムと現在日時の差を求める場合は、`CURRENT_TIMESTAMP` を使うと同じ型で計算できます。
 
@@ -1844,7 +1884,23 @@ PostgreSQL では、これらが返す値の基準は **現在のトランザク
 
 **datetime value function (日時値関数) について**
 
-`LOCALTIMESTAMP`、`CURRENT_DATE`、`LOCALTIME` などは、**datetime value function (日時値関数)** と呼ばれます。通常は括弧を付けずに記述します。時刻や日時には、`LOCALTIME(0)` のように秒の小数部の桁数を指定でき、`0` なら秒単位の値になります。`LOCALTIME()` のように空の括弧を付けると、PostgreSQL では構文エラーになります。`CURRENT_DATE` には精度の指定はありません。
+`LOCALTIMESTAMP`、`CURRENT_DATE`、`LOCALTIME` などは、**datetime value function (日時値関数)** と呼ばれ、現在の日付や時刻を取得するために使用します。これらは一般的な関数とは異なり、**通常は括弧を付けずに記述します**。
+
+ただし、時刻や日時を返す関数では、`LOCALTIME(0)` や `LOCALTIMESTAMP(3)` のように、括弧内に **秒の小数部の桁数 (精度)** を指定できます。例えば、`0` を指定すると秒単位、`3` を指定するとミリ秒単位の値となります。なお、指定した精度に応じて秒の小数部は四捨五入されます。
+
+```sql{.numberLines caption="日時値関数の動作確認"}
+SELECT
+  LOCALTIME AS "LOCALTIME",
+  LOCALTIME(0) AS "LOCALTIME(0)",
+  LOCALTIME(3) AS "LOCALTIME(3)";
+
+SELECT
+  LOCALTIMESTAMP AS "LOCALTIMESTAMP",
+  LOCALTIMESTAMP(0) AS "LOCALTIMESTAMP(0)",
+  LOCALTIMESTAMP(3) AS "LOCALTIMESTAMP(3)";
+```
+
+注意点として、PostgreSQL では `LOCALTIME()` のように **空の括弧を付けると構文エラー**になります。また、`CURRENT_DATE` は日付のみを返すため、精度を指定することはできません。
 
 :::
 
@@ -1852,23 +1908,9 @@ PostgreSQL では、これらが返す値の基準は **現在のトランザク
 
 **タイムゾーン情報の扱いについて**
 
-日時を「どの地域での時刻」として扱うかは、**DB に接続するアプリケーションの設計や表示にも関わります**。TIMESTAMP型の値を異なる地域のローカル時刻として解釈すると、同じ値から異なる時点を指すことになります。TIMESTAMPTZ型では同じ時点を保存できますが、表示する時刻はセッションのタイムゾーンによって変わります。保存する型と、表示時に使うタイムゾーンの両方を意識してください。
+日時を「どの地域での時刻」として扱うかは、**DB に接続するアプリケーションの設計や表示にも関わります**。TIMESTAMP型の値を異なる地域のローカル時刻として解釈すると、同じ値から異なる時点を指すことになります。
 
-**sql/03/tmp.sql** に次のコードを記述して実行し、`LOCALTIMESTAMP` と `CURRENT_TIMESTAMP` などの表示を見比べてみてください。
-
-```sql{.numberLines caption="日時値関数の比較"}
-SELECT
-  LOCALTIMESTAMP(0) AS "LOCALTIMESTAMP",
-  CURRENT_TIMESTAMP(0) AS "CURRENT_TIMESTAMP";
-
-SELECT
-  LOCALTIME(0) AS "LOCALTIME",
-  CURRENT_TIME(0) AS "CURRENT_TIME";
-
-SELECT
-  CURRENT_DATE AS "CURRENT_DATE";
-```
-
+TIMESTAMPTZ型では同じ時点を保存できますが、表示する時刻はセッションのタイムゾーンによって変わります。保存する型と、表示時に使うタイムゾーンの両方を意識してください。
 :::
 
 例えば、キャラクタ作成日 (`created_on`) から今日までの日数を求めるには、`CURRENT_DATE - created_on` と記述します。**DATE型同士の減算** (`DATE - DATE`) の結果は <span class="masked">整数型の日数差</span> になります。
