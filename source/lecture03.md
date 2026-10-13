@@ -777,16 +777,18 @@ npx tsx src/samples/drizzleSample.ts
 
 プロジェクトフォルダ内の `from-teacher/03/init-characters.sql` を、`sql/03/init-characters.sql` にコピーしてください。
 
-その後、ターミナルから次のコマンドを実行するか、このファイルのタブがアクティブな状態で `[Ctrl]+[Shift]+[B]` を押下して、SQL を実行してください。
+- <i class="fa-brands fa-github"></i>[from-teacher/03/init-characters.sql](https://github.com/TakeshiWada1980/DB-2026-PostgreSQL/blob/main/from-teacher/03/init-characters.sql) @ GitHub
+
+その後、ターミナルから次のコマンドを実行するか、このファイルのタブがアクティブな状態で `[Ctrl]+[Shift]+[B]` を押下して、**SQL を実行**してください。
 
 ```bash
-npm run sql sql/03/init_characters.sql
+npm run sql sql/03/init-characters.sql
 ```
 
 - コマンドの応答を確認し、エラーが発生していないことを確認してください。正常に実行処理できていれば `CREATE TABLE`、`INSERT 0 xx` のような応答が返ってきます。 
-  - PostgreSQL からのエラーメッセージを **<u>英語表示</u>** にしたい場合は `npm run sql:en (ファイル名)` のようにコマンドを実行してください。  
+  - PostgreSQL からのエラーメッセージを **<u>英語表示</u>** にしたい場合は、以下のようにコマンドを実行してください。  
 ```bash
-npx tsx src/samples/drizzleSample.ts
+npm run sql:en [ファイル名]
 ```
 
 ::: {.balloon .char-01 .face-05 .tone-blue}
@@ -805,11 +807,23 @@ npx tsx src/samples/drizzleSample.ts
 5. `buff`: **バフ（能力補正係数）**。全体で3桁、小数部 2 桁の固定小数点数型。`NULL` は不可。
     - 具体的には `-9.99` 〜 `9.99` が格納可能。
 6. `guild`: **所属ギルド名**。最大 32 文字の可変長文字列型。
-7. `last_login_at`: **最終ログイン日時**。日時型。
-    - 標準 SQL において、年・月・日と時刻 (時・分・秒) を格納するデータ型を <span class="masked">TIMESTAMP型</span> といいます。
-    - PostgreSQL では、さらに <span class="masked">タイムゾーン情報</span> も格納する **TIMESTAMPTZ型** も存在します。`TIMESTAMPTZ` は、標準 SQL の `TIMESTAMP WITH TIME ZONE` の別名 (エイリアス) となっています。
-8. `created_on`: **キャラクタ作成日**。日付型 (時刻情報を含まない)。
+7. `last_login_at`: **最終ログイン日時**。日時型 (TIMESTAMP型)。
+8. `created_on`: **キャラクタ作成日**。日付型 (時刻情報を含まない)。`NULL` は不可。
     - 標準 SQL において、時刻を含まず「年月日」を格納するデータ型を **DATE型** といいます。
+
+::: {.note .type-tips}
+
+**TIMESTAMP型 と TIMESTAMPTZ型**
+
+標準 SQL において、タイムゾーン情報を含まず、年・月・日と時刻 (時・分・秒) を格納するデータ型を **_TIMESTAMP型_** といいます。このテーブルの **characters** テーブルの `last_login_at` カラムには、この型を使用しています。
+
+一方、PostgreSQL には **_TIMESTAMPTZ型_** もあり、こちらは、入力した日時を UTC (Coordinated Universal Time、協定世界時) に変換して保存し、<u>表示するときには</u> **現在のセッションに設定されているタイムゾーン** に合わせて変換する型です。入力時のタイムゾーン名や時差そのものは保存されません。
+
+- `TIMESTAMPTZ` は、標準 SQL の `TIMESTAMP WITH TIME ZONE` の別名 (エイリアス) です。
+- TIMESTAMPTZ型の表示には、通常は PostgreSQL 側で設定されたデフォルトのタイムゾーン情報が使用されますが、`SET TIME ZONE` で明示的に指定しているときは、そちらが優先されます。
+- この SQL 演習環境では <i class="fa-brands fa-github"></i>[**docker\docker-compose.yaml**](https://github.com/TakeshiWada1980/DB-2026-PostgreSQL/blob/main/docker/docker-compose.yaml) の **第10行目** にある `TZ: Asia/Tokyo` をもとに、初回のデータベース初期化時にタイムゾーンのデフォルトが設定されます。
+
+:::
 
 [http://localhost:8080/](http://localhost:8080/) もしくは [http://127.0.0.1:8080/](http://127.0.0.1:8080/) から「**DbGateコンテナ**」にアクセスして、**characters** テーブルの内容を確認してみてください。
 
@@ -817,7 +831,7 @@ npx tsx src/samples/drizzleSample.ts
 
 **<i class="fa-solid fa-comment-dots fa-flip-horizontal"></i>プロンプト例**
 
-> PostgreSQL の `psql` で SQL を実行したところ、`CREATE TABLE`、`INSERT 0 19` のようなレスポンスが返ってきました。これらの意味を解説してください。
+> PostgreSQL の TIMESTAMPTZ型は「タイムゾーン情報付き」の型なので、入力時の「日本時間」「ニューヨーク時間」といった地域名や時差も、そのまま保存されると思っていました。この理解は正しいですか。実際に保存されるものと保存されないもの、表示時に参照される設定を整理し、TIMESTAMP型との違いも説明してください。
 
 #### 定着確認
 
@@ -828,99 +842,165 @@ npx tsx src/samples/drizzleSample.ts
 - 標準 SQL において、格納可能な最大文字数が決められた可変長文字列型を答えよ。大文字で答えること。
   - **答え**: <span class="masked">VARCHAR</span>
 
+- PostgreSQL の `TIMESTAMPTZ` は、標準 SQL のどのデータ型の別名か答えよ。
+  - **答え**: <span class="masked">`TIMESTAMP WITH TIME ZONE`</span>
+
+- PostgreSQL の TIMESTAMPTZ 型では、入力された日時を特定の時間基準に変換したうえで保存する。その時間基準をアルファベット3文字で答えよ。
+  - **答え**: <span class="masked">UTC</span>
+
+- PostgreSQL の TIMESTAMPTZ型には、日時だけでなく、入力時のタイムゾーン名や時差そのものも保存される。この説明は「適切である」か「適切ではない」か答えよ。
+  - **答え**: <span class="masked">適切ではない。日時は UTC に変換して保存され、入力時のタイムゾーン名や時差そのものは保持されない。</span>
+
+- PostgreSQL に保存した TIMESTAMPTZ型の日時を表示するとき、どのタイムゾーンに合わせて変換されるか答えよ。
+  - **答え**: <span class="masked">現在のセッションに設定されているタイムゾーン。通常は PostgreSQL 側のデフォルト値が使われるが、`SET TIME ZONE` で明示的に指定した場合は、そちらが優先される。</span>
+
 ### SELECT文
 
-テーブルから任意のレコード (行) を取り出す操作を、RDB では **_選択_** (**Selection**) と呼びます。また、任意のカラム (列) だけを取り出す操作を **_射影_** (**Projection**) と呼びます。これらの操作は **SQL** (=Structured Query Language) では `SELECT` キーワードによって指示します。
+テーブルから任意のレコード (行) を取り出す操作を、RDB では **_選択_** (**Selection**) と呼びます。また、任意のカラム (列) だけを取り出す操作を **_射影_** (**Projection**) と呼びます。SQL では、これらの操作に `SELECT` 文を使用します。
 
-::: {.note .type-caution}
+ここでは、先ほど作成した **w03.characters** テーブル (w03 スキーマの characters テーブル) から、すべてのレコードとカラムを取得してみます。
 
-**第1稿で、上記の「選択」を、誤って「抽出」と書いていました。訂正します。**
+#### SELECT文の作成と実行
 
-:::
+まず、**sql/03/tmp.sql** というファイルを作成し、次の SQL を記述して保存してください。
 
-**s_characters** テーブルに格納されたすべての情報 (すべてのレコードとカラム) を取得するには、次のような `SELECT` 文 (SQLクエリ) を使用します。
+```sql{.numberLines caption="sql/03/tmp.sql"}
+SET search_path TO w03;
 
-```sql{.numberLines caption="s_charactersのすべてのレコードとカラムを取得"}
-SELECT * FROM s_characters;
+SELECT * FROM characters;
 ```
 
-この `SELECT` 文 は、次のように「改行」や「インデント」で整形して記述することもできます。
+つづいて、VSCode の **tmp.sql のタブがアクティブな状態**で `[Ctrl]+[Shift]+[B]` を押して実行してください。または、プロジェクトルートで次のコマンドを実行してください。
 
-```sql{.numberLines caption="s_charactersのすべてのレコードとカラムを取得 (整形)"}
+```bash
+npm run sql sql/03/tmp.sql
+```
+
+初期データのままであれば、**19件のレコード**について、`id` から `created_on` までの **8つのカラム** が表示されるはずです。先ほど DbGate で確認したテーブルの内容と照らし合わせ、同じデータが取得できていることを確認してください。
+
+#### SELECT文の基本的な書き方
+
+先ほど実行した SQL のうち、データを取得しているのは次の部分です。
+
+```sql{caption="sql/03/tmp.sql"}
+SELECT * FROM characters;
+```
+
+`SELECT` の後の `*` は「**すべてのカラム**」、`FROM` の後の `characters` は「**データの取得元となるテーブル**」を指定しています。また、この例ではレコードを絞り込む条件 (<span class="masked">`WHERE`句</span>) を指定していないため、**テーブル内のすべてのレコードが取得されます**。
+
+::: {.balloon .char-01 .face-05 .tone-yellow}
+ここで使用している **characters** テーブルは、**w03** スキーマのなかにあります。このテーブルは、`w03.characters` のようにスキーマ名を含めて指定することで明示的に参照できます。
+
+一方、今回の SQL ファイルでは、先頭で `SET search_path TO w03;` を実行しています。そのため、以降の SQL 文ではスキーマ名を省略し、`characters` と記述するだけで同じテーブルが参照可能となっています。
+
+以降の演習でも、**SQL ファイルの先頭で使用するスキーマを設定し、各 SQL 文ではスキーマ名を省略する**という書き方を基本とします。
+:::
+
+#### SQLの整形
+
+SQL 文は、次のように「改行」や「インデント」を使って整形することもできます。**改行やインデントを変更しても、SQL の実行結果は変わりません**。この SQL 演習環境では、拡張機能 [SQL Formatter VSCode](https://marketplace.visualstudio.com/items?itemName=ReneSaarsoo.sql-formatter-vsc) により、ファイルを保存すると SQL が自動的に整形されます。
+
+```sql{.numberLines caption="sql/03/tmp.sql（整形後）"}
+SET
+  search_path TO w03;
+
 SELECT
   *
 FROM
-  s_characters;
+  characters;
 ```
-
-- `sql/03/tmp.sql` を作成し、上記のコードを貼り付け、実際に実行してみてください。
-
-本科目の演習環境では、拡張機能[SQL Formatter VSCode](https://marketplace.visualstudio.com/items?itemName=ReneSaarsoo.sql-formatter-vsc)により、ファイル保存時に改行形式に自動整形されます。
 
 #### 定着確認
 
-- テーブルから必要なレコード (行) を取り出す操作を何というか。漢字2文字で答えよ。
-  - 答え: <span class="masked">選択。英語では Selection。※第1稿では誤って「抽出」としていましたが、「選択」が正しいです。</span>
-- テーブルから必要なカラム (列) を取り出す操作を何というか。漢字2文字で答えよ。
-  - 答え: <span class="masked">射影。英語では Projection</span>
+- テーブルから必要なレコード (行) を取り出す操作を何というか。漢字2文字および英語で答えよ。
+  - **答え**: <span class="masked">選択、Selection。</span>
+- テーブルから必要なカラム (列) を取り出す操作を何というか。漢字2文字および英語で答えよ。
+  - **答え**: <span class="masked">射影、Projection。</span>
 - テーブルから必要なレコードを取得する際に使用する SQL の命令 (キーワード) を答えよ。大文字のアルファベットで答えること。
-  - 答え: <span class="masked">SELECT</span>
+  - **答え**: <span class="masked">SELECT</span>
+
+- `SELECT * FROM w03.characters;` の `*` は何を指定しているか答えよ。
+  - **答え**: <span class="masked">対象とするテーブルに存在する全てのカラム。</span>
+
+- PostgreSQL で、SQLファイルの先頭で使用するスキーマを **w03** に設定し、そのファイル内で `characters` のようにスキーマ名を省略してテーブルを参照したい。このために記述する SQL 文を答えよ。
+  - **答え**: <span class="masked">`SET search_path TO w03;`</span>
+
+- PostgreSQL の **w03** スキーマにある **characters** テーブルから、すべてのレコードとカラムを取得する SQL 文を記述せよ。ただし、`SET search_path` を使用せず、スキーマ名を明示すること。
+  - **答え**: <span class="masked">`SELECT * FROM w03.characters;`</span>
+
+- PostgreSQL の `SELECT * FROM w03.characters;` という SQL 文において、`w03` と `characters` はそれぞれ何の名前か答えよ。
+  - **答え**: <span class="masked">w03 はスキーマ名、characters はテーブル名。</span>
 
 ### 任意のカラムのみを取得 (射影)
 
 `SELECT` 文では、テーブルに含まれるカラムのうち「**どのカラムを取り出すか (射影するか)**」を明示的に指定することができます。これは、先ほど `*` を書いていた位置に **カンマで区切って「カラム名」を並べる**ことで可能になります。
 
-例えば、`id` と `name` と `guild` の3つのカラムについてのみレコードを取得したいときには、次のような `SELECT` 文 (SQLクエリ) を使用します。
+例えば、すべてのレコードについて、`id`、`name`、`guild` の3つのカラムだけを取得したいときには、次のような `SELECT` 文 (SQLクエリ) を使用します。
 
-```sql{.numberLines caption="任意のカラムだけを取得(1)"}
+```sql{.numberLines caption="任意のカラムだけを取得 (1)"}
+SET
+  search_path TO w03;
+
 SELECT
   id,
   name,
   guild
 FROM
-  s_characters;
+  characters;
 ```
 
-また、次のように <span class="masked">同じカラムを2回以上指定</span> したり、表示順を自由に指定したりすることも可能です。
+また、次のように <span class="masked">同じカラムを2回以上指定</span> したり、カラムの表示順を自由に指定したりすることも可能です。
 
-```sql{.numberLines caption="任意のカラムだけを取得(2)"}
+```sql{.numberLines caption="任意のカラムだけを取得 (2)"}
+SET
+  search_path TO w03;
+
 SELECT
   name,
   guild,
   job,
   name
 FROM
-  s_characters;
+  characters;
 ```
 
-なお、`SELECT name, job, FROM s_characters;` のように、<span class="masked">最後のカラム名のあとにカンマを付けてしまうと</span>、**構文エラー** (Syntax Error) となるので注意してください。
+なお、`SELECT name, job, FROM characters;` のように、<span class="masked">最後のカラム名のあとにカンマを付けてしまうと</span>、**構文エラー** (Syntax Error) となるので注意してください。
 
 #### SQLドリル💻
 
-- `ex-01_1.sql` 👉 **s_characters** テーブルのすべてのレコードについて `id`、`name`、`level`、`created_on` を取得する SQL 文を記述し、実行せよ。なお、問題文に示した順番でカラムが並ぶようにすること。
-- `ex-01_2.sql` 👉 **s_characters** テーブルのすべてのレコードについて `id`、`last_login_at`、`created_on`,
-`id` を取得する SQL 文を記述し、実行せよ。なお、問題文に示した順番でカラムが並ぶようにすること。
+- `ex-01_1.sql` 👉 **w03.characters** テーブルのすべてのレコードについて `id`、`name`、`level`、`created_on` を取得する SQL 文を記述し、実行せよ。なお、問題文に示した順番でカラムが並ぶようにすること。
+- `ex-01_2.sql` 👉 **w03.characters** テーブルのすべてのレコードについて `id`、`last_login_at`、`created_on`、`id` を取得する SQL 文を記述し、実行せよ。なお、問題文に示した順番でカラムが並ぶようにすること。
+
+::: {.balloon .char-01 .face-02 .tone-yellow}
 
 **SQLドリル**💻は、プロジェクトのなかに `sql/03/drill/ex-01_1.sql` のようなファイルを作成して取り組むことを推奨します。解答例 (参考) は `from-teacher` フォルダのなかに配置しています。
+:::
 
 - SQLドリルについては、**文法や構文を体で覚える観点から**、GitHub Copilot のコード補完を切って、コピペも避けて SQL を手入力することを推奨します。
 
 ### カラムに別名 (エイリアス) をつける
 
-次のように `SELECT` 句において、カラム名のあとに `AS "xxxx"` をつけることで、その**カラムに別名 (エイリアス) を付けること**ができます。この別名は <span class="masked">クエリ結果として表示されるカラムのヘッダ (ラベル)</span> としても使用されます。
-
-カラム名に記号やスペースが含まれない場合はダブルクォートを省略可能ですが、本科目 (小テストや試験を含む) のなかでは安全のため常にダブルクォートで囲むようにしてください。
+次のように `SELECT` 句において、カラム名のあとに `AS "別名"` をつけることで、その**カラムに別名 (エイリアス) を付けること**ができます。
 
 ```sql{.numberLines caption="カラムにエイリアスを設定"}
+SET
+  search_path TO w03;
+
 SELECT
   id,
   name AS "名前", -- ◀◀ ここに注目
   guild AS "所属ギルド" -- ◀◀ ここに注目
 FROM
-  s_characters;
+  characters;
 ```
 
-実行結果 (上位5件のみ抜粋) は、次のようになります。
+この別名 (エイリアス) は <span class="masked">クエリ結果として表示されるカラムのヘッダ (ラベル)</span> としても使用されます。例えば、`name AS "名前"` と指定すると、`name` カラムの値が「**名前**」というヘッダで表示されます。なお、エイリアスは SQL の実行結果に対して一時的に付けられる名前であり、元のテーブルのカラム名が変更されるわけではありません。
+
+::: {.balloon .char-01 .face-01 .tone-pink}
+PostgreSQL では、エイリアスをダブルクォートで囲むことで、**日本語やスペースを含む名前を指定することができます**。エイリアスのダブルクォートは省略できる場合もありますが、<font color="deeppink"><b>本科目 (小テストや試験を含む) のなかでは常にダブルクォートで囲むようにしてください</b></font>。
+:::
+
+上記の SQL の実行結果から、`id` が1〜5のレコードを抜粋すると、次のようになります。
 
 ```
  id |  名前   | 所属ギルド 
@@ -932,38 +1012,43 @@ FROM
   5 | Ivan    |
 ```
 
-- `AS` につづく文字列を **ダブルクォート** ではなく **シングルクォート** で囲んで実行した場合、どのようになるかを確認してください。
+- レコードの表示順は、この上記と異なる場合があります。
+- `name AS "名前"` を `name AS '名前'` のように、**ダブルクォート** ではなく **シングルクォート** で囲んで実行した場合、どのようになるかを確認してください。
 
 #### SQLドリル💻
 
-- `ex-02_1.sql` 👉 **s_characters** テーブルのすべてのレコードについて `id`、`name`、`level`、`job` を取得する SQL 文を記述し、実行せよ。なお、カラムは問題文に示した順序で並ぶようにし、それぞれのカラムのヘッダ (ラベル) が「ID」「名前」「レベル」「ジョブ」となるようにせよ。
-- `ex-02_2.sql` 👉 **s_users** テーブルのすべてのレコードについて `id`、`name`、`age` を取得する SQL 文を記述し、実行せよ。なお、カラムは問題文に示した順序で並ぶようにし、それぞれのカラムのヘッダ (ラベル) が「出席番号」「名前」「年齢」となるようにせよ。
+- `ex-02_1.sql` 👉 **w03.characters** テーブルのすべてのレコードについて `id`、`name`、`level`、`job` を取得する SQL 文を記述し、実行せよ。なお、カラムは問題文に示した順序で並ぶようにし、それぞれのカラムのヘッダ (ラベル) が「ID」「名前」「レベル」「ジョブ」となるようにせよ。
+- `ex-02_2.sql` 👉 **w03.users** テーブルのすべてのレコードについて `id`、`name`、`age` を取得する SQL 文を記述し、実行せよ。なお、カラムは問題文に示した順序で並ぶようにし、それぞれのカラムのヘッダ (ラベル) が「出席番号」「名前」「年齢」となるようにせよ。
 
 ### SQLの文法上の注意
 
-SQL では、`--` を使って **コメント** を記述します。また、`/*    */` で囲んで複数行のコメントアウトができます。VSCode では <span class="masked">`[Ctrl]+[/]`</span> のショートカットでコメントの設定と解除ができます。
+SQL では、`--` から行末までが **コメント** として扱われます。また、`/*` と `*/` で囲むと、複数行にわたるコメントを記述できます。説明を書き添えたり、SQL の一部を一時的に実行対象から外したりするときに使います。VSCode では <span class="masked">`[Ctrl]+[/]`</span> のショートカットで、行コメントの設定と解除ができます。
 
-SQL では、**1つの文の終わり**を示すためにセミコロン `;` を使用します。実行環境によってはセミコロンを省略できることもありますが、**本科目の小テストや試験のなかでは、必ずセミコロンをつけるようにしてください** (セミコロン抜けは誤答や減点とします)。
+SQL では、セミコロン `;` で **1つの文の終わり**を示します。演習でも、各 SQL 文の末尾にセミコロンを付けるようにしてください。実行環境によっては省略できる場合もありますが、<font color="deeppink"><b>本科目 (小テストや試験を含む) のなかでは必ずセミコロンを付けてください</b></font> (セミコロン抜けは誤答や減点とします)。
 
-PostgreSQL において `SELECT` や `FROM` などの「**キーワード**」は <span class="masked">大文字と小文字を区別しません</span>。また、テーブル名やカラム名などの「**識別子** (例えば `s_characters` や `id` など)」も**大文字と小文字を区別しません**。
+::: {.balloon .char-01 .face-05 .tone-blue}
+PostgreSQL では、`SELECT` や `FROM` などの「**キーワード**」は、大文字と小文字を区別しません。例えば <span class="masked">`SELECT` と `select` </span>は同じ意味になります。
 
-  - ただし、**識別子**はダブルクォート `"` で囲んだ場合のみ、大文字と小文字が「**区別される**」ので注意してください。
+また、テーブル名やカラム名などの「**識別子**」は、**ダブルクォートで囲まなければ小文字として扱われます**。例えば、`users`、`USERS`、`Users` は、いずれも `users` というテーブル名として解釈されます。
+
+一方、ダブルクォート `"` で囲んだ識別子は、**大文字と小文字が区別されます**。`"name"` は小文字の `name` カラムを参照しますが、`"Name"` は大文字の N で始まる別の名前です。今回の **w03.users** テーブルには `name` カラムがあり、`"Name"` カラムはないので、後者を参照するとエラーになります。
+:::
 
 ::: {.note .type-tips}
 
 **SQLの「文」と「句」について**
 
-次のような SQL があるとき、これ全体を「**SELECT文**」と言います。また、文を構成している `SELECT id, name, age` の部分を「**SELECT句**」といい、`FROM s_users` の部分を「**FROM句**」といいます。
+SQL では、セミコロンまでのひとまとまりを「**文**」、その文を構成する部分を「**句**」と呼びます。例えば、次の SQL 全体が「**SELECT文**」です。そのうち `SELECT id, name, age` が「**SELECT句**」、`FROM w03.users` が「**FROM句**」にあたります。
 
 ```sql{.numberLines caption="SQL: SELECT文"}
-SELECT id, name, age FROM s_users;
+SELECT id, name, age FROM w03.users;
 ```
 
-同様に、次のような SQL があるとき、全体を「**INSERT文**」と言います。また `INSERT INTO s_users (id, name, age)` を「**INSERT INTO句**」といい、`VALUES (1, 'Alice', 20), (2, 'Bob', 25)` を「**VALUES句**」といいます。
+同様に、次の SQL 全体が「**INSERT文**」です。`INSERT INTO w03.users (id, name, age)` で挿入先のテーブルとカラムを指定し、`VALUES (1, 'Alice', 20), (2, 'Bob', 25)` という「**VALUES句**」で挿入するデータを指定しています。これは、**sql/03/init-users.sql** に記述した INSERT文と同じ内容を、スキーマ名を明示して書いた例です。
 
 ```sql{.numberLines caption="SQL: INSERT文"}
 INSERT INTO
-  s_users (id, name, age)
+  w03.users (id, name, age)
 VALUES
   (1, 'Alice', 20),
   (2, 'Bob', 25);
@@ -973,59 +1058,140 @@ VALUES
 
 #### 定着確認
 
-いま、`s_users` というテーブルに `id`、`name`、`age` というカラムが存在している。
+- PostgreSQL の **w03.users** テーブルには `id`、`name`、`age`  という名前のカラムが存在する。次の SQL 文を実行したところ構文エラー (Syntax Error) が発生した。SQL 文のどこに問題があるのかを説明せよ。
+  - **答え**: <span class="masked">`FORM` は誤記であり、正しくは `FROM` である。</span>  
+```sql{.numberLines caption="定着確認"}
+SELECT id, name FORM w03.users;
+```
 
-- このとき `select id, name form s_users;` という SQL は「構文エラーになる」か「構文エラーにならない」かを答えよ。
-  - **答え**: <span class="masked">構文エラーになる。`form` ではなく `from` が正しい。</span>
-- このとき `select id, name, age, from s_users;` という SQL は「構文エラーになる」か「構文エラーにならない」かを答えよ。
-  - **答え**: <span class="masked">構文エラーになる。`age` のあとのカンマが不要。</span>
-- このとき `select NAME, AGE, ID from S_users;` という SQL は「構文エラーになる」か「構文エラーにならない」かを答えよ。
-  - **答え**: <span class="masked">構文エラーにならない。テーブル名やカラム名などの「識別子」は大文字と小文字を区別しない。</span>
-- このとき `SELECT "name", "age" FROM "s_users";` という SQL は「構文エラーになる」か「構文エラーにならない」かを答えよ。
-  - **答え**: <span class="masked">構文エラーにならない。</span>
-- このとき `SELECT "Name", age FROM s_users;` という SQL は「構文エラーになる」か「構文エラーにならない」かを答えよ。
-  - **答え**: <span class="masked">構文エラーになる。識別子をダブルクォートで囲むと大文字と小文字が区別される。</span>
-- このとき `SELECT 'name', 'age' FROM s_users;` という SQL は「構文エラーになる」か「構文エラーにならない」かを答えよ。
-  - **答え**: <span class="masked">構文エラーにならない。ただし `SELECT name, age FROM s_users;` とは大きく結果が変わってくるので注意すること。後述の定数値カラムの扱いになる。</span>
-- このとき `SELECT * FROM 's_users';` という SQL は「構文エラーになる」か「構文エラーにならない」かを答えよ。
-  - **答え**: <span class="masked">構文エラーになる。</span>
+- PostgreSQL の **w03.users** テーブルには `id`、`name`、`age` という名前のカラムが存在する。次の SQL 文を実行したところ構文エラー (Syntax Error) が発生した。SQL 文のどこに問題があるのかを説明せよ。
+  - **答え**: <span class="masked">最後のカラム名 `age` のあとにあるカンマが不要である。</span>
+```sql{.numberLines caption="定着確認"}
+SELECT id, name, age, FROM w03.users;
+```
 
-いずれのケースも、実際に SQL を実行して結果を確認してみてください (＝どのようなエラーメッセージが表示されるのか把握しておいてください)。
+- PostgreSQL において、スキーマ名 `w03`、テーブル名 `users`、カラム名 `id`、`name`、`age` が、すべて小文字で作成されている。次の SQL 文を実行した場合、問題なく実行できるか、それともエラーとなるか。理由とともに答えよ。
+  - **答え**: <span class="masked">問題なく実行できる。キーワード (`SELECT` や `FROM`) は大文字と小文字を区別せず、ダブルクォートで囲んでいない識別子は小文字として扱われるため。</span>
+```sql{.numberLines caption="定着確認"}
+select NAME, AGE, ID FROM W03.Users;
+```
+
+- PostgreSQL において、スキーマ名 `w03`、テーブル名 `users`、カラム名 `id`、`name`、`age` が、すべて小文字で作成されている。次の SQL 文を実行した場合、問題なく実行できるか、それともエラーとなるか。理由とともに答えよ。
+  - **答え**: <span class="masked">問題なく実行できる。ダブルクォートで囲まれた識別子が、大文字と小文字を含めて、実際のスキーマ名・テーブル名・カラム名と一致しているため。</span>  
+```sql{.numberLines caption="定着確認"}
+SELECT "name", "age" FROM "w03"."users";
+```
+
+- PostgreSQL において、スキーマ名 `w03`、テーブル名 `users`、カラム名 `id`、`name`、`age` が、すべて小文字で作成されている。次の SQL 文を実行した場合、問題なく実行できるか、それともエラーとなるか。理由とともに答えよ。
+  - **答え**: <span class="masked">エラーとなる。ダブルクォートで囲まれた識別子は大文字と小文字が区別されるため、`"Name"` は `name` とは異なるカラム名として扱われる。`"Name"` という名前のカラムは存在しないため、`"name"` または `name` に修正する必要がある。</span>  
+```sql{.numberLines caption="定着確認"}
+SELECT "Name", age FROM w03.users;
+```
+
+- PostgreSQL の **w03.users** テーブルには `id`、`name`、`age` という名前のカラムが存在する。次の SQL 文を実行したところ、カラムに格納されている値ではなく、各行の値として「name」と「age」という文字列が出力された。この理由について説明せよ。
+  - **答え**: <span class="masked">シングルクォートで囲んだ `'name'` と `'age'` は、カラム名ではなく文字列リテラルとして扱われるため。`SELECT name, age FROM w03.users;` もしくは `SELECT "name", "age" FROM w03.users;` とすることでカラムに格納されている値を出力できる。</span>
+```sql{.numberLines caption="定着確認"}
+SELECT 'name', 'age' FROM w03.users;
+```
+
+- PostgreSQL の **w03.users** テーブルには `id`、`name`、`age` という名前のカラムが存在する。次の SQL 文を実行したところ構文エラー (Syntax Error) が発生した。SQL 文のどこに問題があるのかを説明せよ。
+  - **答え**: <span class="masked">エラーとなる。シングルクォートで囲まれた `'w03.users'` は「文字列リテラル」として扱われ、テーブル名として使用できない。正しくは `w03.users` または `"w03"."users"` と記述する。なお、`"w03.users"` と全体を囲むと、ドットを含む1つのテーブル名として解釈されるため、w03スキーマのusersテーブルを参照する指定にはならない。</span>
+```sql{.numberLines caption="定着確認"}
+SELECT * FROM 'w03.users';
+```
 
 ### 定数値カラムを付加する
 
-`SELECT` 文では、**実際のテーブルには存在しない「定数値」をカラムとして追加して出力**することもできます。
+`SELECT` 文では、テーブルに格納されているカラムの値だけでなく、**数値や文字列などの定数値を取得結果のカラムとして出力すること** もできます。
 
-このとき、定数値として「**文字列**」を使うときは **シングルクォート** `'` で囲んでください。一方で、`AS` によるカラムのエイリアス指定では **ダブルクォート** `"` を用いる点も注意してください。
+例えば `w03.characters` テーブルの各レコードに対して、<span class="masked">すべてのレコードに共通する「リージョンID」や「ワールド名」などの情報を付加して表示したい場合など</span> に利用できます。
+
+次の例では、数値の `8` と文字列の `'Zipangu'` を定数値として指定し、それぞれ「**RegionID**」「**World**」というカラムラベルを付けて出力しています。これらの値は、**<u>取得結果のすべての行に共通して表示されます</u>**。
+
 
 ```sql{.numberLines caption="定数値カラムを付加"}
+SET
+  search_path TO w03;
+
 SELECT
   8 AS "RegionID", -- 定数値のカラム
   'Zipangu' AS "World", -- 定数値のカラム
   id AS "ID",
   name AS "名前"
 FROM
-  s_characters;
+  characters;
 ```
 
-実際に実行して結果を確認してください。
+- **数値はクォートで囲まず**、**文字列はシングルクォート** `'` で囲んで記述することに注意して下さい。
+- 本科目では、`AS` のあとのエイリアスを **ダブルクォート** `"` で囲む書き方を基本としていることに注意して下さい。
+
+実際に実行して、以下のような結果セットが得られることを確認してください。
+
+```
+ RegionID |  World  | ID |  名前   
+----------+---------+----+---------
+        8 | Zipangu |  1 | Marvin
+        8 | Zipangu |  2 | Zach
+        8 | Zipangu |  3 | Charlie
+        8 | Zipangu |  4 | Tom
+        8 | Zipangu |  5 | Ivan
+ ～～ 以下略 ～～       
+```
+
+
+::: {.balloon .char-01 .face-05 .tone-blue}
+定数値カラムは `SELECT` 文の取得結果 (結果セット) に付加されるもので、**元のテーブルのカラム構成やデータはそのまま**です (影響を受けません)。
+:::
 
 ::: {.note .type-tips}
 
-**注意**
+**文字列とカラム名の書き分け**
 
-**SELECT句** において...
+`SELECT` 句では「**シングルクォート**」と「**ダブルクォート**」で囲んだものは、**それぞれ異なる意味を持ちます**。
 
-- **シングルクォート**で囲んだ `'Zipangu'` は、文字列リテラル (固定値) を表します。
-    - 「Zipangu」という「**文字列そのもの**」を意味します。
-- **ダブルクォート**で囲んだ `"Zipangu"` は <span class="masked">識別子 (カラム名やテーブル名など)</span> を表します。
-    - 「Zipangu」という名前の「カラム」を意味します。
+- **シングルクォート**で囲んだ `'Zipangu'` は <span class="masked">文字列リテラル (固定値) </span> として扱われます。つまり「Zipangu」という文字列そのものが出力されます。
+- **ダブルクォート**で囲んだ `"Zipangu"` は、<span class="masked">識別子 (カラム名など)</span> として扱われます。つまり「Zipangu」という名前のカラムを参照し、その値を取得して表示しようとします。
+  - ただし、`w03.characters` テーブルには `Zipangu` のようなカラムが存在しないため、エラーとなります。
+
+例えば、`'Zipangu' AS "World"` では、左側の `'Zipangu'` が **出力する文字列**、右側の `"World"` が **取得結果のカラムラベル (ヘッダ)** を指定するような意味となります。
 
 :::
 
+#### 定着確認
+
+- SQL の `SELECT` 句で、文字列の定数値を指定するときは「シングルクォート」と「ダブルクォート」のどちらで囲むべきか答えよ。
+  - **答え**: <span class="masked">シングルクォート。</span>
+
+- SQL の `SELECT` 句において、`AS` につづけて記述するエイリアスを引用符で囲む場合、「シングルクォート」と「ダブルクォート」のどちらを使用すべきか答えよ。
+  - **答え**: <span class="masked">ダブルクォート。</span>
+
+- SQL の `SELECT` 句において `'Zipangu' AS "World"` は、どのような値を、どのようなカラムラベルで出力するか答えよ。
+  - **答え**: <span class="masked">文字列「Zipangu」を、「World」というカラムラベルで出力する。</span>
+
+- SQL の `SELECT` 句において、数値の定数値 8 を出力する記述として適切なものを選択せよ。
+  - ❶ `8 AS "hoge",`
+  - ❷ `'8' AS "hoge",`
+  - ❸ `"8" AS "hoge",`
+  - **答え**: <span class="masked">❶</span>
+
+- PostgreSQL の **w03.users** テーブルに 2 件のレコードがあり、`name` の値はそれぞれ `Alice` と `Bob` である。`SELECT 'name' FROM w03.users;` を実行すると、各行にはどのような値が出力されるか答えよ。
+  - **答え**: <span class="masked">どちらの行にも、文字列 name が出力される。</span>
+
+- PostgreSQL の **w03.users** テーブルには 2 件のレコードがあり、`name` の値はそれぞれ `Alice` と `Bob` である。`SELECT name FROM w03.users;` を実行すると、どのような値が出力されるか答えよ。
+  - **答え**: <span class="masked">name カラムに格納されている Alice と Bob が出力される。</span>
+
+- PostgreSQL の **w03.characters** テーブルには、`Zipangu` というカラムが存在しない。`SELECT "Zipangu" FROM w03.characters;` は、問題なく実行できるか、エラーになるか答えよ。
+  - **答え**: <span class="masked">エラーになる。"Zipangu" はカラム名として解釈されるが、その名前のカラムが存在しない。</span>
+
+- PostgreSQL の **w03.users** テーブルには 2 件のレコードがあり、`name` カラムが存在する。`SELECT 4 AS "grade", 'M' AS "course", name FROM w03.users;` を実行すると、何行・何カラムの結果が得られるか答えよ。
+  - **答え**: <span class="masked">2行・3カラム。</span>
+
+- PostgreSQL の **w03.characters** テーブルに `RegionID` カラムは存在しない。`SELECT 8 AS "RegionID" FROM w03.characters;` を実行すると、元のテーブルに `RegionID` カラムが追加され、値 `8` が保存される。この説明は「適切である」か「適切ではない」か答えよ。
+  - **答え**: <span class="masked">適切ではない。定数値カラムが付加されるのは取得結果であり、元のテーブルのカラム構成やデータは変わらない。</span>
+
 #### SQLドリル💻
 
-- `ex-03_1.sql` 👉 **s_characters** テーブルのすべてのレコードについて、次に示すようなチェックリストを出力する SQL を記述せよ。
+- `ex-03_1.sql` 👉 **w03.characters** テーブルのすべてのレコードについて、次に示すようなチェックリストを出力する SQL 文を記述せよ。
 
 ```
  id |  name   | level | buff  |  不正行為の疑い?  
@@ -1038,8 +1204,7 @@ FROM
  ～～ 以下略 ～～
 ```
 
-- `ex-03_2.sql` 👉 **s_users** テーブルのすべてのレコードについて、次に示すようなカラムを出力する SQL を記述せよ。
-  - age カラムの出力 (`XX歳`) には、次のセクションで解説する「**文字列の結合**」を使用する必要があります。
+- `ex-03_2.sql` 👉 **w03.users** テーブルのすべてのレコードについて、次に示すようなカラムを出力する SQL 文を記述せよ。
 
 ```
  grade | course | name  | age  
@@ -1048,19 +1213,29 @@ FROM
      4 | M      | Bob   | 25歳
 ```
 
+::: {.balloon .char-01 .face-05 .tone-blue}
+上記の問題で `age` カラムの値について「**20歳**」のように表示するには、次のセクションで扱う「**文字列の結合**」を使用する必要があります。その解説を読んでから取り組んでください。
+:::
+
+
 ### カラム値に文字列演算と算術演算を適用する
 
-次に示すように、`SELECT` 句では `||` 演算子を使用して「**文字列の結合 (連結)**」ができます。これにより、複数のカラム値や文字列リテラルを組み合わせて、ひとつの文字列として出力することができます。
+`SELECT` 句では、`||` 演算子を使って **文字列を結合 (連結)** することができます。カラムの値と文字列リテラルを組み合わせることで、「Marvin (Priest)」のような表示用の文字列をつくることができます。
 
-```sql{.numberLines caption="文字列演算"}
+次の例では「名前」と「ジョブ」の値を結合し、レベルには「Lv.」を付けて出力しています。
+
+```sql{.numberLines caption="文字列演算の例"}
+SET
+  search_path TO w03;
+
 SELECT
-  name || ' (' || Job || ')' AS "Name(Job)",
+  name || ' (' || job || ')' AS "Name(Job)",
   'Lv.' || level AS "Level"
 FROM
-  s_characters;
+  characters;
 ```
 
-実行結果 (上位5件のみ抜粋) は、次のようになります。
+実行結果は、次のようになります。
 
 ```
     Name(Job)     | Level 
@@ -1070,18 +1245,24 @@ FROM
  Charlie (Wizard) | Lv.57
  Tom (Fighter)    | Lv.1
  Ivan (Monk)      | Lv.39
+ ～～ 以下略 ～～
 ``` 
 
-また、**数値型のカラム**については基本的な算術演算も可能です。
+また、**数値型のカラム**については、加算や乗算などの <span class="masked">算術演算</span> を適用することがでます。
 
-```sql{.numberLines caption="算術演算"}
+次の例では、`buff` に `1` を加えて `100` 倍し、最後に `||` で「%」を付けています。例えば、`buff` が `-0.15` であれば「**85.00%**」、`0.10` であれば「**110.00%**」のように出力されるようにしています。
+
+```sql{.numberLines caption="算術演算の例"}
+SET
+  search_path TO w03;
+
 SELECT
   id AS "ID", 
   name AS "Name",
   buff AS "Buff",
   (buff + 1) * 100 || '%' AS "BuffApplied(%)"
 FROM
-  s_characters;
+  characters;
 ```
 
 実行結果 (上位5件のみ抜粋) は、次のようになります。
@@ -1094,27 +1275,44 @@ FROM
   3 | Charlie |  0.00 | 100.00%
   4 | Tom     |  0.00 | 100.00%
   5 | Ivan    | -0.07 | 93.00%
+ ～～ 以下略 ～～
 ```
 
-`ROUND()` 関数を使えば、桁数を指定しての四捨五入ができます。例えば、`BuffApplied(%)` を「**整数値\%**」で出力したい場合は、次のようにします。
+::: {.balloon .char-01 .face-02 .tone-yellow}
 
-```sql{.numberLines caption="ROUND()による四捨五入"}
+
+`ROUND(数値, 小数部の桁数)` を使うと、**NUMERIC 型の数値を指定した小数部の桁数で四捨五入** することができます。例えば、小数部の桁数に `0` を指定すると、小数第1位で四捨五入して整数値に丸めることがでいます。
+
+例えば、`BuffApplied(%)` の値を「**85%**」や「**110%**」のように、**小数部のないパーセント表記**で出力するためには、次のように記述します。
+
+```sql{.numberLines caption="ROUND() による四捨五入"}
+SET
+  search_path TO w03;
+
 SELECT
-  id AS "ID", 
+  id AS "ID",
   name AS "Name",
   ROUND((buff + 1) * 100, 0) || '%' AS "BuffApplied(%)"
 FROM
-  s_characters;
+  characters;
 ```
+:::
 
-その他、切り上げ `CEIL()`、切り捨て `FLOOR()` などの関数が利用できます。詳しくは、PostgreSQL の公式ドキュメント (リファレンス) を参照してください。
+整数への切り上げには `CEIL()`、切り下げには `FLOOR()` という関数が使用できます。例えば、`CEIL(74.4)` は `75`、`FLOOR(74.4)` は `74` を返します。
 
-- [Table 9.4. Mathematical Operators](https://www.postgresql.org/docs/current/functions-math.html#FUNCTIONS-MATH-OP-TABLE)
-- [Table 9.5. Mathematical Functions](https://www.postgresql.org/docs/current/functions-math.html#FUNCTIONS-MATH-FUNC-TABLE)
+
+::: {.balloon .char-01 .face-01 .tone-pink}
+
+**負数** では、`CEIL(-1.2)` は <span class="masked">`-1`</span>、`FLOOR(-1.2)` は <span class="masked">`-2`</span> になる点にも注意してください。演算子や関数の詳細は、PostgreSQL 18 の公式ドキュメントで確認できます。
+
+- 参考: 算術演算子 [Table 9.4. Mathematical Operators](https://www.postgresql.org/docs/18/functions-math.html#FUNCTIONS-MATH-OP-TABLE)
+- 参考: 算術関数 [Table 9.5. Mathematical Functions](https://www.postgresql.org/docs/18/functions-math.html#FUNCTIONS-MATH-FUNC-TABLE)
+
+:::
 
 #### SQLドリル💻
 
-- `ex_04-1.sql` 👉 **s_characters** テーブルのすべてのレコードについて、次に示すようなカラムを出力する SQL を記述せよ。
+- `ex-04_1.sql` 👉 **w03.characters** テーブルのすべてのレコードについて、次に示すようなカラムを出力する SQL 文を記述せよ。
 
 ```
  id |        summary
@@ -1124,10 +1322,10 @@ FROM
   3 | Charlie (Wizard Lv.57)
   4 | Tom (Fighter Lv.1)
   5 | Ivan (Monk Lv.39)
- ～～ 以下略 ～～
+  ～～ 以下略 ～～
 ```
 
-- `ex_04-2.sql` 👉 **s_characters** テーブルのすべてのレコードについて、次に示すようなカラムを出力する SQL を記述せよ。ただし、**Boosted Level** は **level** を「1.2倍」にして切り上げた値とすること。
+- `ex-04_2.sql` 👉 **w03.characters** テーブルのすべてのレコードについて、次に示すようなカラムを出力する SQL 文を記述せよ。ただし、「Boosted Level」は `level` を `1.2` 倍して **整数に切り上げた値** とすること。
 
 ```
  id | Level | Boosted Level 
@@ -1137,26 +1335,42 @@ FROM
   3 |    57 |            69
   4 |     1 |             2
   5 |    39 |            47
+  ～～ 以下略 ～～
 ```
 
 #### 定着確認
 
-- **products** というテーブルに **value** という数値型のカラムがある。このカラムの値を **小数第3位**で四捨五入して、**小数第2位**までを取得する `SELECT` 文として、以下のSQLを完成させたい。`【 X 】` に記述すべき語を答えよ。
-  - **答え**: <span class="masked">`ROUND(value, 2)`</span>
-
-```sql{.numberLines caption="SQL"}
+- PostgreSQL の **products** テーブルに、`value` という **NUMERIC型** のカラムがある。この値を **小数第 3 位** で四捨五入し、**小数第 2 位までの値** を取得したい。次の SQL の `????` に入る式を答えよ。
+  - **答え**: <span class="masked">`ROUND(value, 2)`</span>  
+  ```sql{.numberLines caption="定着確認"}
 SELECT
-  value,
-  【 X 】AS "Rounded Value"
+    value,
+    ???? AS "Rounded Value"
 FROM
-  products;
+    products;
 ```
 
-### CASE式を利用する
+- PostgreSQL のあるテーブルに、`name` カラムの値が `Marvin`、`job` カラムの値が `Priest` であるレコードが存在する。  
+このレコードに対して、`SELECT` 句に記述した `name || '(' || job || ')'` は、どのような文字列を出力するか答えよ。
+  - **答え**: <span class="masked">`Marvin(Priest)`</span>
 
-`SELECT` 句では「**CASE式**」というものを利用して <span class="masked">条件に応じて異なる値を出力すること</span> ができます。この「**CASE式**」は `SELECT` 句に限らず、SQL のなかで**条件分岐を実現するための強力な仕組み**で、実務でも頻繁に利用されています。
+- PostgreSQL のあるテーブルに、NUMERIC 型の `buff` カラムの値が `-0.15` であるレコードが存在する。  
+このレコードに対して、`SELECT` 句に記述した `ROUND((buff + 1) * 100, 0) || '%'` は、どのような文字列を出力するか答えよ。
+  - **答え**: <span class="masked">`85%`</span>
 
-```sql{.numberLines caption="CASE式による条件分岐"}
+- PostgreSQL において、`CEIL(-1.2)` と `FLOOR(-1.2)` は、それぞれどのような値を返すか答えよ。
+  - **答え**: <span class="masked">`CEIL(-1.2)` は `-1`、`FLOOR(-1.2)` は `-2` を返す。</span>
+
+### CASE 式を利用する
+
+`SELECT` 句では、`CASE` 式 を使って <span class="masked">条件に応じて異なる値を出力すること</span> ができます。
+
+次の例では、**第08行目** から **第13行目** において **level** カラムの値に応じてキャラクタのクラスを「SS」「S」「A」「B」の4段階に分類しています。
+
+```sql{.numberLines caption="CASE式による条件分岐のサンプル"}
+SET
+  search_path TO w03;
+
 SELECT
   id,
   name,
@@ -1168,10 +1382,18 @@ SELECT
     ELSE 'B'
   END AS "class"
 FROM
-  s_characters;
+  characters;
 ```
 
-実行結果 (上位5件のみ抜粋) は、次のようになります。
+::: {.balloon .char-01 .face-02 .tone-yellow}
+`CASE` 式では、`WHEN` の条件が上から順に評価され、**最初に条件を満たした (** `TRUE` **となった)** `THEN` の値 が出力されます。
+
+どの条件も満たさない場合は `ELSE` の値が使われます。例えば、レベル `62` は「60以上」と「40以上」の両方を満たしますが、先に評価される「60以上」の条件によって「S」となります。
+
+なお、`ELSE` を省略した場合、どの条件も満たさなければ `NULL` が出力されます。
+:::
+
+実行結果は、次のようになります。
 
 ```
  id |  name   | level | class 
@@ -1181,13 +1403,28 @@ FROM
   3 | Charlie |    57 | A
   4 | Tom     |     1 | B
   5 | Ivan    |    39 | B
+  ～～ 以下略 ～～
 ```
 
-`WHEN` 句の「評価式」では **値の等価比較** に `==` ではなく `=` を使用する点に注意してください。一般的なプログラミング言語とは異なり、SQL では `=` が「等しい」を意味します。一方で「等しくない」ことを判定したいとき、PostgreSQL では `!=` または `<>` が使用できます (標準SQLでは `<>` が正式な記法とされています)。また、評価式では `AND` や `OR` を利用することができます。
+::: {.balloon .char-01 .face-01 .tone-pink}
 
-なお、「**値が** `NULL` **かどうか**」を評価するためには、以下のように `IS NULL` を使用します (`ISNULL`も可)。`guild = NULL` のように評価することはできないので十分に注意してください。
+`WHEN` の条件式で「値が等しいこと」を比較するときは、`==` **ではなく** `=` **を使用してください** (間違いが多いので十分に注意してください)。一方で、「等しくないこと」を判定するには、標準 SQL の `<>` を使用してください。
+
+- PostgreSQL では `!=` も使用できますが、本科目では標準 SQL に準拠した `<>` を基本とします。
+
+また、複数の条件を組み合わせたいときは `AND` や `OR` が使用できます。
+:::
+
+**値が `NULL` かどうかを判定するには、`= NULL` ではなく  `IS NULL` を使用してください**。
+
+- PostgreSQL では、スペースを含めない `ISNULL` も使用できますが、本科目では標準 SQL に準拠した `IS NULL` を基本とします。
+
+次の例では、ギルドが `NULL` のときだけ「**(無所属)**」を表示し、それ以外は `guild` の値をそのまま表示しています。
 
 ```sql{.numberLines caption="NULL判定の評価式"}
+SET
+  search_path TO w03;
+
 SELECT
   id,
   name,
@@ -1196,10 +1433,20 @@ SELECT
     ELSE guild
   END AS "guild"
 FROM
-  s_characters;
+  characters;
 ```
 
-実行結果 (上位5件のみ抜粋) は、次のようになります。
+:::{.note .type-caution}
+**NULL との比較は十分に注意**
+
+上記の **第08** 行目において `guild = NULL` では、**guild** が **NULL** かどうかを正しく判定できません。
+
+SQL では、通常の比較演算子 (`=`、`<>`、`<`、`>` など) を使って `NULL` との比較をおこなうと、その結果は `TRUE` でも `FALSE` でもなく、`UNKNOWN` となります。
+
+PostgreSQL において、`UNKNOWN` に相当する状態は `NULL` として表現されます。これを 3値論理 (Three-Valued Logic) といい、詳しくは次回以降に解説します。
+:::
+
+実行結果は、以下のようになります。
 
 ```
  id |  name   |  guild   
@@ -1209,11 +1456,72 @@ FROM
   3 | Charlie | (無所属)
   4 | Tom     | (無所属)
   5 | Ivan    | (無所属)
+  ～～ 以下略 ～～
+```
+
+#### 定着確認
+
+- SQL の `SELECT` 句において、条件に応じて異なる値を出力するために使う式の名前を答えよ。
+  - **答え**: <span class="masked">CASE式</span>
+
+- PostgreSQL のあるテーブルに、`level` カラムの値が **62** のレコードが存在する。このレコードに対して、次の `CASE` 式はどのような値を返すか答えよ。
+  - **答え**: <span class="masked">「S」。条件は上から順に評価され、最初に真となる `level >= 60` に対応する値が結果になる。</span>
+```sql{.numberLines caption="定着確認"}
+CASE
+    WHEN level >= 80 THEN 'SS'
+    WHEN level >= 60 THEN 'S'
+    WHEN level >= 40 THEN 'A'
+    ELSE 'B'
+END
+```
+
+- PostgreSQL のあるテーブルに、`level` カラムの値が **62** のレコードが存在する。このレコードに対して、次の `CASE` 式はどのような値を返すか答えよ。
+  - **答え**: <span class="masked">「A」。最初の `level >= 40` が真になるため、後続の `level >= 60` の条件には進まない。</span>
+```sql{.numberLines caption="定着確認"}
+CASE
+    WHEN level >= 40 THEN 'A'
+    WHEN level >= 60 THEN 'S'
+    ELSE 'B'
+END
+```
+
+- PostgreSQL のあるテーブルに、`level` カラムの値が **35** のレコードが存在する。このレコードに対して、次の `CASE` 式はどのような値を返すか答えよ。
+  - **答え**: <span class="masked">「NULL」。条件を満たさず、ELSE も省略されているため。</span>
+```sql{.numberLines caption="定着確認"}
+CASE
+    WHEN level >= 40 THEN 'A'
+END
+```
+
+- 標準 SQL において、`job` カラムの値が文字列 `Fighter` と等しいかを比較したい。条件式 `job ???? 'Fighter'` の `????` に記述すべき演算子を答えよ。
+  - **答え**: <span class="masked">`=`</span>
+
+- 標準 SQL において、`job` カラムの値が文字列 `Fighter` と等しくないかを比較したい。条件式 `job ???? 'Fighter'` の `????` に記述すべき演算子を答えよ。
+  - **答え**: <span class="masked">`<>`</span>
+
+- SQL において、`level` が `50` 以上、かつ `created_on` が `2022-12-31` 以前という条件を記述したい。次の条件式の `????` に記述すべき語句を答えよ。
+  - **答え**: <span class="masked">`AND`</span>
+```sql{.numberLines caption="定着確認"}
+level >= 50 ???? created_on <= DATE '2022-12-31'
+```
+
+- 標準 SQL において、`guild` カラムの値が `NULL` かどうかを判定したい。条件式 `guild ????` の `????` に記述すべき語句を答えよ。
+  - **答え**: <span class="masked">`IS NULL`</span>
+
+- PostgreSQL において、`guild` の値が `NULL` のとき、次の `CASE` 式はどのような値を返すか答えよ。
+  - **答え**: <span class="masked">「所属あり」。`guild = NULL` の結果は UNKNOWN であり、TRUE にならないため、ELSE の値が使われる。NULL を判定するには `guild IS NULL` と記述する必要がある。</span>
+```sql{.numberLines caption="定着確認"}
+CASE
+    WHEN guild = NULL THEN '(無所属)'
+    ELSE '所属あり'
+END
 ```
 
 #### SQLドリル💻
 
-- `ex-05_1.sql` 👉 **s_characters** テーブルのすべてのレコードについて、次に示すようなカラムを出力する SQL を記述せよ。なお、**battle_position** は **job** が「Fighter」「Samurai」「Monk」「Ninja」のときに「frontline」、それ以外のときに「backline」となるようにすること。
+- `ex-05_1.sql` 👉 **w03.characters** テーブルのすべてのレコードについて、次に示すようなカラムを出力する SQL 文を記述せよ。
+  - `battle_position` は、`job` が「Fighter」「Samurai」「Monk」「Ninja」のいずれかであれば「frontline」、そうでなければ「backline」とすること。
+  - frontline は前衛、backlineは後衛の意味。
 
 ```
  id |  name   |   job   | battle_position 
@@ -1226,7 +1534,10 @@ FROM
  ～～ 以下略 ～～
 ```
 
-- `ex-05_2.sql` 👉 **s_characters** テーブルのレコードについて、次に示すようなカラムを出力する SQL を記述せよ。なお、**status** は **buff** が、0.0 のときは「--」、負数の場合は「debuff」、正数の場合は「buff」となるようにすること。
+---
+
+- `ex-05_2.sql` 👉 **w03.characters** テーブルのすべてのレコードについて、次に示すようなカラムを出力する SQL 文を記述せよ。]
+  - `status` は、`buff` が `0` なら「--」、負数なら「debuff」、正数なら「buff」とすること。  
 
 ```
  id |  name   | buff  | status 
@@ -1239,10 +1550,12 @@ FROM
  ～～ 以下略 ～～
 ```
 
-- `ex-05_3.sql` 👉 **s_characters** テーブルのレコードについて、次に示すようなカラムを出力する SQL を記述せよ。なお、**class** は以下の条件により決定すること。
-  - `Master` : **level** が「50」以上、かつ、**created_on** が「2022/12/31」以前
-  - `Veteran` : `Master` の条件を満たさず、**level** が「30」以上、かつ、**created_on** が「2023/12/31」以前
-  - `Rookie` : `Master` の条件も、`Veteran` の条件も満たさない
+---
+
+- `ex-05_3.sql` 👉 **w03.characters** テーブルのすべてのレコードについて、次に示すようなカラムを出力する SQL 文を記述せよ。`class` は、次の条件に従って決定すること。
+  - **Master**: `level` が 50 以上、かつ `created_on` が 2022-12-31 以前。
+  - **Veteran**: `Master` の条件を満たさず、`level` が 30 以上、かつ created_on が `2023-12-31` 以前。
+  - **Rookie**: Master と Veteran のどちらの条件も満たさない。  
 
 ```
  id |  name   | level | created_on |  class  
@@ -1257,23 +1570,26 @@ FROM
 
 ### NULLを別の値に変換する
 
-前のセクションで説明したように「CASE式」を利用して `NULL` を任意の値に置き換えることができました。これと同じ処理は `COALESCE` (コアレス) という関数でシンプルに行なうことができます。
+CASE式では、`guild` が `NULL` のときに「(無所属)」を表示しました。このような処理は、**COALESCE** (コアレス) を使うと、より簡潔に記述できます。
 
 `COALESCE` は <span class="masked">引数のなかから、最初に見つかった `NULL` ではない値を返す関数</span> となります。引数を左から順に評価し、`NULL` ではない値が見つかった時点で、それを結果として返します。
 
 たとえば、次のように書くと、**guild** の値が `NULL` の場合にだけ `(無所属)` が表示されるようになります。
 
 ```sql{.numberLines caption="COALESCE関数によるNULLの変換"}
+SET
+  search_path TO w03;
+
 SELECT
   id,
   name,
   guild,
   COALESCE(guild, '(無所属)') AS "所属"
 FROM
-  s_characters;
+  characters;
 ```
 
-実行結果 (上位5件のみ抜粋) は、次のようになります。
+実行結果は、次のようになります。
 
 ```
  id |  name   | guild  |   所属   
@@ -1283,14 +1599,13 @@ FROM
   3 | Charlie |        | (無所属)
   4 | Tom     |        | (無所属)
   5 | Ivan    |        | (無所属)
+ ～～ 以下略 ～～
 ```
 
 #### SQLドリル💻
 
-- `ex-06_1.sql` 👉 **s_characters** テーブルのレコードについて、次に示すようなカラムを出力する SQL を記述せよ。なお、**guild or (name)** の値は、次の条件に従って決定すること。`CASE` 式は使用せず、`COALESCE` 関数を用いること。
-  - **guild** が `NULL` でない場合は、その値 (**guild**) を表示する。
-  - **guild** が `NULL` の場合は、**name** を括弧で囲んで表示する。
-
+- `ex-06_1.sql` 👉 **w03.characters** テーブルのすべてのレコードについて、次に示すようなカラムを出力する SQL 文を記述せよ。
+  - `CASE` 式は使用せず、`COALESCE` を用いること。  
 ```
  id |  name   | guild  | guild or (name) 
 ----+---------+--------+---------------
@@ -1305,13 +1620,16 @@ FROM
 
 ### レコードの重複を省く
 
-次の SQL を実行すると、**s_characters** テーブルのすべてのレコードの `job` カラムの値を取得することができます。
+次の SQL を実行すると、**w03.characters** テーブルのすべてのレコードの `job` カラムの値を取得することができます。
 
 ```sql{.numberLines caption="jobカラムのみの出力"}
+SET
+  search_path TO w03;
+
 SELECT
   job
 FROM
-  s_characters;
+  characters;
 ```
 
 具体的な実行結果は、次のようになります。
@@ -1341,16 +1659,19 @@ FROM
 (19 行)
 ```
 
-ここで、`SELECT` 句に `DISTINCT` (ディスティンクト) キーワードを使うと <span class="masked">重複するレコードを省いて結果を取得すること</span> ができます。
+ここで、`SELECT` のあとに **DISTINCT** (ディスティンクト) キーワードを付けると、<span class="masked">取得結果の重複する行を1行にまとめること</span> ができます。この例では、同じジョブが複数回現れていても、結果には1回だけ表示されます。
 
 ```sql{.numberLines caption="DISTINCTによる重複の除外"}
+SET
+  search_path TO w03;
+
 SELECT DISTINCT -- ◀◀ ここに注目
   job
 FROM
-  s_characters;
+  characters;
 ```
 
-この場合の実行結果は次のようになります。
+実行結果は以下のようになります。
 
 ```
    job   
@@ -1364,9 +1685,15 @@ FROM
 (6 行)
 ```
 
+::: {.balloon .char-01 .face-02 .tone-yellow}
+複数のカラムを指定した場合は、**指定したカラムの値の組み合わせ**が同じ行を1行にまとめます。例えば、`SELECT DISTINCT job, guild` のようにギルドとジョブを取得する場合、ギルドが同じでもジョブが異なれば、それぞれの行が残ります。
+
+実際に試してみてください。
+:::
+
 #### SQLドリル💻
 
-- `ex-07_1.sql` 👉 **s_characters** テーブルから、キャラクタが所属しているギルドの一覧を取得する SQL を記述せよ。なお、`NULL` は「未所属」として出力すること。
+- `ex-07_1.sql` 👉 **w03.characters** テーブルから、次に示すようなギルドの一覧を重複を除いて取得する SQL 文を記述せよ。出力する行の順番は問わない。
 
 ```
  ギルド 
@@ -1377,7 +1704,7 @@ FROM
  D.D.D
 ```
 
-- `ex-07_2.sql` 👉 **s_characters** テーブルから、次のように各ギルドに所属しているジョブを重複を除いて取得する SQL を記述せよ。なお、ギルドが `NULL` のときは「未所属」として出力すること。
+- `ex-07_2.sql` 👉 **w03.characters** テーブルから、次に示すようにギルドとジョブの組み合わせを重複を除いて取得する SQL 文を記述せよ。出力する行の順番は問わない。
 
 ```
  ギルド | ジョブ  
@@ -1402,9 +1729,14 @@ FROM
 
 ### 日付・時刻関数を利用する (授業時間外学習)
 
-TIMESTAMP型のデータから「年」「月」「日」「時」「分」「秒」を「**数値**」として得たいときは `DATE_PART` 関数を使用します。
+TIMESTAMP型の値から、「年」「月」「日」「時」「分」「秒」を **数値** として取り出すには、`DATE_PART` を使います。
+
+次の例では、**w03.characters** を対象に最終ログイン日時を、それぞれの要素に分けて出力しています。なお `last_login_at` が `NULL` のレコードでは、取り出した値も `NULL` となります。
 
 ```sql{.numberLines caption="日付と時刻の分解"}
+SET
+  search_path TO w03;
+
 SELECT
   name,
   last_login_at,
@@ -1415,36 +1747,69 @@ SELECT
   DATE_PART('minute', last_login_at) AS "minute",
   DATE_PART('second', last_login_at) AS "second"
 FROM
-  s_characters;
+  characters;
 ```
 
-- `DATE_PART` 関数は、標準SQLに含まれない PostgreSQL 独自の関数です。
+- `DATE_PART` は、標準 SQL には含まれません。PostgreSQL 固有の関数です。
 - `DATE_PART` 関数は、`DATE` 型のデータから「年」「月」「日」を取得する場合にも使用できます。
 
 **<i class="fa-solid fa-comment-dots fa-flip-horizontal"></i>プロンプト例**
 
-> 標準SQLを使って、TIMESTAMP型のカラム (`last_login_at`) から「年」「月」「日」「時」「分」「秒」を個別に数値として取得したいです。どのような SQL を書けばよいですか。
+> PostgreSQL の DATE_PART で、TIMESTAMP型の last_login_at から年・月・日・時・分・秒を取り出す方法を学びました。標準SQLの EXTRACT では、どのように書きますか。短い SQL 例を示し、DATE_PART との構文や戻り値の型の違いも説明してください。
 
-一方で、TIMESTAMP型のデータから「年」「月」「日」「時」「分」「秒」を「**文字列**」として得たいときは `TO_CHAR` 関数を使用します。DATE型のデータについても使用することができます。
+---
+
+日時を指定した書式の **文字列** に変換するには、`TO_CHAR` を使います。DATE型にも利用できます。次の例では、最終ログイン日時を「**2025/07/24 13時31分00秒**」のような文字列として出力しています。
 
 ```sql{.numberLines caption="日時のフォーマット(文字列整形)"}
+SET
+  search_path TO w03;
+
 SELECT
   name,
   last_login_at,
   TO_CHAR(last_login_at, 'YYYY"/"MM"/"DD HH24"時"MI"分"SS"秒"')
 FROM
-  s_characters;
+  characters;
 ```
 
-上記の **第04行目** で使用している `YYYY` や `MI` などの「**フォーマット指定子**」は、PostgreSQL の公式ドキュメント (リファレンス) を参照してください。
+`TO_CHAR` の第2引数にある `YYYY` や `MI` などは「**フォーマット指定子**」です。例えば、`YYYY` は4桁の年、`MM` は月、`MI` は分、`HH24` は24時間表記の時を表します。使用できる指定子は、PostgreSQL 18 の公式ドキュメントで確認してください。
 
-- [Table 9.27. Template Patterns for Date/Time Formatting](https://www.postgresql.org/docs/current/functions-formatting.html#FUNCTIONS-FORMATTING-DATETIME-TABLE)
+- [Table 9.27. Template Patterns for Date/Time Formatting](https://www.postgresql.org/docs/18/functions-formatting.html#FUNCTIONS-FORMATTING-DATETIME-TABLE)
 
-なお、フォーマット指定子以外の文字 (書式内でそのまま出力したい文字列) は <span class="masked">ダブルクォート</span> で囲むようにしてください。そのまま記述しても正しく出力される場合もありますが、確実に意図どおり表示させるためにはダブルクォートで囲むことが推奨されます。
+
+::: {.balloon .char-01 .face-02 .tone-yellow}
+TO_CHAR 関数を利用する際、書式内でそのまま出力したい文字列は、**ダブルクォート** で囲むと、フォーマット指定子として解釈されることを防げます。
+
+上記の **第07行目** では、書式全体を **シングルクォート** で囲み、その内側で「時」「分」「秒」などを **ダブルクォート** で囲んでいる点を確認してください。
+:::
+
+#### 定着確認
+
+- PostgreSQL において、TIMESTAMP 型の `last_login_at` の値が `2025-07-24 13:31:00` である。`DATE_PART('month', last_login_at)` は、どのような値を返すか答えよ。
+  - **答え**: <span class="masked">数値の `7`。</span>
+
+- PostgreSQL において、TIMESTAMP 型の `last_login_at` の値が `2025-07-24 13:31:00` である。`DATE_PART('minute', last_login_at)` は、どのような値を返すか答えよ。
+  - **答え**: <span class="masked">数値の `31`。</span>
+
+- PostgreSQL において、TIMESTAMP 型の `last_login_at` の値が `NULL` である。`DATE_PART('year', last_login_at)` の結果を答えよ。
+  - **答え**: <span class="masked">`NULL`。</span>
+
+- PostgreSQL において、TIMESTAMP 型の `last_login_at` の値が `2025-07-24 13:31:00` である。次の式は、どのような文字列を返すか答えよ。
+  - **答え**: <span class="masked">`2025/07/24 13時31分00秒`</span>
+```sql{.numberLines caption="定着確認"}
+TO_CHAR(last_login_at, 'YYYY"/"MM"/"DD HH24"時"MI"分"SS"秒"')
+```
+
+- PostgreSQL の `TO_CHAR` で日時を文字列に変換するとき、フォーマット指定子 `MM` と `MI` は、それぞれ何を表すか答えよ。
+  - **答え**: <span class="masked">MM は月、MI は分。どちらも2桁で表示され、1桁の値は先頭に0を付けてゼロ埋めされる。例えば、7月は `07`、5分は `05` と表示される。</span>
+
+- PostgreSQL の `TO_CHAR` で日時を文字列に変換するとき、24時間表記 (ゼロ埋め2桁) の「時」を指定するフォーマット指定子を答えよ。
+  - **答え**: <span class="masked">`HH24`</span>
 
 #### SQLドリル💻
 
-- `ex-08_1.sql` 👉 **s_characters** テーブルのレコードについて、次に示すようなカラムを出力する SQL を記述せよ。なお、**created_on** は `2020-09-01` 以降の日付であることを仮定してよい。
+- `ex-08_1.sql` 👉 **w03.characters** テーブルのすべてのレコードについて、次に示すようなカラムを出力する SQL 文を記述せよ。`created_on` は `2020-09-01` 以降とする (平成に対応する必要はない)。
   - ヒント: 和暦 (令和) の年は、西暦の値から <span class="masked">2018</span> を引くことで求めることができる。
 
 ```
@@ -1458,31 +1823,28 @@ FROM
  ～～ 以下略 ～～
 ```
 
-#### 定着確認
+### 現在日時と日数・時間の差を計算する
 
-- あるテーブルに **created_at** という `TIMESTAMP` 型のカラムが存在する。このカラムの値を `2025年10月16日` のような書式の「文字列」として取得したい。PostgreSQL を想定し、`SELECT` 句にどのような関数や式を用いればよいか答えよ。
-  - **答え**: `SELECT` <span class="masked">`TO_CHAR(created_at, 'YYYY"年"MM"月"DD"日"')`</span> `AS "created_at" FROM ...;`   
-- あるテーブルに **created_on** という `DATE` 型のカラムが存在する。このカラムから「年」の値を「数値型」として取得したい。PostgreSQL を想定し、具体的にどのような関数や式を用いればよいか答えよ。
-  - **答え**: <span class="masked">`DATE_PART('year', created_on)`。なお、戻り値は `DOUBLE PRECISION` 型 (実数) となるので、整数にしたい場合は `DATE_PART('year', created_on)::INT` のようにキャストします。</span>
+現在の日付や時刻を取得するには、次の日時値関数を使います。
 
-### 現在日時と日数・時間の差を計算する (授業時間外学習)
+- **日時**: `LOCALTIMESTAMP` は TIMESTAMP型、`CURRENT_TIMESTAMP` は TIMESTAMPTZ型の値を返します。
+- **時刻**: `LOCALTIME` は TIME型、`CURRENT_TIME` は TIMETZ型の値を返します。
+- **日付**: `CURRENT_DATE` は、時刻を含まない DATE型の値を返します。
 
-- 現在の日時を取得するには `LOCALTIMESTAMP` (`TIMESTAMP`型) を使用します。
-  - `CURRENT_TIMESTAMP` を使用すると **タイムゾーン情報付き** の (`TIMESTAMPTZ`型) になるので注意してください。
-- 現在の時刻を取得するには `LOCALTIME` (`TIME`型) を使用します。
-  - `CURRENT_TIME` を使用するとタイムゾーン情報付きの (`TIMETZ`型) になるので注意してください。
-- 現在の日付 (**時刻を含まない**) を取得するには `CURRENT_DATE` (`DATE`型) を使用します。
-  - `CURRENT_DATE` は、もともとタイムゾーン情報を含みません。
+::: {.balloon .char-01 .face-01 .tone-pink}
+PostgreSQL では、これらが返す値の基準は **現在のトランザクションの開始時点**です。同じトランザクション内では、処理が進んでも値は変わりません。また、日付や時刻は、現在のセッションに設定されているタイムゾーンに基づきます。
+:::
 
-いま、**s_characters** の **created_on** カラムは「タイムゾーン情報なしの `DATE` 型」、**last_login_at** カラムは「タイムゾーン情報なしの `TIMESTAMP` 型」で型定義しています。そのため、`s_characters` に関して **現在の日時を基準に日時の差分を取りたい場合**は `LOCALTIMESTAMP` を、**日付の差分を取りたい場合**は `CURRENT_DATE` を用いるのが安全です。
 
-- テーブルのカラムが **タイムゾーン情報付き型** である場合は、`CURRENT_TIMESTAMP` や `CURRENT_TIME` を使用するべきです。
+今回の **w03.characters** テーブルでは、`created_on` は DATE型、`last_login_at` はタイムゾーン情報を含まない TIMESTAMP型です。このため、日付同士の差を求めるときは `CURRENT_DATE`、日時同士の差を求めるときは `LOCALTIMESTAMP` を使うと、カラムと同じ型で計算できます。
+
+- TIMESTAMPTZ型のカラムと現在日時の差を求める場合は、`CURRENT_TIMESTAMP` を使うと同じ型で計算できます。
 
 ::: {.note .type-senior}
 
 **datetime value function (日時値関数) について**
 
-`LOCALTIMESTAMP`、`CURRENT_DATE`、`LOCALTIME` は **datetime value function (日時値関数)** というもので、通常は、括弧を付けずに呼び出す特別な形式の関数式になります。括弧は `LOCALTIME(0)` のように精度を指定する場合にのみ用いられ、`LOCALTIME()` のように引数なしにすると PostgreSQLでは構文エラーになります。
+`LOCALTIMESTAMP`、`CURRENT_DATE`、`LOCALTIME` などは、**datetime value function (日時値関数)** と呼ばれます。通常は括弧を付けずに記述します。時刻や日時には、`LOCALTIME(0)` のように秒の小数部の桁数を指定でき、`0` なら秒単位の値になります。`LOCALTIME()` のように空の括弧を付けると、PostgreSQL では構文エラーになります。`CURRENT_DATE` には精度の指定はありません。
 
 :::
 
@@ -1490,9 +1852,9 @@ FROM
 
 **タイムゾーン情報の扱いについて**
 
-タイムゾーン情報を「含める」か「含めない」かはシステム設計において非常に重要な判断になります。また、その影響は DB だけでなく、**DB に接続するアプリケーションの設計や挙動にも直接関わります**。たとえば、サーバとクライアントが異なる地域にある場合、DB 側でタイムゾーンを考慮しない設計をしてしまうと、アプリで表示される時刻が「数時間ずれる」といった問題が発生します。
+日時を「どの地域での時刻」として扱うかは、**DB に接続するアプリケーションの設計や表示にも関わります**。TIMESTAMP型の値を異なる地域のローカル時刻として解釈すると、同じ値から異なる時点を指すことになります。TIMESTAMPTZ型では同じ時点を保存できますが、表示する時刻はセッションのタイムゾーンによって変わります。保存する型と、表示時に使うタイムゾーンの両方を意識してください。
 
-LOCALTIMESTAMP と CURRENT_TIMESTAMP の違いなどは `sql/03/tmp.sql` に、以下のコードを貼り付け、確認してみてください。
+**sql/03/tmp.sql** に次のコードを記述して実行し、`LOCALTIMESTAMP` と `CURRENT_TIMESTAMP` などの表示を見比べてみてください。
 
 ```sql{.numberLines caption="日時値関数の比較"}
 SELECT
@@ -1509,62 +1871,76 @@ SELECT
 
 :::
 
-例えば、登録日 (`created_on`) から本日までの経過日数を得たいとき、以下の **第05行目** のように `CURRENT_DATE` を使用します。`DATE` 型同士の減算 (`DATE - DATE`) の結果は <span class="masked">整数型 (日数差)</span> となります。
+例えば、キャラクタ作成日 (`created_on`) から今日までの日数を求めるには、`CURRENT_DATE - created_on` と記述します。**DATE型同士の減算** (`DATE - DATE`) の結果は <span class="masked">整数型の日数差</span> になります。
 
 ```sql{.numberLines caption="登録日からの経過日数の取得"}
+SET
+  search_path TO w03;
+
 SELECT
   id,
   name,
   created_on,
   CURRENT_DATE - created_on AS "Days Since Created"
 FROM
-  s_characters;
+  characters;
 ```
 
-また、最終ログイン (`last_login_at`) から現在日時までの経過時間を得たいとき、以下の **第05行目** のように `LOCALTIMESTAMP` を使用します。`TIMESTAMP` 同士の減算 (`TIMESTAMP - TIMESTAMP`) の結果は `INTERVAL` 型になります。
+最終ログイン日時 (`last_login_at`) から現在日時までの経過時間を求めるには、`LOCALTIMESTAMP - last_login_at` と記述します。**TIMESTAMP型同士の減算** (`TIMESTAMP - TIMESTAMP`) の結果は、時間の隔たりを表す **INTERVAL型** になります。`last_login_at` が `NULL` なら、計算結果も `NULL` です。
 
 ```sql{.numberLines caption="最終ログインからの経過時間"}
+SET
+  search_path TO w03;
+
 SELECT
   id,
   name,
   last_login_at,
   LOCALTIMESTAMP - last_login_at AS "Elapsed Time Since Last Login"
 FROM
-  s_characters;
+  characters;
 ```
 
-`INTERVAL` 型は、`DATE` 型や `TIMESTAMP` 型と同様に、`DATE_PART` 関数や `TO_CHAR` 関数と組みあわせて利用することができます。
+INTERVAL型にも、`DATE_PART` や `TO_CHAR` を使えます。例えば、`DATE_PART('day', interval型の値)` では、その値の日の部分を取り出せます。
 
 ---
 
-`TIMESTAMP` 型は、次のように `DATE` 型にキャスト (型変換) することができます。
+TIMESTAMP型の値から日付だけを取り出すには、次のように **DATE型にキャスト (型変換)** します。
 
 ```sql{.numberLines caption="TIMESTAMPをDATEに変換"}
+SET
+  search_path TO w03;
+
 SELECT
   id,
   name,
   last_login_at,
   CAST(last_login_at AS DATE) AS "last_login_at(DATE型)"
 FROM
-  s_characters;
+  characters;
 ```
 
 - PostgreSQL では `CAST(last_login_at AS DATE)` を <span class="masked">`last_login_at::DATE`</span> のように記述することができます (標準SQL構文ではない)。 
 
-なお、`DATE` 型や `TIMESTAMP` 型の値を直接指定したい場合は、`CAST` 関数を使って文字列から型を明示的に変換します。たとえば、`DATE` 型のリテラルは `CAST('2025-04-01' AS DATE)`、`TIMESTAMP` 型のリテラルは `CAST('2025-04-01 13:05:59' AS TIMESTAMP)` のように記述します。
+固定の日付や日時を計算に使うときは、`CAST('2025-04-01' AS DATE)` や `CAST('2025-04-01 13:05:59' AS TIMESTAMP)` のように、文字列を目的の型に変換できます。標準 SQL では、`DATE '2025-04-01'` や `TIMESTAMP '2025-04-01 13:05:59'` として型を明示したリテラルを書くこともできます。
 
-```sql{.numberLines caption="DATEリテラル"}
+次の例では、固定の基準日 `2026-03-31` と今日の日付との差を求めています。実行日が基準日より前なら正の値、同じ日なら `0`、後なら負の値になります。
+
+```sql{.numberLines caption="固定の基準日と今日の日付との差"}
+SET
+  search_path TO w03;
+
 SELECT
   id,
   name,
-  CAST('2026-03-31' AS DATE) - CURRENT_DATE || '日' AS "卒業まであと"
+  (CAST('2026-03-31' AS DATE) - CURRENT_DATE) || '日' AS "基準日までの日数"
 FROM
-  s_users;
+  users;
 ```
 
 #### SQLドリル💻
 
-- `ex-09_1.sql` 👉  **s_characters** テーブルのレコードについて、次に示すようなカラムを出力する SQL を記述せよ。ただし、**最終ログイン** は「2025年10月15日」を基準として計算すること。
+- `ex-09_1.sql` 👉 **w03.characters** テーブルのすべてのレコードについて、次に示すようなカラムを出力する SQL 文を記述せよ。「最終ログイン」は `2025-10-15` を基準日とし、日付同士の差で計算すること。
 
 ```
  id |  name   |    last_login_at    | 最終ログイン 
@@ -1577,7 +1953,7 @@ FROM
  ～～ 以下略 ～～
 ```
 
-- `ex-09_2.sql` 👉 **s_characters** テーブルのレコードについて、次に示すようなカラムを出力する SQL を記述せよ。ただし、**Days Since Last Login** は「2025年10月15日」を基準として計算し、**Is Active User?** は最終ログインから「50日以内か」で判断すること。
+- `ex-09_2.sql` 👉 **w03.characters** テーブルのすべてのレコードについて、次に示すようなカラムを出力する SQL 文を記述せよ。ただし、**Days Since Last Login** は、基準日を `2025-10-15` とし、日付同士の差で計算すること。「Is Active User?」は、最終ログインからの日数が `50` 以下なら「Yes」、それ以外は「No」とすること。
 
 ```
  id |  name   | Last Login | Days Since Last Login | Is Active User? 
@@ -1594,10 +1970,40 @@ FROM
 
 #### 定着確認
 
-- 標準 SQL において、現在の日時をタイムゾーン情報なしの `TIMESTAMP` 型の値として参照したい。どのような日時値関数を用いればよいか答えよ。
+- PostgreSQL で、現在のトランザクション開始時点の日時を、タイムゾーン情報を含まない TIMESTAMP型で取得したい。標準 SQL のどの日時値関数を使えばよいか答えよ。
   - **答え**: <span class="masked">`LOCALTIMESTAMP`</span>
-- 標準 SQL において、現在の日付を `DATE` 型の値として参照したい。どのような日時値関数を用いればよいか答えよ。
+- PostgreSQL で、現在のトランザクション開始時点の日付を DATE型で取得したい。標準 SQL のどの日時値関数を使えばよいか答えよ。
   - **答え**: <span class="masked">`CURRENT_DATE`</span>
+
+- PostgreSQL の `CURRENT_TIMESTAMP` が返す値のデータ型を答えよ。
+  - **答え**: <span class="masked">TIMESTAMPTZ型 (TIMESTAMP WITH TIME ZONE)。</span>
+
+- PostgreSQL で、現在の時刻をタイムゾーン情報を含まない TIME型で取得したい。標準 SQL のどの日時値関数を使えばよいか答えよ。
+  - **答え**: <span class="masked">`LOCALTIME`</span>
+
+- PostgreSQL で、同じトランザクション内で `LOCALTIMESTAMP` を複数回参照した。処理に時間がかかっていても、返される日時は同じか、それとも参照するたびに変わるか。理由とともに答えよ。
+  - **答え**: <span class="masked">同じ。LOCALTIMESTAMPは、現在のトランザクションの開始時点を基準とするため。</span>
+
+- PostgreSQL で `SELECT LOCALTIME();` を実行すると、構文エラーが発生する。現在の時刻を取得するためには、どのように修正すればよいか答えよ。
+  - **答え**: <span class="masked">空の括弧を外し、`SELECT LOCALTIME;` とする。秒の小数部の桁数を指定する場合は、`SELECT LOCALTIME(0);` などと記述する。</span>
+
+- PostgreSQL で、DATE型の値同士を減算した結果のデータ型と、その値が表す単位を答えよ。
+  - **答え**: <span class="masked">INTEGER型で、日数差を表す。</span>
+
+- PostgreSQL で、TIMESTAMP型の値同士を減算した結果のデータ型を答えよ。
+  - **答え**: <span class="masked">INTERVAL型。</span>
+
+- PostgreSQL で、TIMESTAMP型の `last_login_at` の値が `2025-07-24 13:31:00` である。`CAST(last_login_at AS DATE)` の結果を答えよ。
+  - **答え**: <span class="masked">DATE型の値 `2025-07-24`。時刻の部分は含まれない。</span>
+
+- PostgreSQL で、`CAST(last_login_at AS DATE)` と同じ型変換を、`::` を使って記述せよ。
+  - **答え**: <span class="masked">`last_login_at::DATE`</span>
+
+- PostgreSQL で、`DATE '2025-10-15' - DATE '2025-10-01'` の結果を答えよ。
+  - **答え**: <span class="masked">整数の `14`。</span>
+
+- PostgreSQL で、TIMESTAMP型の `last_login_at` の値が `NULL` である。`LOCALTIMESTAMP - last_login_at` の結果を答えよ。
+  - **答え**: <span class="masked">`NULL`。</span>
 
 ## 授業時間外学習の指示 (宿題)
 
