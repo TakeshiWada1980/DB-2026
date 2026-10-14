@@ -1206,6 +1206,7 @@ FROM
 ```
 
 - `ex-03_2.sql` 👉 **w03.users** テーブルのすべてのレコードについて、次に示すようなカラムを出力する SQL 文を記述せよ。
+  - grade と course は「定数値カラム」として作成すること。
 
 ```
  grade | course | name  | age  
