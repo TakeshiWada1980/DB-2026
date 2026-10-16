@@ -14,7 +14,7 @@ var:
   - シラバス記載のように、小テストは最終評価の <span class="masked">35\%</span> に相当します。 
   - 遅刻・欠席等により追試験を希望する場合は [第01回講義で案内した手続き](lecture01.html#成績評価法と履修上の注意) をしてください。
 
-- 今回の講義内容は、[前回講義](lecture03.html) の内容 (演習環境における SQL の実行手順、基礎的な `SELECT` 文) を**ひととおり理解していること**を前提とします。まだ、それらの内容 (授業時間外学習のセクションを含む) を終えていない人は、まずは、そちらを終えてから取り組んでください。
+- 今回の講義内容は、[前回講義](lecture03.html) の内容 ( ＝<span class="masked">演習環境における SQL の実行手順、基礎的な `SELECT` 文</span> ) を**ひととおり理解していること**を前提とします。まだ、それらの内容 (授業時間外学習のセクションを含む) を終えていない人は、まずは、そちらを終えてから取り組んでください。
 
 ### 今回の達成目標
 
@@ -27,13 +27,27 @@ var:
 
 ### SQL演習環境の動作確認 (前回復習)
 
+今回も、第03回で作成した **w03.users** と **w03.characters** を使用します。
+
+::: {.balloon .char-01 .face-02 .tone-yellow}
+SQLファイルの先頭には、`SET search_path TO w03;` を記述してください。そのファイル内では、スキーマ名を省略して `users` や `characters` と記述できます。SQLファイルごとに新しい接続で実行されるため、別のファイルを実行するときも、この設定が必要です。
+:::
+
 - タスクトレイから **Docker Desktop** が起動していることを確認してください。
 - 前回講義で作成したプロジェクトフォルダ (講義資料のとおりに作成していれば **DB-PostgreSQL** ) をVSCode で開いてください。
 - VSCode のターミナルから `npm run db:up` を実行して **Dockerコンテナ** を起動してください。
-- `sql/04/tmp.sql` を新規作成して、`SELECT * FROM s_users;` という SQL文 を記述して保存してください。
-  - 🚨「**Docker ボリュームを削除してしまった**」などの理由でテーブルが存在しないときは、`npm run sql from-teacher/03/init-s_users.sql` および `npm run sql from-teacher/03/init-s_characters.sql` を再実行して、テーブルの作成とレコードの挿入を行なってください。
+- **sql/04/tmp.sql** を新規作成して、次の SQL を記述して保存してください。
+
+```sql{.numberLines caption="sql/04/tmp.sql"}
+SET
+  search_path TO w03;
+
+SELECT * FROM users;
+```
+
+- 🚨「**Docker ボリュームを削除してしまった**」などの理由でテーブルが存在しないときは、`npm run sql from-teacher/03/init-users.sql` および `npm run sql from-teacher/03/init-characters.sql` を再実行して、テーブルの作成とレコードの挿入を行なってください。
 - エディタがアクティブな状態で `[Ctrl]+[Shift]+[B]` を押下して SQL を実行してください。もしくは VSCode のターミナルから `npm run sql sql/04/tmp.sql` を打ち込んで SQL を実行してください。
-- 次のような結果が得られること確認してください。
+- 次のような結果が得られることを確認してください。
 
 ```bash
  id | name  | age 
@@ -42,23 +56,23 @@ var:
   2 | Bob   |  25
 ```
 
-- [http://localhost:8080/](http://localhost:8080/)もしくは[http://127.0.0.1:8080/](http://127.0.0.1:8080/)から **DbGate** に接続して、次のように **s_users** テーブルと **characters** テーブルの内容が表示できることを確認してください。
+- [http://localhost:8080/](http://localhost:8080/) もしくは [http://127.0.0.1:8080/](http://127.0.0.1:8080/) から **DbGate** に接続して、次のように **w03.users** テーブルと **w03.characters** テーブルの内容が表示できることを確認してください。
 
 ![img](figs/03/dbgate-01.png)
 
 ### 教材の更新の取得
 
-[教材リポジトリ](https://github.com/TakeshiWada1980/DB-2025-PostgreSQL)(＝皆さんが演習に使用するプロジェクトの `upstream`) が更新されています。次の手順で各自のローカルリポジトリに最新の変更を取り込んでください。
+[教材リポジトリ](https://github.com/TakeshiWada1980/DB-2026-PostgreSQL) (＝皆さんが演習に使用するプロジェクトの `upstream`) が更新されています。次の手順で各自のローカルリポジトリに最新の変更を取り込んでください。
 
-<div class="note type-caution">
+::: {.note .type-caution}
 **注意** 
 
 更新の取り込み作業を始める前に、現在編集中のファイルはすべて保存し、さらに **未コミットの変更がない状態** にしておいてください。
-</div>
+:::
 
 VSCode のターミナルから以下のコマンドを実行してください (1行ずつ応答を確認しながら実行してください)。
 
-```
+```bash
 git fetch upstream
 git switch main
 git merge upstream/main
@@ -78,9 +92,12 @@ git merge upstream/main
 
 実際に、以下の SQL を実行して確かめてみてください。
 
-- **例**: `sql/04/tmp.sql` を作成して、以下のSQLをコピペして、`npm run sql sql/04/tmp.sql` を実行
+- **例**: `sql/04/tmp.sql` を作成して、以下のSQLをコピペして、ターミナルから `npm run sql sql/04/tmp.sql` を実行
 
 ```sql{.numberLines caption="レコードの抽出"}
+SET
+  search_path TO w03;
+
 SELECT
   id,
   guild AS "所属ギルド",
@@ -88,7 +105,7 @@ SELECT
   level AS "レベル",
   TO_CHAR(last_login_at, 'YYYY"/"MM"/"DD HH24":"MI') AS "最終ログイン"
 FROM
-  s_characters;
+  characters;
 ```
 
 ここで押さえておくべき「**SQLの重要な特性**」があります。
@@ -97,7 +114,7 @@ SQLは「**集合指向**」の言語であり、「idカラムの昇順」あ�
 
 そこで、レコードの順序を保証する仕組みとして、`SELECT` 文には「`ORDER BY`句」が用意されています。
 
-<div class="note type-senior">
+::: {.note .type-senior}
 **補足**
 
 PostgreSQLはデータを **ヒープファイル（Heap File）** で管理しており、新しく追加された行は、通常、テーブル内の空きページや末尾のブロックに順次追加されます。そのため、テーブルスキャン (順次読み出し) を行うと、挿入順に近い順序で読み込まれることがよく起こります。ただし、この順序は `VACUUM` や `UPDATE` にともなう再配置、インデックススキャンの使用、並列処理などによって容易に崩れます。
@@ -106,17 +123,20 @@ PostgreSQLはデータを **ヒープファイル（Heap File）** で管理し�
 
 - ここでの **ヒープファイル** とは、アルゴリズムやデータ構造で学んだ ヒープ構造 (二分ヒープなど) とは**全く別物**です。データを「積み上げる（Heap）」ことに由来する用語で、特定のデータ構造を指すものではないので注意してください。
 
-**(プロンプト例)**
+**<i class="fa-solid fa-comment-dots fa-flip-horizontal"></i>プロンプト例**
 
 > PostgreSQL における `VACUUM` とは何ですか。
 
-</div>
+:::
 
 ### ORDER BY 句
 
 `ORDER BY` は、`SELECT` 文において、結果セットのレコードの「**ならび** (**順序**)」を指示するもので (＝<span class="masked">整列順・ソート順</span> を指示するもので)、以下のように `FROM` 句の**あと**に記述します。
 
 ```sql{.numberLines caption="結果セットをguildカラムの値で整列"}
+SET
+  search_path TO w03;
+
 SELECT
   id,
   guild AS "所属ギルド",
@@ -124,14 +144,14 @@ SELECT
   level AS "レベル",
   TO_CHAR(last_login_at, 'YYYY"/"MM"/"DD HH24":"MI') AS "最終ログイン"
 FROM
-  s_characters
+  characters
 ORDER BY -- ◀ ここに注目
   guild;
 ```
 
 - `SELECT` 文は、「`SELECT` 句 👉 `FROM` 句 👉 `ORDER BY` 句」という順序で記述しないと**構文エラーになる**ので注意してください。
 
-上記の SQL の実行結果 (`ORDER BY guild` の結果) は、次のように「**所属ギルド順**」なっていると思います。
+上記の SQL の実行結果 (`ORDER BY guild` の結果) は、次のように「**所属ギルド順**」になっていると思います。
 
 ```
  id | 所属ギルド |  名前   | レベル |   最終ログイン   
@@ -165,7 +185,7 @@ ORDER BY -- ◀ ここに注目
 
 #### 定着確認
 
-いま、**s_users** というテーブルに **id**、**name** (`VARCHAR(16)`) 、**age** (`INTEGER`)、**birthday** (`DATE`) というカラムが存在している。
+この定着確認では、**users** という仮のテーブルに **id**、**name** (`VARCHAR(16)`) 、**age** (`INTEGER`)、**birthday** (`DATE`) というカラムが存在しているものとする。
 
 - `SELECT` 文において、**name** を ABC順 (例えば、Alice👉Bob👉Carol👉Charlie👉...のような順) にデータをならべたい。どのように `ORDER BY` 句を記述すればよいか答えよ。
   - **答え**: <span class="masked">`ORDER BY name ASC` もしくは `ORDER BY name`</span>
@@ -185,6 +205,9 @@ ORDER BY -- ◀ ここに注目
 `ORDER BY` 句では、**カンマで区切って**、第1ソートキー、第2ソートキー、第3ソートキー...と複数のソートキーが指定できます。例えば、まず **所属ギルドのABC順 (昇順) で整列** し、さらに **所属ギルドのなかでレベルが高い順 (降順) に整列** したい場合は、次のように SQL を記述します。
 
 ```sql{.numberLines caption="複数のソートキーを指定"}
+SET
+  search_path TO w03;
+
 SELECT
   id,
   guild AS "所属ギルド",
@@ -192,7 +215,7 @@ SELECT
   level AS "レベル",
   TO_CHAR(last_login_at, 'YYYY"/"MM"/"DD HH24":"MI') AS "最終ログイン"
 FROM
-  s_characters
+  characters
 ORDER BY -- ◀ ここに注目
   guild,
   level DESC;
@@ -202,7 +225,7 @@ ORDER BY -- ◀ ここに注目
 
 #### SQLドリル💻
 
-- `ex-01_1.sql` 👉 **s_characters** テーブルのすべてのレコードについて、次に示すようなカラムを出力する SQL を記述せよ。整列の基準は、第1キーを **job** (昇順)、第2キーを **level** (降順)、第3キーを **name** (昇順) とすること。
+- `ex-01_1.sql` 👉 **w03.characters** テーブルのすべてのレコードについて、次に示すようなカラムを出力する SQL を記述せよ。整列の基準は、第1キーを **job** (昇順)、第2キーを **level** (降順)、第3キーを **name** (昇順) とすること。
 
 ```
  id |   job   | level |  name   
@@ -218,7 +241,7 @@ ORDER BY -- ◀ ここに注目
  ～～ 以下略 ～～
 ```
 
-- `ex-01_2.sql` 👉 **s_characters** テーブルのすべてのレコードについて、次に示すようなカラムを出力する SQL を記述せよ。整列の基準は、第1キーを **guild** (昇順・大文字と小文字を区別しない)、第2キーを **level** (降順) とすること。
+- `ex-01_2.sql` 👉 **w03.characters** テーブルのすべてのレコードについて、次に示すようなカラムを出力する SQL を記述せよ。整列の基準は、第1キーを **guild** (昇順・大文字と小文字を区別しない)、第2キーを **level** (降順) とすること。
 
 ```
  id | guild  | Lv. |    name (job)    
@@ -248,17 +271,20 @@ ORDER BY -- ◀ ここに注目
 例えば、次のように記述することで、最終ログイン日時が新しい順 (降順 `DESC`) に並べつつ、`NULL` 値のレコードを「最後」に配置することができます。
 
 ```sql{.numberLines caption="NULLを末尾に配置"}
+SET
+  search_path TO w03;
+
 SELECT
   id,
   name,
   last_login_at
 FROM
-  s_characters
+  characters
 ORDER BY
   last_login_at DESC NULLS LAST; -- ◀ ここに注目
 ```
 
-- 上記の **第08行目** を `last_login_at DESC;` とすると、`last_login_at` が `NULL` のレコードが先頭に配置されることを確認してください。
+- 上記の **第11行目** を `last_login_at DESC;` とすると、`last_login_at` が `NULL` のレコードが先頭に配置されることを確認してください。
 
 
 #### 定着確認
@@ -271,7 +297,7 @@ ORDER BY
 
 #### SQLドリル💻
 
-- `ex-02_1.sql` 👉 **s_characters** テーブルのすべてのレコードについて、次に示すようなカラムを出力する SQL を記述せよ。整列の基準は、第1キーを **guild** (昇順・大文字と小文字を区別しない・`NULL` は先頭)、第2キーを **level** (昇順) とすること。
+- `ex-02_1.sql` 👉 **w03.characters** テーブルのすべてのレコードについて、次に示すようなカラムを出力する SQL を記述せよ。整列の基準は、第1キーを **guild** (昇順・大文字と小文字を区別しない・`NULL` は先頭)、第2キーを **level** (昇順) とすること。
 
 ```
  id |  name   | level | guild  
@@ -291,7 +317,7 @@ ORDER BY
  ～～以下略～～
 ```
 
-- `ex-02_2.sql` 👉 **s_characters** テーブルのすべてのレコードについて、次に示すようなカラムを出力する SQL を記述せよ。なお、並び順は **last_login_at** が新しい順 (降順・`NULL` は末尾) となるようにし、**Days Since Last Login** カラムは「2025/10/15」を基準日として、最終ログインが何日前かを出力すること。
+- `ex-02_2.sql` 👉 **w03.characters** テーブルのすべてのレコードについて、次に示すようなカラムを出力する SQL を記述せよ。なお、並び順は **last_login_at** が新しい順 (降順・`NULL` は末尾) となるようにし、**Days Since Last Login** カラムは「2025/10/15」を基準日として、最終ログインが何日前かを出力すること。
   - ヒント: 前回講義 [現在日時と日数・時間の差を計算する](lecture03.html#現在日時と日数時間の差を計算する-授業時間外学習)
 
 ```
@@ -313,7 +339,7 @@ ORDER BY
 
 ### CASE式を使用したORDER BY句の指定
 
-前回講義では、`SELECT` 句のなかで[CASE式](lecture03.html#case式を利用する)を利用する方法を紹介しましたが、CASE式は `ORDER BY` 句のなかでも使用することができます。
+前回講義では、`SELECT` 句のなかで [CASE式](lecture03.html#case式を利用する) を利用する方法を紹介しましたが、CASE式は `ORDER BY` 句のなかでも使用することができます。
 
 - 式を記述できる場所であれば、どこでも「CASE式」を利用可能です
 
@@ -323,13 +349,16 @@ ORDER BY
 - 前衛職: `Fighter`、`Monk`、`Ninja`、`Samurai`
 
 ```sql{.numberLines caption="CASE式を利用した整列"}
+SET
+  search_path TO w03;
+
 SELECT
   id,
   name,
   job,
   level
 FROM
-  s_characters
+  characters
 ORDER BY
   CASE
     WHEN job = 'Priest' OR job = 'Wizard' THEN 1
@@ -339,9 +368,9 @@ ORDER BY
   level DESC; -- 第3キー
 ```
 
-ここでは、**第09行目** から **第12行目** にかけての「CASE式」で後衛職に数値の「**1**」、それ以外 (前衛職) に数値の「**2**」を割り当て、それを第1キーとして昇順 (`ASC`) に並べています。つまり、ジョブ (文字列型) を数値型にマッピングして、それを整列のキーに使用しています。
+ここでは、**第12行目** から **第15行目** にかけての「CASE式」で後衛職に数値の「**1**」、それ以外 (前衛職) に数値の「**2**」を割り当て、それを第1キーとして昇順 (`ASC`) に並べています。つまり、ジョブ (文字列型) を数値型にマッピングして、それを整列のキーに使用しています。
 
-- **第10行目** は、`IN` キーワードを使用して `WHEN job IN ('Priest', 'Wizard') THEN 1` のように記述することもできます。
+- **第13行目** は、`IN` キーワードを使用して `WHEN job IN ('Priest', 'Wizard') THEN 1` のように記述することもできます。
 
 実行結果は、次のようになります。
 
@@ -365,7 +394,7 @@ ORDER BY
 
 #### SQLドリル💻
 
-- `ex-03_1.sql` 👉 **s_characters** テーブルのすべてのレコードについて、次に示すようなカラムを出力する SQL を記述せよ。なお、ギルドのならびが「Yamato」、「`NULL`(無所属)」、それ以降は大文字と小文字を区別しない昇順 (ABC順) となるようにすること。また、各ギルド内ではレベルの降順で並ぶようにすること。
+- `ex-03_1.sql` 👉 **w03.characters** テーブルのすべてのレコードについて、次に示すようなカラムを出力する SQL を記述せよ。なお、ギルドのならびが「Yamato」、「`NULL`(無所属)」、それ以降は大文字と小文字を区別しない昇順 (ABC順) となるようにすること。また、各ギルド内ではレベルの降順で並ぶようにすること。
   - ヒント: `NULL` を `(無所属)` という文字列で出力するためには、[前回講義](lecture03.html#nullを別の値に変換する) で紹介した <span class="masked">`COALESCE`</span> を利用する。
 
 ```
@@ -392,7 +421,7 @@ ORDER BY
   8 | Bob     |    33 | hameln
 ```
 
-- `ex-03_2.sql` 👉 **s_characters** テーブルのすべてのレコードについて、次に示すようなカラムを出力する SQL を記述せよ。なお、第1キーを **job** (カスタム順: Samurai、Ninja、Fighter、Monk、Priest、Wizard の順)、第2キーを **level** (降順) とすること。
+- `ex-03_2.sql` 👉 **w03.characters** テーブルのすべてのレコードについて、次に示すようなカラムを出力する SQL を記述せよ。なお、第1キーを **job** (カスタム順: Samurai、Ninja、Fighter、Monk、Priest、Wizard の順)、第2キーを **level** (降順) とすること。
 
 ```
  id |  name   | level |   job   
@@ -420,12 +449,15 @@ SQL では、`LIMIT` を使用して <span class="masked">取得するレコー�
 例えば、レベルの高い順に整列して「**上位5件**」のレコードを取得する場合、次のように SQL を記述します。
 
 ```sql{.numberLines caption="LIMITの活用"}
+SET
+  search_path TO w03;
+
 SELECT
   id,
   name,
   level
 FROM
-  s_characters
+  characters
 ORDER BY
   level DESC
 LIMIT -- ◀ ここに注目
@@ -445,12 +477,15 @@ LIMIT -- ◀ ここに注目
 一方で、意図的に「**N 件のレコードをランダムに取得したい**」という場合には、次のように `ORDER BY RANDOM()` と `LIMIT` を併用します。これにより、ランダムに5件のレコードを取得することができます。
 
 ```sql{.numberLines caption="ランダムに5件のレコードを取得"}
+SET
+  search_path TO w03;
+
 SELECT
   id,
   name,
   level
 FROM
-  s_characters
+  characters
 ORDER BY
   RANDOM() -- ◀ ここに注目
 LIMIT
@@ -470,12 +505,15 @@ LIMIT
 以下に「レベルの降順で整列して、11件目から15件目にあたるレコードを取得する SQL」を示します。
 
 ```sql{.numberLines caption="OFFSETとLIMITの利用"}
+SET
+  search_path TO w03;
+
 SELECT
   id,
   name,
   level
 FROM
-  s_characters
+  characters
 ORDER BY
   level DESC
 LIMIT
@@ -486,7 +524,7 @@ OFFSET -- ◀ ここに注目
 
 - `LIMIT 5 OFFSET 10` は、順番を入れ替えて `OFFSET 10 LIMIT 5` としても問題ありません (構文エラーにはなりません)。ただし、一般的には `LIMIT ... OFFSET ...` で記述します。PostgreSQL の公式ドキュメントでも、この順序で記載されています。
 
-**(プロンプト例)**
+**<i class="fa-solid fa-comment-dots fa-flip-horizontal"></i>プロンプト例**
 
 > ウェブアプリに関する文脈で「ページング処理」とはなんですか。
 
@@ -494,9 +532,9 @@ OFFSET -- ◀ ここに注目
 
 #### SQLドリル💻
 
-- `ex-04_1.sql` 👉 **s_characters** テーブルから、**id**、**name**、**job**、**level** の 4 つカラムを持つレコードをランダムに3件取得する SQL を記述せよ。
+- `ex-04_1.sql` 👉 **w03.characters** テーブルから、**id**、**name**、**job**、**level** の 4 つのカラムを持つレコードをランダムに3件取得する SQL を記述せよ。
 
-- `ex-04_2.sql` 👉 **s_characters** テーブルから、**last_login_at** が古い順に5件のレコードについて、以下のようなカラムを取得する SQL を記述せよ。なお、**last_login_at** が `NULL` であるレコード (＝アカウント作成後、一度もログインされていないもの) も含めて、先頭に配置すること。
+- `ex-04_2.sql` 👉 **w03.characters** テーブルから、**last_login_at** が古い順に5件のレコードについて、以下のようなカラムを取得する SQL を記述せよ。なお、**last_login_at** が `NULL` であるレコード (＝アカウント作成後、一度もログインされていないもの) も含めて、先頭に配置すること。
 
 ```
  id |  name   |    last_login_at    
@@ -508,7 +546,7 @@ OFFSET -- ◀ ここに注目
   2 | Zach    | 2025-07-30 18:33:00
 ```
 
-- `ex-04_3.sql` 👉 **s_characters** テーブルから、**created_on** を古い順 (`NULL`は末尾) にならべて「11件目から15件目」にあたるレコードを、以下のようなカラムで取得する SQL を記述せよ。
+- `ex-04_3.sql` 👉 **w03.characters** テーブルから、**created_on** を古い順 (`NULL`は末尾) にならべて「11件目から15件目」にあたるレコードを、以下のようなカラムで取得する SQL を記述せよ。
 
 ```
  id |  name  | created_on 
@@ -520,7 +558,7 @@ OFFSET -- ◀ ここに注目
  15 | Trent  | 2023-10-04
 ```
 
-- 注意: **s_characters** テーブルの Oscar (id: `10`) と Ellen (id: `11`) の **created_on** は、`from-teacher/03/init-s_characters.sql` のなかで意図的に逆転させています。
+- 注意: **w03.characters** テーブルの Oscar (id: `10`) と Ellen (id: `11`) の **created_on** は、`from-teacher/03/init-characters.sql` のなかで意図的に逆転させています。
 
 #### 定着確認
 
@@ -539,13 +577,16 @@ OFFSET -- ◀ ここに注目
 例えば、**レベルが20以上** かつ **ギルドに所属している** (＝**guild** カラムが `NULL` ではない) という条件に一致するレコードを取得する SQL は、次のように記述することができます。
 
 ```sql{.numberLines caption="WHEREの活用"}
+SET
+  search_path TO w03;
+
 SELECT
   id,
   name,
   level,
   guild
 FROM
-  s_characters
+  characters
 WHERE -- ◀ ここに注目
   level >= 20 AND
   guild IS NOT NULL
@@ -560,7 +601,10 @@ ORDER BY
 **id** (`INTEGER`型) が「**3**」に一致するレコードを取得する `SELECT` 文は次のようになります。SQL において等価比較演算子には `==` ではなく `=` を使用するので注意してください。
 
 ```sql{.numberLines caption="WHERE句の基本(数値型の扱い)"}
-SELECT * FROM s_characters WHERE id = 3;
+SET
+  search_path TO w03;
+
+SELECT * FROM characters WHERE id = 3;
 ```
 
 - `id == 3` のように `==` を使用した場合、どのようになるか予測し、実際に結果を確認してください。
@@ -571,7 +615,10 @@ SELECT * FROM s_characters WHERE id = 3;
 **name** (`VARCHAR`型) が「**Alice**」に一致するレコードを取得する `SELECT` 文は次のようになります。文字列は **シングルクォート** `'` で囲むことに注意してください。
 
 ```sql{.numberLines caption="WHERE句の基本(文字列型の扱い)"}
-SELECT * FROM s_characters WHERE name = 'Alice';
+SET
+  search_path TO w03;
+
+SELECT * FROM characters WHERE name = 'Alice';
 ```
 
 - `name = Alice` のようにシングルクォートで囲まなかった場合、どのようになるか予測し、実際に結果を確認してください。
@@ -582,7 +629,10 @@ SELECT * FROM s_characters WHERE name = 'Alice';
 **created_on** (`DATE`型) が「**2022-03-22**」に一致するレコードを取得する `SELECT` 文は次のようになります。日付は **シングルクォート** `'` で囲み、`YYYY-MM-DD` の形式で記述してください。
 
 ```sql{.numberLines caption="WHERE句の基本(日付型の扱い)"}
-SELECT * FROM s_characters WHERE created_on = '2022-03-22';
+SET
+  search_path TO w03;
+
+SELECT * FROM characters WHERE created_on = '2022-03-22';
 ```
 
 - `created_on = '2022-3-22'` のようにゼロ埋めなしの場合、どのようになるか予測し、実際に結果を確認してください。
@@ -591,20 +641,23 @@ SELECT * FROM s_characters WHERE created_on = '2022-03-22';
 
 ---
 
-**last_login_at** (`TIMESTAMP`型) が「**2025-10-03 11:42:00**」に一致するレコードを取得する `WHERE` 句は次のようになります。日付は **シングルクォート** `'` で囲み、`YYYY-MM-DD HH24:MI:SS` の形式で記述してください。
+**last_login_at** (`TIMESTAMP`型) が「**2025-10-03 11:42:00**」に一致するレコードを取得する `WHERE` 句は次のようになります。日時は **シングルクォート** `'` で囲み、`YYYY-MM-DD HH24:MI:SS` の形式で記述してください。
 
 ```sql{.numberLines caption="WHERE句の基本(日時型の扱い)"}
-SELECT * FROM s_characters WHERE last_login_at = '2025-10-03 11:42:00';
+SET
+  search_path TO w03;
+
+SELECT * FROM characters WHERE last_login_at = '2025-10-03 11:42:00';
 ```
 
 - `last_login_at = '2025-10-03'` のように時刻を含めない場合、どのようになるか予測し、実際に結果を確認してください。
 - `last_login_at = '2025-10-03 11:42'` のように **00秒** の部分を省略した場合、どのようになるか予測し、実際に結果を確認してください。
 
-**(プロンプト例)**
+**<i class="fa-solid fa-comment-dots fa-flip-horizontal"></i>プロンプト例**
 
-> PostgreSQLに関する質問です。いま `s_characters` テーブルの `id` カラムは `INTEGER` 型で定義されています。このとき、`id` が「3」に一致するレコードを抽出したいです。これは `SELECT * FROM s_characters WHERE id = 3` というSQLで実行可能なことを確認しました。しかし、これを `id = '3'` のように「文字列リテラル」で指定しても (予想に反して) 実行可能でした。これは、なぜですか。他の RDBMS でも同様なことが起きますか？ `id = 3` と `id = '3'` のどちらが適切ですか？
+> PostgreSQLに関する質問です。いま `w03.characters` テーブルの `id` カラムは `INTEGER` 型で定義されています。このとき、`id` が「3」に一致するレコードを抽出したいです。これは `SELECT * FROM w03.characters WHERE id = 3` というSQLで実行可能なことを確認しました。しかし、これを `id = '3'` のように「文字列リテラル」で指定しても (予想に反して) 実行可能でした。これは、なぜですか。他の RDBMS でも同様なことが起きますか？ `id = 3` と `id = '3'` のどちらが適切ですか？
 
-> PostgreSQLに関する質問です。いま `s_characters` テーブルの `created_on` カラムは `DATE` 型で定義されています。このとき、`created_on` が「2022年3月22日」に一致するレコードを抽出したいです。これは `SELECT * FROM s_characters WHERE created_on = '2022-03-22'` というSQLで実行可能なことを確認しました。しかし、これを `created_on = '2022/3/22'` のような書式で指定しても (予想に反して) 実行可能でした。これは、なぜですか。他の RDBMS でも同様なことが起きますか？ `2022-03-22` と `2022/3/22` のどちらが適切ですか？
+> PostgreSQLに関する質問です。いま `w03.characters` テーブルの `created_on` カラムは `DATE` 型で定義されています。このとき、`created_on` が「2022年3月22日」に一致するレコードを抽出したいです。これは `SELECT * FROM w03.characters WHERE created_on = '2022-03-22'` というSQLで実行可能なことを確認しました。しかし、これを `created_on = '2022/3/22'` のような書式で指定しても (予想に反して) 実行可能でした。これは、なぜですか。他の RDBMS でも同様なことが起きますか？ `2022-03-22` と `2022/3/22` のどちらが適切ですか？
 
 #### 定着確認
 
@@ -748,10 +801,13 @@ SQLにおいて **3値論理** を返す「式」を **述語** (**Predicate**) 
 ジョブが「Priest」または「Wizard」のレコードを抽出する SQL は、**IN演算子** を使用して次のように記述することができます。条件としては `job = 'Priest' OR job = 'Wizard'` と同じですが <span class="masked">より簡潔に記述できるメリット</span> があります。
 
 ```sql{.numberLines caption="IN演算子"}
+SET
+  search_path TO w03;
+
 SELECT
   *
 FROM
-  s_characters
+  characters
 WHERE
   job IN ('Priest', 'Wizard');
 ```
@@ -760,29 +816,35 @@ WHERE
 
 また、`IN` は、論理否定の `NOT` と組み合わせることができます。たとえば、Priest と Wizard 以外のジョブ (つまり、Fighter、Monk、Ninja、Samurai) を抽出する SQL は次のように記述できます。
 
-```sql{.numberLines caption="IN演算子(NOTと組合わせ)"}
+```sql{.numberLines caption="IN演算子(NOTと組み合わせ)"}
+SET
+  search_path TO w03;
+
 SELECT
   *
 FROM
-  s_characters
+  characters
 WHERE
   job NOT IN ('Priest', 'Wizard');
 ```
 
 ここでは `NOT job IN ('Priest', 'Wizard')` のように記述しても同じ結果が得られますが、一般には推奨されません。本科目でも、`NOT IN` の記法を使用してください。
 
-なお、`WHRER` 句で `NOT IN` を使用するとき、リストに <span class="masked">`NULL`</span> を含むと、評価結果は常に `UNKNOWN`となり、1件のレコードも抽出されなくなるので注意してください。例えば、ギルドが、Yamato、無所属 (`NULL`) **以外** のレコードを抽出したいとき、次の SQL では意図した結果が得られません。実際に確認してみてください。
+なお、`WHERE` 句で `NOT IN` を使用するとき、リストに <span class="masked">`NULL`</span> を含むと、評価結果は常に `UNKNOWN`となり、1件のレコードも抽出されなくなるので注意してください。例えば、ギルドが、Yamato、無所属 (`NULL`) **以外** のレコードを抽出したいとき、次の SQL では意図した結果が得られません。実際に確認してみてください。
 
 ```sql{.numberLines caption="意図した結果が得られないSQL"}
+SET
+  search_path TO w03;
+
 SELECT
   *
 FROM
-  s_characters
+  characters
 WHERE
   guild NOT IN ('Yamato', NULL); -- Yamato と NULL 以外を抽出したい
 ```
 
-**(プロンプト例)**
+**<i class="fa-solid fa-comment-dots fa-flip-horizontal"></i>プロンプト例**
 
 > SQL の WHERE では、`NOT job IN ('Priest', 'Wizard')` よりも `job NOT IN ('Priest', 'Wizard')` のように記述することが推奨されると言われました。なぜですか。
 
@@ -793,10 +855,13 @@ WHERE
 キャラクタの名前が「**C**」から始まるようなレコードを抽出したいときは、`LIKE` 条件を使用し、次のように SQL を記述します。
 
 ```sql{.numberLines caption="LIKE条件"}
+SET
+  search_path TO w03;
+
 SELECT
   *
 FROM
-  s_characters
+  characters
 WHERE
   name LIKE 'C%';
 ```
@@ -816,10 +881,13 @@ WHERE
 例えば、**level** が **20以上39以下** のレコードを抽出したい場合、次のように SQL を記述することができます。
 
 ```sql{.numberLines caption="BETWEENを使用した範囲条件の指定"}
+SET
+  search_path TO w03;
+
 SELECT
   *
 FROM
-  s_characters
+  characters
 WHERE
   level BETWEEN 20 AND 39;
 ```
@@ -831,12 +899,15 @@ WHERE
 `BETWEEN` は、特に `DATE` 型や `TIMESTAMP` 型のカラムでよく使用されます。例えば、最終ログイン日時 (`TIMESTAMP`型) が「2025-07-01」から「2025-07-31」までの範囲にあるレコードを抽出したいときは次のように記述します。
 
 ```sql{.numberLines caption="BETWEENによる日付範囲の抽出"}
+SET
+  search_path TO w03;
+
 SELECT
   id,
   name,
   last_login_at
 FROM
-  s_characters
+  characters
 WHERE
   last_login_at BETWEEN '2025-07-01 00:00:00' AND '2025-07-31 23:59:59.999999'
 ORDER BY
@@ -846,21 +917,24 @@ ORDER BY
 - **注意**: `WHERE last_login_at BETWEEN '2025-07-01' AND '2025-07-31'` とすると、**last_login_at** が <span class="masked">2025年7月31日 10時15分</span> のようなレコードが選択されないので注意してください。
     - なお、**last_login_at** が、**created_on** のように時刻を含まない `DATE` 型であれば、この問題は生じません。
 
-**(プロンプト例)**
+**<i class="fa-solid fa-comment-dots fa-flip-horizontal"></i>プロンプト例**
 
 > PostgreSQL に関する質問です。last_login_at という `TIMESTAMP` 型のカラムがあります。このとき、`WHERE last_login_at BETWEEN '2025-07-01' AND '2025-07-31'` では、`2025-07-31 10:15:00` のようなレコードが選択されないのはなぜですか。
 
 ---
 
-さらに、[前回講義](lecture03.html#日付時刻関数を利用する-授業時間外学習)で紹介した `DATE_PART` 関数と組み合わせることで、最終ログインが「**9時から17時**」のレコードを抽出するようなことにもできます。
+さらに、[前回講義](lecture03.html#日付時刻関数を利用する-授業時間外学習) で紹介した `DATE_PART` 関数と組み合わせることで、最終ログインが「**9時から17時**」のレコードを抽出するようなこともできます。
 
 ```sql{.numberLines caption="9時〜17時にログインしているレコードを取得"}
+SET
+  search_path TO w03;
+
 SELECT
   id,
   name,
   last_login_at
 FROM
-  s_characters
+  characters
 WHERE
   DATE_PART('hour', last_login_at) BETWEEN 9 AND 17
 ORDER BY
@@ -876,13 +950,16 @@ CASE式は、`WHERE` 句でも利用することができます (先にも述べ
 たとえば、**ギルドに所属している場合はレベル60以上**、**未所属の場合はレベル30以上** のレコードを抽出したいとき、次のように SQL を記述することができます。
 
 ```sql{.numberLines caption="WHERE句におけるCASE式の利用1"}
+SET
+  search_path TO w03;
+
 SELECT
   id,
   name,
   guild,
   level
 FROM
-  s_characters
+  characters
 WHERE -- ◀ ここに注目
   level >= CASE
     WHEN guild IS NOT NULL THEN 60
@@ -895,13 +972,16 @@ ORDER BY
 これは、次のように記述することもできます。
 
 ```sql{.numberLines caption="WHERE句におけるCASE式の利用2"}
+SET
+  search_path TO w03;
+
 SELECT
   id,
   name,
   guild,
   level
 FROM
-  s_characters
+  characters
 WHERE
   CASE
     WHEN guild IS NOT NULL AND level >= 60 THEN TRUE
@@ -915,13 +995,16 @@ ORDER BY
 また、**CASE式**を使用せずに、次のように記述することもできます。
 
 ```sql{.numberLines caption="CASE式を使用しない例"}
+SET
+  search_path TO w03;
+
 SELECT
   id,
   name,
   guild,
   level
 FROM
-  s_characters
+  characters
 WHERE
   (guild IS NOT NULL AND level >= 60 ) OR
   (guild IS NULL AND level >= 30 )
@@ -931,7 +1014,7 @@ ORDER BY
 
 #### SQLドリル💻
 
-- `ex-05_1.sql` 👉 **s_characters** テーブルから、**buff** が `0.00` 以外のレコードを抽出して、第1キーを **buff** (降順)、第2キーを **level** (降順) でソートするような SQL を記述せよ。なお、id、name、level、buff のカラムを出力すること。
+- `ex-05_1.sql` 👉 **w03.characters** テーブルから、**buff** が `0.00` 以外のレコードを抽出して、第1キーを **buff** (降順)、第2キーを **level** (降順) でソートするような SQL を記述せよ。なお、id、name、level、buff のカラムを出力すること。
 
 ```
  id |  name  | level | buff  
@@ -950,7 +1033,7 @@ ORDER BY
  18 | Carol  |    28 | -0.20
 ```
 
-- `ex-05_2.sql` 👉 **s_characters** テーブルから、**name** が「T」からはじまるレコードについて、以下のようなカラムを **name** の昇順で取得する SQL を記述せよ。
+- `ex-05_2.sql` 👉 **w03.characters** テーブルから、**name** が「T」からはじまるレコードについて、以下のようなカラムを **name** の昇順で取得する SQL を記述せよ。
 
 ```
  id | name  | level | created_on 
@@ -960,7 +1043,7 @@ ORDER BY
   7 | Trudy |    48 | 2021-11-28
 ```
 
-- `ex-05_3.sql` 👉 **s_characters** テーブルから、**created_on** が「2021年」と「2022年」のレコードについて、以下のようなカラムを **created_on** の昇順で取得する SQL を記述せよ。ここでは、BETWEEN述語を使用することを期待している。
+- `ex-05_3.sql` 👉 **w03.characters** テーブルから、**created_on** が「2021年」と「2022年」のレコードについて、以下のようなカラムを **created_on** の昇順で取得する SQL を記述せよ。ここでは、BETWEEN述語を使用することを期待している。
 
 ```
  id |  name  | level | created_on 
@@ -974,7 +1057,7 @@ ORDER BY
  10 | Oscar  |    44 | 2022-11-10
 ```
 
-- `ex-05_4.sql` 👉 **s_characters** テーブルから、**created_on** が「2021年」と「2022年」**以外**のレコードについて、以下のようなカラムを **created_on** の昇順で取得する SQL を記述せよ。ここでは、BETWEEN述語を使用することを期待している。
+- `ex-05_4.sql` 👉 **w03.characters** テーブルから、**created_on** が「2021年」と「2022年」**以外**のレコードについて、以下のようなカラムを **created_on** の昇順で取得する SQL を記述せよ。ここでは、BETWEEN述語を使用することを期待している。
   - **ヒント**: <span class="masked">`NOT`を利用する</span>
 
 ```
@@ -1010,38 +1093,41 @@ ORDER BY
 - `SELECT` 文において、**guild**カラムが `NULL` ではないレコードのみを取得したい。どのように `WHERE` 句を記述すればよいか。`WHERE` キーワードを含めて答えよ。
   - **答え**: <span class="masked">`WHERE guild IS NOT NULL`</span>
 - `SELECT` 文において、**guild**カラムが `Yamato` ではないレコードを取得したい (**guild**カラムが `NULL` であるレコードも含めて取得したい)。どのように `WHERE` 句を記述すればよいか。`WHERE` キーワードを含めて答えよ。
-  - **答え**: <span class="masked">`guild <> 'Yamato' OR guild IS NULL`</span>
+  - **答え**: <span class="masked">`WHERE guild <> 'Yamato' OR guild IS NULL`</span>
 
 ## INSERT文 (超基礎編)
 
-テーブルにレコードを追加するときには `INSERT` 文を使用します。例えば、**s_users** テーブルが次のようなスキーマ (構造・データ型) のとき...
+テーブルにレコードを追加するときには `INSERT` 文を使用します。例えば、**w03.users** テーブルが次のようなスキーマ (構造・データ型) のとき...
 
-```sql{.numberLines caption="from-teacher/03/init-s_users.sql (抜粋)"}
-CREATE TABLE s_users (
-  id INT PRIMARY KEY, -- 主キー (Primary Key) 設定
-  name TEXT NOT NULL, -- NULL を不許可
-  age INT -- NULL も許可
+```sql{.numberLines caption="from-teacher/03/init-users.sql (抜粋)"}
+CREATE TABLE users (
+  id INTEGER PRIMARY KEY, -- 主キー (Primary Key) 設定
+  name VARCHAR(16) NOT NULL, -- NULL を不許可
+  age INTEGER -- NULL も許可
 );
 ```
 
 このテーブルに **Carol (18歳)** を追加する場合は、次のような `INSERT` 文を記述します。
 
-```sql{.numberLines caption="s_usersにレコードを追加するINSERT文"}
+```sql{.numberLines caption="usersにレコードを追加するINSERT文"}
+SET
+  search_path TO w03;
+
 INSERT INTO
-  s_users (id, name, age)
+  users (id, name, age)
 VALUES
   (3, 'Carol', 18);
 ```
 
-ここで、**第04行目** の `3` は **id** を表し、既に「Alice」と「Bob」の2名が登録されているため、次の連番として `3` を設定しています。
+ここで、**第07行目** の `3` は **id** を表し、既に「Alice」と「Bob」の2名が登録されているため、次の連番として `3` を設定しています。
 
-- **id** は `CREATE TABLE` 文において `id INT PRIMARY KEY` のように **主キー設定** (Primary Key、プライマリキー) しているカラムなので、既に他のレコードで使用している `1` や `2` を設定することはできません。
+- **id** は `CREATE TABLE` 文において `id INTEGER PRIMARY KEY` のように **主キー設定** (Primary Key、プライマリキー) しているカラムなので、既に他のレコードで使用している `1` や `2` を設定することはできません。
 
 ここで、実際にレコードの挿入を試してみたいのですが、上記の SQL (`INSERT` 文) をそのまま実行すると、<span class="masked">ここまでに書いてきた `SELECT` 文を再実行したときの結果が変わってしまうおそれ</span> があります。そこで、ここでは **トランザクション** と **ロールバック** という RDBMS の仕組みを利用して、データを保護しながら `INSERT` 文の動きを確かめていきます。
 
-**(プロンプト例)**
+**<i class="fa-solid fa-comment-dots fa-flip-horizontal"></i>プロンプト例**
 
-> リレーショナルデータベースにおける主キー (Primary Key) とは何ですか。主キーには同じ値を設定できないと聞いたいのですが、なぜですか。
+> リレーショナルデータベースにおける主キー (Primary Key) とは何ですか。主キーには同じ値を設定できないと聞いたのですが、なぜですか。
 
 ### トランザクションとロールバックの利用
 
@@ -1052,17 +1138,20 @@ VALUES
 具体的には、次の SQL によってレコードの挿入を試しつつ、**最後にロールバックによって元のデータベース状態に戻す**ことができます。
 
 ```sql{.numberLines caption="トランザクションとロールバックによるINSERTの検証"}
+SET
+  search_path TO w03;
+
 -- トランザクションを開始
 START TRANSACTION;
 
 -- レコードの挿入
 INSERT INTO
-  s_users (id, name, age)
+  users (id, name, age)
 VALUES
   (3, 'Carol', 18);
 
 -- 結果の確認
-SELECT * FROM s_users;
+SELECT * FROM users;
 
 -- トランザクション開始からここまでの全処理を取り消し (ロールバック)
 ROLLBACK;
@@ -1080,7 +1169,7 @@ ROLLBACK;
 
 つづいて実際のデータベースには変更 (＝レコードの挿入) が反映されていないことを確認してみます。
 
-(`START TRANSACTION` ～ `ROLLBACK` で囲まずに) `SELECT * FROM s_users;` を実行してみてください。ロールバックにより、「Carol」のレコードの挿入は取り消され、**テーブルのレコードは元の2件に戻っているはず** です。
+(`START TRANSACTION` ～ `ROLLBACK` で囲まずに) `SELECT * FROM w03.users;` を実行してみてください。ロールバックにより、「Carol」のレコードの挿入は取り消され、**テーブルのレコードは元の2件に戻っているはず** です。
 
 ```
  id | name  | age 
@@ -1091,21 +1180,21 @@ ROLLBACK;
 
 今後しばらくは、レコードを挿入する `INSERT` 文、レコードを削除する `DELETE` 文、レコードを更新する `UPDATE` 文などは `START TRANSACTION` ～ `ROLLBACK` の範囲内で試すようにしてください。
 
-なお、**第14行目**の `ROLLBACK` を <span class="masked">`COMMIT`</span> に置き換えると、**変更内容が確定して実際のデータベースに変更が反映されます**（今回はあくまで練習なので、最後は `ROLLBACK` にしてください）。
+なお、**第17行目**の `ROLLBACK` を <span class="masked">`COMMIT`</span> に置き換えると、**変更内容が確定して実際のデータベースに変更が反映されます**（今回はあくまで練習なので、最後は `ROLLBACK` にしてください）。
 
-<div class="note type-tips">
+::: {.note .type-tips}
 **`START TRANSACTION` ～ `ROLLBACK` で囲まずに実行してしまったときは...**
 
-次のコマンドで **s_users** テーブルと **s_characters** テーブルを初期化してください。
+次のコマンドで **w03.users** テーブルと **w03.characters** テーブルを初期化してください。
 
 ```
-npm run sql from-teacher/03/init-s_users.sql
-npm run sql from-teacher/03/init-s_characters.sql
+npm run sql from-teacher/03/init-users.sql
+npm run sql from-teacher/03/init-characters.sql
 ```
-</div>
+:::
 
 
-**(プロンプト例)**
+**<i class="fa-solid fa-comment-dots fa-flip-horizontal"></i>プロンプト例**
 
 > リレーショナルデータベースにおいて、トランザクションおよびロールバックとは何ですか。先生から「繰り返し演習するために、INSERT文やDELETE文は `START TRANSACTION` ～ `ROLLBACK` で囲んで実行するように」と指示されました。これはどういう意味でしょうか。
 
@@ -1114,23 +1203,26 @@ npm run sql from-teacher/03/init-s_characters.sql
 2件以上のレコードを同時に挿入したいときは、次のように `VALUES` 句内で **カンマ区切り** でデータを記述します。実際に実行して確認してください。
 
 ```sql{.numberLines caption="2件以上のレコードを同時に挿入"}
+SET
+  search_path TO w03;
+
 START TRANSACTION;
 
 INSERT INTO
-  s_users (id, name, age)
+  users (id, name, age)
 VALUES
   (3, 'Carol', 18),
   (4, 'Dave', NULL),
   (5, 'Ellen', 17);
 
-SELECT * FROM s_users; -- 確認
+SELECT * FROM users; -- 確認
 
 ROLLBACK;
 ```
 
-- **age** カラムには、`NOT NULL` 制約がないので **第07行目** のように `NULL` を設定することができます。
-- **第07行目** で、`'Dave'` を `NULL` にすると、どのようになるか確認してください。
-- **第08行目** を `(1, 'Ellen', 17)` のように **id** が重複するようにすると、どのようになるか確認してください。
+- **age** カラムには、`NOT NULL` 制約がないので **第10行目** のように `NULL` を設定することができます。
+- **第10行目** で、`'Dave'` を `NULL` にすると、どのようになるか確認してください。
+- **第11行目** を `(1, 'Ellen', 17)` のように **id** が重複するようにすると、どのようになるか確認してください。
 
 ### カラム指定の順序と省略
 
@@ -1138,16 +1230,19 @@ ROLLBACK;
 また、「NULLを許容するカラム」や「デフォルト値が設定されているカラム」については、指定を省略することも可能です。
 
 ```sql{.numberLines caption="カラム指定の順序と省略"}
+SET
+  search_path TO w03;
+
 START TRANSACTION;
 
 INSERT INTO
-  s_users (name, id) -- カラムの順序に注目
+  users (name, id) -- カラムの順序に注目
 VALUES
   ('Carol', 3), -- 指定したカラム順に対応して値を記述
   ('Dave', 4),
   ('Ellen', 5);
 
-SELECT * FROM s_users; -- 確認
+SELECT * FROM users; -- 確認
 
 ROLLBACK;
 ```
@@ -1156,8 +1251,8 @@ ROLLBACK;
 
 #### SQLドリル💻
 
-- `ex-06_1.sql` 👉 **s_characters** テーブルに、以下に示すような2件のレコードを挿入する SQL を記述せよ。
-  - <i class="fa-brands fa-github"></i>[from-teacher/03/init-s_characters.sql](https://github.com/TakeshiWada1980/DB-2025-PostgreSQL/blob/main/from-teacher/03/init-s_characters.sql) の `INSERT` 文を参考にすること。
+- `ex-06_1.sql` 👉 **w03.characters** テーブルに、以下に示すような2件のレコードを挿入する SQL を記述せよ。
+  - <i class="fa-brands fa-github"></i> [from-teacher/03/init-characters.sql](https://github.com/TakeshiWada1980/DB-2026-PostgreSQL/blob/main/from-teacher/03/init-characters.sql) の `INSERT` 文を参考にすること。
   - `START TRANSACTION` ～ `ROLLBACK` で囲んで実行すること。
 
 ```
@@ -1179,5 +1274,5 @@ ROLLBACK;
 ---
 
 - この講義資料を再読・熟読し「不明な用語」や「理解が不十分な用語」があればインターネットや、ChatGPTなどの生成AIを利用して解決してください。また、興味関心を持ったトピックについて、ウェブ、生成AI、YouTube動画などを利用して知識を広げ、理解を深めてください。
-  - 特に **(プロンプト例)** を示しているものについては、実際に生成AIにプロンプトを投げ、さらに対話を重ねることで、知識の幅を広げるだけでなく、理解をより深く確かなものにしてください。
+  - 特に **プロンプト例** を示しているものについては、実際に生成AIにプロンプトを投げ、さらに対話を重ねることで、知識の幅を広げるだけでなく、理解をより深く確かなものにしてください。
 - 講義資料内の「**演習**」や「**SQLドリル**」に再度取り組んでください。特に、**SQLドリル**💻 は、授業時間中に1回取り組むだけでは定着しないので注意してください。
