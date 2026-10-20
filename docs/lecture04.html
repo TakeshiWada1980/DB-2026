@@ -173,14 +173,13 @@ class="toc-section-number">8</span> 授業時間外学習の指示 (宿題)</a><
       <p>ただし、<code>search_path</code>
       の設定は、現在のデータベース接続（セッション）に対して適用されます。この環境では、SQLファイルを実行するたびに新しい接続が確立されるため、使用するSQLファイルごとに、先頭で設定する必要があります。</p>
       </div>
-      <p><strong><i class="fa-solid fa-comment-dots fa-flip-horizontal"></i>プロンプト例</strong></p>
-      <blockquote>
-      <p>PostgreSQL において、名前空間としての「スキーマ」とは何ですか？</p>
-      </blockquote>
-      <blockquote>
-      <p>PostgreSQL において、<code>SET search_path TO ...;</code>
-      はどのような意味を持ちますか。これを実行しないと、どのような振る舞いになりますか？</p>
-      </blockquote>
+      <div class="prompts">
+      <ul>
+      <li><p>PostgreSQL において、名前空間としての「スキーマ」とは何ですか？</p></li>
+      <li><p>PostgreSQL において、<code>SET search_path TO ...;</code>
+      はどのような意味を持ちますか。これを実行しないと、どのような振る舞いになりますか？</p></li>
+      </ul>
+      </div>
       <hr />
       <ol type="1">
       <li>タスクトレイから <strong>Docker Desktop</strong>
@@ -236,11 +235,12 @@ class="toc-section-number">8</span> 授業時間外学習の指示 (宿題)</a><
       <p><strong>注意</strong></p>
       <p><strong>更新の取り込み作業を始める前に、現在編集中のファイルはすべて保存し、全てコミットするか、スタッシュしておいてください。</strong></p>
       </div>
-      <p><strong><i class="fa-solid fa-comment-dots fa-flip-horizontal"></i>プロンプト例</strong></p>
-      <blockquote>
-      <p>Git
-      では、リモートリポジトリからプルする前に、ローカルでの変更をコミットするか、スタッシュしておくように指示されました。これはなぜでしょうか。また、変更をコミットもスタッシュもせずにプルすると、どのような問題が起こる可能性があるのでしょうか。</p>
-      </blockquote>
+      <div class="prompts">
+      <ul>
+      <li>Git
+      では、リモートリポジトリからプルする前に、ローカルでの変更をコミットするか、スタッシュしておくように指示されました。これはなぜでしょうか。また、変更をコミットもスタッシュもせずにプルすると、どのような問題が起こる可能性があるのでしょうか。</li>
+      </ul>
+      </div>
       <p>VSCode のターミナルから以下のコマンドを実行してください。</p>
       <div class="sourceCode" id="cb5"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> fetch upstream</span></code></pre></div>
       <div class="sourceCode" id="cb6"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> switch main</span></code></pre></div>
@@ -314,10 +314,11 @@ class="toc-section-number">8</span> 授業時間外学習の指示 (宿題)</a><
       (二分ヒープなど)
       とは<strong>全く別物</strong>です。データを「積み上げる（Heap）」ことに由来する用語で、特定のデータ構造を指すものではないので注意してください。</li>
       </ul>
-      <p><strong><i class="fa-solid fa-comment-dots fa-flip-horizontal"></i>プロンプト例</strong></p>
-      <blockquote>
-      <p>PostgreSQL における <code>VACUUM</code> とは何ですか。</p>
-      </blockquote>
+      <div class="prompts">
+      <ul>
+      <li>PostgreSQL における <code>VACUUM</code> とは何ですか。</li>
+      </ul>
+      </div>
       </div>
       <h2 data-number="4.1" id="order-by-句-1"><span class="header-section-number">4.1</span> ORDER
       BY 句</h2>
@@ -938,18 +939,15 @@ class="toc-section-number">8</span> 授業時間外学習の指示 (宿題)</a><
       の公式ドキュメントでも、この順序で記載されています。</li>
       </ul></li>
       </ul>
-      <p><strong><i class="fa-solid fa-comment-dots fa-flip-horizontal"></i>プロンプト例</strong></p>
-      <blockquote>
-      <p>ウェブアプリに関する文脈で「ページング処理」とはなんですか。</p>
-      </blockquote>
-      <blockquote>
-      <p>RDBに関する文脈で「カーソルページネーション」とは何ですか。</p>
-      </blockquote>
-      <blockquote>
-      <p>RDBに関する文脈で「インデックス」とは何ですか。「カーソルページネーションは、整列順と検索条件に合ったインデックスを利用できると、大きな
+      <div class="prompts">
+      <ul>
+      <li><p>ウェブアプリに関する文脈で「ページング処理」とはなんですか。</p></li>
+      <li><p>RDBに関する文脈で「カーソルページネーション」とは何ですか。</p></li>
+      <li><p>RDBに関する文脈で「インデックス」とは何ですか。「カーソルページネーションは、整列順と検索条件に合ったインデックスを利用できると、大きな
       <code>OFFSET</code>
-      を与えたときの処理負担を抑えることができます」と言われたのですが、どういうことですか？</p>
-      </blockquote>
+      を与えたときの処理負担を抑えることができます」と言われたのですが、どういうことですか？</p></li>
+      </ul>
+      </div>
       <h3 data-number="5.2.1" id="sqlドリル-3"><span class="header-section-number">5.2.1</span>
       SQLドリル💻</h3>
       <ul>
@@ -1206,27 +1204,27 @@ class="toc-section-number">8</span> 授業時間外学習の指示 (宿題)</a><
       と記述します。</li>
       </ul>
       </div>
-      <p><strong><i class="fa-solid fa-comment-dots fa-flip-horizontal"></i>プロンプト例</strong></p>
-      <blockquote>
-      <p>PostgreSQLに関する質問です。いま <code>characters</code> テーブルの <code>id</code>
+      <div class="prompts">
+      <ul>
+      <li><p>PostgreSQLに関する質問です。いま <code>characters</code> テーブルの <code>id</code>
       カラムは <code>INTEGER</code> 型で定義されています。このとき、<code>id</code>
       が「3」に一致するレコードを抽出したいです。これは
       <code>SELECT * FROM characters WHERE id = 3</code>
       というSQLで実行可能なことを確認しました。</p>
       <p>しかし、これを <code>id = '3'</code> のように「文字列リテラル」で指定しても (予想に反して)
       実行可能でした。これは、なぜですか。他の RDBMS でも同様なことが起きますか？
-      <code>id = 3</code> と <code>id = '3'</code> のどちらが適切ですか？</p>
-      </blockquote>
-      <blockquote>
-      <p>PostgreSQLに関する質問です。いま <code>characters</code> テーブルの <code>created_on</code>
-      カラムは <code>DATE</code> 型で定義されています。このとき、<code>created_on</code>
+      <code>id = 3</code> と <code>id = '3'</code> のどちらが適切ですか？</p></li>
+      <li><p>PostgreSQLに関する質問です。いま <code>characters</code> テーブルの
+      <code>created_on</code> カラムは <code>DATE</code>
+      型で定義されています。このとき、<code>created_on</code>
       が「2022年3月22日」に一致するレコードを抽出したいです。これは
       <code>SELECT * FROM characters WHERE created_on = '2022-03-22'</code>
       というSQLで実行可能なことを確認しました。</p>
       <p>しかし、これを <code>created_on = '2022/3/22'</code> のような書式で指定しても
       (予想に反して) 実行可能でした。これは、なぜですか。他の RDBMS でも同様なことが起きますか？
-      <code>2022-03-22</code> と <code>2022/3/22</code> のどちらが適切ですか？</p>
-      </blockquote>
+      <code>2022-03-22</code> と <code>2022/3/22</code> のどちらが適切ですか？</p></li>
+      </ul>
+      </div>
       <h3 data-number="6.1.1" id="定着確認-3"><span class="header-section-number">6.1.1</span>
       定着確認</h3>
       <ul>
@@ -1625,18 +1623,17 @@ class="toc-section-number">8</span> 授業時間外学習の指示 (宿題)</a><
       となります。<code>TRUE</code>
       となるレコードがないため、結果は0件になります。意図した条件は、<code>WHERE guild &lt;&gt; 'Yamato' AND guild IS NOT NULL</code>
       と記述できます。</p>
-      <p><strong><i class="fa-solid fa-comment-dots fa-flip-horizontal"></i>プロンプト例</strong></p>
-      <blockquote>
-      <p>PostgreSQL で、<code>NOT job IN ('Priest', 'Wizard')</code> と
+      <div class="prompts">
+      <ul>
+      <li><p>PostgreSQL で、<code>NOT job IN ('Priest', 'Wizard')</code> と
       <code>job NOT IN ('Priest', 'Wizard')</code>
-      は同じ結果になると学びました。それぞれの条件の意味と、後者のほうが否定の対象を読み取りやすい理由を説明してください。</p>
-      </blockquote>
-      <blockquote>
-      <p>SQLに関する質問です。あるテーブルにギルドというカラムがあります。いま、ギルドのカラム値が
+      は同じ結果になると学びました。それぞれの条件の意味と、後者のほうが否定の対象を読み取りやすい理由を説明してください。</p></li>
+      <li><p>SQLに関する質問です。あるテーブルにギルドというカラムがあります。いま、ギルドのカラム値が
       <code>Yamato</code> または <code>NULL</code> 以外のレコードを抽出したいです。そのために
       <code>guild NOT IN ('Yamato', NULL)</code>
-      のように、WHERE句を書いたのですが、意図した結果がえられません。なぜ、このようなことが起きますか。</p>
-      </blockquote>
+      のように、WHERE句を書いたのですが、意図した結果がえられません。なぜ、このようなことが起きますか。</p></li>
+      </ul>
+      </div>
       <h3 data-number="6.3.2" id="like述語-like条件パターンマッチ演算子"><span
       class="header-section-number">6.3.2</span> LIKE述語 (LIKE条件、パターンマッチ演算子)</h3>
       <p>キャラクタの名前が「<strong>C</strong>」から始まるようなレコードを抽出したいときは、<code>LIKE</code>
@@ -1728,12 +1725,13 @@ class="toc-section-number">8</span> 授業時間外学習の指示 (宿題)</a><
       のように時刻を含まない <code>DATE</code> 型であれば、この問題は生じません。</li>
       </ul></li>
       </ul>
-      <p><strong><i class="fa-solid fa-comment-dots fa-flip-horizontal"></i>プロンプト例</strong></p>
-      <blockquote>
-      <p>PostgreSQL に関する質問です。last_login_at という <code>TIMESTAMP</code>
+      <div class="prompts">
+      <ul>
+      <li>PostgreSQL に関する質問です。last_login_at という <code>TIMESTAMP</code>
       型のカラムがあります。このとき、<code>WHERE last_login_at BETWEEN '2025-07-01' AND '2025-07-31'</code>
-      では、<code>2025-07-31 10:15:00</code> のようなレコードが選択されないのはなぜですか。</p>
-      </blockquote>
+      では、<code>2025-07-31 10:15:00</code> のようなレコードが選択されないのはなぜですか。</li>
+      </ul>
+      </div>
       <hr />
       <p>さらに、<a href="lecture03.html#日付時刻関数を利用する">前回講義</a> で紹介した
       <code>DATE_PART</code>
@@ -2121,11 +2119,12 @@ class="toc-section-number">8</span> 授業時間外学習の指示 (宿題)</a><
       文を再実行したときの結果が変わってしまうおそれ</span> があります。そこで、ここでは
       <strong>トランザクション</strong> と <strong>ロールバック</strong> という RDBMS
       の仕組みを利用して、データを保護しながら <code>INSERT</code> 文の動きを確かめていきます。</p>
-      <p><strong><i class="fa-solid fa-comment-dots fa-flip-horizontal"></i>プロンプト例</strong></p>
-      <blockquote>
-      <p>リレーショナルデータベースにおける主キー (Primary Key)
-      とは何ですか。主キーには同じ値を設定できないと聞いたのですが、なぜですか。</p>
-      </blockquote>
+      <div class="prompts">
+      <ul>
+      <li>リレーショナルデータベースにおける主キー (Primary Key)
+      とは何ですか。主キーには同じ値を設定できないと聞いたのですが、なぜですか。</li>
+      </ul>
+      </div>
       <h2 data-number="7.1" id="トランザクションとロールバックの利用"><span
       class="header-section-number">7.1</span> トランザクションとロールバックの利用</h2>
       <p><code>INSERT</code>
@@ -2187,12 +2186,13 @@ class="toc-section-number">8</span> 授業時間外学習の指示 (宿題)</a><
       <p><strong>w03.characters</strong> テーブルを変更した場合:</p>
       <div class="sourceCode" id="cb57"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb57-1"><a href="#cb57-1" aria-hidden="true" tabindex="-1"></a><span class="ex">npm</span> run sql from-teacher/03/init-characters.sql</span></code></pre></div>
       </div>
-      <p><strong><i class="fa-solid fa-comment-dots fa-flip-horizontal"></i>プロンプト例</strong></p>
-      <blockquote>
-      <p>リレーショナルデータベースにおいて、トランザクションおよびロールバックとは何ですか。先生から「繰り返し演習するために、INSERT文やDELETE文は
+      <div class="prompts">
+      <ul>
+      <li>リレーショナルデータベースにおいて、トランザクションおよびロールバックとは何ですか。先生から「繰り返し演習するために、INSERT文やDELETE文は
       <code>START TRANSACTION</code> ～ <code>ROLLBACK</code>
-      で囲んで実行するように」と指示されました。これはどういう意味でしょうか。</p>
-      </blockquote>
+      で囲んで実行するように」と指示されました。これはどういう意味でしょうか。</li>
+      </ul>
+      </div>
       <h2 data-number="7.2" id="複数レコードの挿入"><span class="header-section-number">7.2</span>
       複数レコードの挿入</h2>
       <p>2件以上のレコードを同時に挿入したいときは、次のように <code>VALUES</code> 句内で
@@ -2247,9 +2247,11 @@ class="toc-section-number">8</span> 授業時間外学習の指示 (宿題)</a><
 <span id="cb59-15"><a href="#cb59-15"></a><span class="kw">ROLLBACK</span>;</span></code></pre></div>
       <p>実際に実行して、省略された <strong>age</strong>
       がどのような値になっているかを確認してください。</p>
+      <div class="balloon char-01 face-05 tone-blue">
       <p>省略したカラムには、デフォルト値が設定されていればその値が、設定されていなければ
       <code>NULL</code> が入ります。今回の <strong>age</strong>
       にはデフォルト値が設定されていないため、<code>NULL</code> になります。</p>
+      </div>
       <div class="note type-caution">
       <p><strong>自動採番の番号はロールバックで戻りません</strong></p>
       <p>ここまでの <strong>w03.users</strong> では <strong>id</strong>
@@ -2273,6 +2275,25 @@ class="toc-section-number">8</span> 授業時間外学習の指示 (宿題)</a><
 ---------+---------+-------+-------+--------+---------------------+------------
  Zoe     | Paladin |    11 |  0.00 | W.Wind | 2025-10-20 15:48:00 | 2025-10-12
  Justin  | Archer  |     2 |  0.50 |        | 2025-10-23 11:28:00 | 2025-10-23</code></pre>
+      <ul>
+      <li><code>ex-06_2.sql</code> 👉 <strong>w03.users</strong>
+      テーブルに、以下の実行結果に示す「Ellen」と「Frank」の2件のレコードを、1つの
+      <code>INSERT</code> 文で挿入する SQL を記述せよ。
+      <ul>
+      <li>挿入先のカラムは <strong>name</strong>、<strong>id</strong>
+      の順に指定し、<strong>age</strong> の指定は省略すること。</li>
+      <li><code>START TRANSACTION</code> ～ <code>ROLLBACK</code>
+      で囲んで実行し、ロールバック前に、全レコードを <strong>id</strong>
+      の昇順で取得して以下の結果になることを確認すること。</li>
+      <li>ロールバック後にも全レコードを取得し、「Alice」と「Bob」の2件に戻っていることを確認すること。</li>
+      </ul></li>
+      </ul>
+      <pre><code> id | name  | age
+----+-------+-----
+  1 | Alice |  20
+  2 | Bob   |  25
+  3 | Ellen |
+  4 | Frank |</code></pre>
       <h1 data-number="8" id="授業時間外学習の指示-宿題"><span
       class="header-section-number">8</span> 授業時間外学習の指示 (宿題)</h1>
       <p>🚨<strong>本科目は「学修単位科目」であり、1回の講義あたり「4時間相当」の授業時間外学習が求められる科目です</strong>🏃</p>
@@ -2287,7 +2308,8 @@ class="toc-section-number">8</span> 授業時間外学習の指示 (宿題)</a><
       <ul>
       <li>この講義資料を再読・熟読し「不明な用語」や「理解が不十分な用語」があればインターネットや、ChatGPTなどの生成AIを利用して解決してください。また、興味関心を持ったトピックについて、ウェブ、生成AI、YouTube動画などを利用して知識を広げ、理解を深めてください。
       <ul>
-      <li>特に <strong>プロンプト例</strong>
+      <li>特に
+      <strong><i class="fa-solid fa-comment-dots fa-flip-horizontal"></i>プロンプト例</strong>
       を示しているものについては、実際に生成AIにプロンプトを投げ、さらに対話を重ねることで、知識の幅を広げるだけでなく、理解をより深く確かなものにしてください。</li>
       </ul></li>
       <li>講義資料内の「<strong>演習</strong>」や「<strong>SQLドリル</strong>」に再度取り組んでください。特に、<strong>SQLドリル</strong>💻
