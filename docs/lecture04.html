@@ -383,8 +383,8 @@ class="toc-section-number">8</span> 授業時間外学習の指示 (宿題)</a><
       <li>PostgreSQL では、昇順 ( <code>ASC</code> ) で整列した場合、<code>NULL</code> 値は <span
       class="masked">最後に配置</span> されることに注意してください。</li>
       <li>文字列の整列順は、データベースなどに設定された <strong>照合順序 (Collation)</strong>
-      によって変わります。「大文字の <code>A-Z</code> が先、小文字の <code>a-z</code>
-      が後」という順序に、常になるわけではありません。
+      によって決まります。そのため、必ずしも「大文字の <code>A-Z</code> が先、小文字の
+      <code>a-z</code> が後」という順序で並ぶとは限りません。
       <ul>
       <li>大文字と小文字を区別せずに整列したい場合は、ここでは <code>ORDER BY LOWER(guild)</code>
       のように、小文字に変換した値を整列の基準にします。</li>
@@ -520,8 +520,8 @@ class="toc-section-number">8</span> 授業時間外学習の指示 (宿題)</a><
       </ul>
       <h2 data-number="4.2" id="複数のソートキーの指定"><span
       class="header-section-number">4.2</span> 複数のソートキーの指定</h2>
-      <p><code>ORDER BY</code>
-      句では、<strong>カンマで区切って</strong>、第1ソートキー、第2ソートキー、第3ソートキー…と複数のソートキーが指定できます。例えば、まず
+      <p><code>ORDER BY</code> 句では、<span class="masked">カンマ</span>
+      で区切って、第1ソートキー、第2ソートキー、第3ソートキー…と複数のソートキーが指定できます。例えば、まず
       <strong>所属ギルドのABC順 (昇順) で整列</strong> し、さらに
       <strong>所属ギルドのなかでレベルが高い順 (降順) に整列</strong> したい場合は、次の
       <strong>第12行目</strong> のように <code>ORDER BY</code> 句を記述します。</p>
@@ -555,8 +555,23 @@ class="toc-section-number">8</span> 授業時間外学習の指示 (宿題)</a><
       は、まずギルド名でならべて、そのあとにレベルの高い順にならべ直すのだと思っていました。でも、それだと最初のギルド名のならびが崩れませんか。2つのソートキーで整列するって、どういうことですか？</li>
       </ul>
       </div>
-      <h3 data-number="4.2.1" id="sqlドリル"><span class="header-section-number">4.2.1</span>
+      <h3 data-number="4.2.1" id="定着確認-1"><span class="header-section-number">4.2.1</span>
+      定着確認</h3>
+      <ul>
+      <li>PostgreSQL において、<strong>構文エラーにならない <code>ORDER BY</code> 句</strong>
+      の記述はどれか。<strong>答え</strong>: <span class="masked">➋</span>
+      <ul>
+      <li>❶ <code>ORDER BY name ASC age DESC</code></li>
+      <li>❷ <code>ORDER BY name ASC, age DESC</code></li>
+      <li>❸ <code>ORDER BY ASC name DESC age</code></li>
+      <li>➍ <code>ORDER BY ASC name, DESC age</code></li>
+      </ul></li>
+      </ul>
+      <h3 data-number="4.2.2" id="sqlドリル"><span class="header-section-number">4.2.2</span>
       SQLドリル💻</h3>
+      <p>SQLドリルに取り組む際は、演習環境の <code>sql/04</code> に SQL
+      ファイルを作成することを推奨します。解答例は <code>from-teacher\04</code>
+      を参照してください。</p>
       <ul>
       <li><code>ex-01_1.sql</code> 👉 <strong>w03.characters</strong>
       テーブルのすべてのレコードについて、次に示すようなカラムを出力する SQL
@@ -598,10 +613,9 @@ class="toc-section-number">8</span> 授業時間外学習の指示 (宿題)</a><
   4 |        |   1 | Tom (Fighter)</code></pre>
       <h2 data-number="4.3" id="null-値のソート位置を指定"><span
       class="header-section-number">4.3</span> NULL 値のソート位置を指定</h2>
-      <p>先のセクションで確認したように、PostgreSQL では <code>NULL</code> の位置を明示せずに
-      <code>ORDER BY</code> に <code>ASC</code> (昇順) を指定した場合、<code>NULL</code>
-      値は最後に配置されます。逆に <code>DESC</code> (降順) を指定した場合は、<code>NULL</code>
-      値が先頭に配置されます。</p>
+      <p>先のセクションで確認したように、PostgreSQL において <code>ORDER BY</code> に
+      <code>ASC</code> (昇順) を指定したときは <code>NULL</code> 値は最後に配置されます。逆に
+      <code>DESC</code> (降順) を指定したときは <code>NULL</code> 値が先頭に配置されます。</p>
       <div class="balloon char-01 face-04 tone-blue">
       <p><code>NULLS FIRST</code>・<code>NULLS LAST</code> を <strong>省略した場合</strong> の
       <code>NULL</code> の位置は、DBMS (PostgreSQL, MySQL, SQLite, Oracle etc.)
@@ -635,7 +649,7 @@ class="toc-section-number">8</span> 授業時間外学習の指示 (宿題)</a><
       に書き換えると、<code>last_login_at</code> が <code>NULL</code>
       のレコードが先頭に配置されることを確認してください。</li>
       </ul>
-      <h3 data-number="4.3.1" id="定着確認-1"><span class="header-section-number">4.3.1</span>
+      <h3 data-number="4.3.1" id="定着確認-2"><span class="header-section-number">4.3.1</span>
       定着確認</h3>
       <ul>
       <li><code>ORDER BY</code> 句で整列順を指示する際に <code>NULL</code>
@@ -648,6 +662,13 @@ class="toc-section-number">8</span> 授業時間外学習の指示 (宿題)</a><
       値を末尾に配置したい。どのようなキーワードを使用すればよいか答えよ。
       <ul>
       <li><strong>答え</strong>: <span class="masked"><code>NULLS LAST</code></span></li>
+      </ul></li>
+      <li>PostgreSQL において、<strong>構文エラーとはならない <code>ORDER BY</code> 句</strong>
+      の記述はどれか。<strong>答え</strong>: <span class="masked">❶</span>
+      <ul>
+      <li>❶ <code>ORDER BY name ASC NULLS LAST</code></li>
+      <li>❷ <code>ORDER BY name NULLS LAST ASC</code></li>
+      <li>❸ ❶と❷のどちらも構文エラーにならない。</li>
       </ul></li>
       </ul>
       <h3 data-number="4.3.2" id="sqlドリル-1"><span class="header-section-number">4.3.2</span>
@@ -769,7 +790,21 @@ class="toc-section-number">8</span> 授業時間外学習の指示 (宿題)</a><
       <p>レベルの降順が適用されるのは、同じ職業のレコード同士です。例えば、<strong>Carol</strong>
       (<code>Priest</code>・レベル28) が <strong>Mallet</strong> (<code>Wizard</code>・レベル64)
       より先に配置されるのは、レベルよりも職業の整列順が優先されるためです。</p>
-      <h3 data-number="4.4.1" id="sqlドリル-2"><span class="header-section-number">4.4.1</span>
+      <h3 data-number="4.4.1" id="定着確認-3"><span class="header-section-number">4.4.1</span>
+      定着確認</h3>
+      <ul>
+      <li>あるテーブルには、文字列型の <strong>course</strong> カラムが存在する。このカラムには
+      <code>D</code>、<code>E</code>、<code>I</code>、<code>M</code>
+      のいずれかが格納されており、<code>NULL</code> は含まれない。<code>SELECT</code>
+      文において、通常の昇順・降順ではなく、<code>M</code> 👉 <code>D</code> 👉 <code>E</code> 👉
+      <code>I</code> の順に整列するための <code>ORDER BY</code> 句を、<code>CASE</code>
+      式を使用して記述せよ。
+      <ul>
+      <li><strong>答え</strong>: <a
+      href="https://github.com/TakeshiWada1980/DB-2026/blob/main/docs/codes/04/order-by-course.sql">こちら</a></li>
+      </ul></li>
+      </ul>
+      <h3 data-number="4.4.2" id="sqlドリル-2"><span class="header-section-number">4.4.2</span>
       SQLドリル💻</h3>
       <ul>
       <li><code>ex-03_1.sql</code> 👉 <strong>w03.characters</strong>
@@ -1008,7 +1043,7 @@ class="toc-section-number">8</span> 授業時間外学習の指示 (宿題)</a><
       <code>11</code>) の <strong>created_on</strong>
       は、<code>from-teacher/03/init-characters.sql</code> のなかで意図的に逆転させています。</li>
       </ul>
-      <h3 data-number="5.2.2" id="定着確認-2"><span class="header-section-number">5.2.2</span>
+      <h3 data-number="5.2.2" id="定着確認-4"><span class="header-section-number">5.2.2</span>
       定着確認</h3>
       <ul>
       <li><strong>w03.characters</strong>
@@ -1179,6 +1214,10 @@ class="toc-section-number">8</span> 授業時間外学習の指示 (宿題)</a><
       <li><code>name = Alice</code>
       のようにシングルクォートで囲まなかった場合、どのようになるか予測し、実際に結果を確認してください。</li>
       </ul>
+      <div class="balloon char-01 face-05 tone-blue">
+      <p>教科書 pp.62-65
+      の「<strong>文字列に不等号を使うときの注意</strong>」も参照してください。</p>
+      </div>
       <hr />
       <p><strong>created_on</strong> ( <code>DATE</code> 型)
       が「<strong>2022-03-22</strong>」に一致するレコードを取得する <code>SELECT</code>
@@ -1248,7 +1287,7 @@ class="toc-section-number">8</span> 授業時間外学習の指示 (宿題)</a><
       <code>2022-03-22</code> と <code>2022/3/22</code> のどちらが適切ですか？</p></li>
       </ul>
       </div>
-      <h3 data-number="6.1.1" id="定着確認-3"><span class="header-section-number">6.1.1</span>
+      <h3 data-number="6.1.1" id="定着確認-5"><span class="header-section-number">6.1.1</span>
       定着確認</h3>
       <ul>
       <li><strong>users</strong> テーブルから、<strong>id</strong> カラム（<code>INTEGER</code>
@@ -1330,6 +1369,9 @@ class="toc-section-number">8</span> 授業時間外学習の指示 (宿題)</a><
       <p>この <code>UNKNOWN</code> が混ざると、<strong>論理演算</strong>
       (<code>AND</code>・<code>OR</code>・<code>NOT</code>) の結果も <code>UNKNOWN</code>
       を含む形で評価されることに十分に注意してください。</p>
+      <div class="balloon char-01 face-05 tone-blue">
+      <p>教科書の pp.76-77 の「<strong>NULL を含む場合の真理値</strong>」も参照してください。</p>
+      </div>
       <h3 data-number="6.2.1" id="sqlの3値論理の論理否定-not"><span
       class="header-section-number">6.2.1</span> SQLの3値論理の論理否定 (NOT)</h3>
       <p>3値論理の「<strong>論理否定</strong>」は次のようになります。</p>
@@ -1798,7 +1840,7 @@ class="toc-section-number">8</span> 授業時間外学習の指示 (宿題)</a><
       は「<strong>9時台〜17時台の間</strong>」を意味します
       (<strong>17時台の終わりまでを含む</strong>ことに注意してください)。</li>
       </ul>
-      <h3 data-number="6.3.4" id="定着確認-4"><span class="header-section-number">6.3.4</span>
+      <h3 data-number="6.3.4" id="定着確認-6"><span class="header-section-number">6.3.4</span>
       定着確認</h3>
       <ul>
       <li><strong>w03.characters</strong> テーブルの <strong>job</strong> は <code>VARCHAR</code>
@@ -2020,7 +2062,7 @@ class="toc-section-number">8</span> 授業時間外学習の指示 (宿題)</a><
  17 | Wendy   |    56 | 2024-03-18
  18 | Carol   |    28 | 2024-05-11
  19 | Jack    |    61 | 2024-07-12</code></pre>
-      <h3 data-number="6.4.2" id="定着確認-5"><span class="header-section-number">6.4.2</span>
+      <h3 data-number="6.4.2" id="定着確認-7"><span class="header-section-number">6.4.2</span>
       定着確認</h3>
       <ul>
       <li><strong>characters</strong> テーブルの <strong>guild</strong> は <code>VARCHAR</code>

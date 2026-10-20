@@ -244,7 +244,7 @@ ORDER BY -- ◀ ここに注目
 
 - 昇順であることを明示したい場合は `ORDER BY guild ASC` のようにします。
 - PostgreSQL では、昇順 ( `ASC` ) で整列した場合、`NULL` 値は <span class="masked">最後に配置</span> されることに注意してください。
-- 文字列の整列順は、データベースなどに設定された **照合順序 (Collation)** によって変わります。「大文字の `A-Z` が先、小文字の `a-z` が後」という順序に、常になるわけではありません。
+- 文字列の整列順は、データベースなどに設定された **照合順序 (Collation)** によって決まります。そのため、必ずしも「大文字の `A-Z` が先、小文字の `a-z` が後」という順序で並ぶとは限りません。
   - 大文字と小文字を区別せずに整列したい場合は、ここでは `ORDER BY LOWER(guild)` のように、小文字に変換した値を整列の基準にします。
 
 ::: {.note .type-senior}
@@ -325,7 +325,7 @@ FROM
 
 ### 複数のソートキーの指定
 
-`ORDER BY` 句では、**カンマで区切って**、第1ソートキー、第2ソートキー、第3ソートキー...と複数のソートキーが指定できます。例えば、まず **所属ギルドのABC順 (昇順) で整列** し、さらに **所属ギルドのなかでレベルが高い順 (降順) に整列** したい場合は、次の **第12行目** のように `ORDER BY` 句を記述します。
+`ORDER BY` 句では、<span class="masked">カンマ</span> で区切って、第1ソートキー、第2ソートキー、第3ソートキー...と複数のソートキーが指定できます。例えば、まず **所属ギルドのABC順 (昇順) で整列** し、さらに **所属ギルドのなかでレベルが高い順 (降順) に整列** したい場合は、次の **第12行目** のように `ORDER BY` 句を記述します。
 
 ```sql{.numberLines caption="複数のソートキーを指定"}
 SET
@@ -355,7 +355,17 @@ ORDER BY -- ◀ ここに注目
 - `ORDER BY guild, level DESC` は、まずギルド名でならべて、そのあとにレベルの高い順にならべ直すのだと思っていました。でも、それだと最初のギルド名のならびが崩れませんか。2つのソートキーで整列するって、どういうことですか？
 :::
 
+#### 定着確認
+
+- PostgreSQL において、**構文エラーにならない `ORDER BY` 句** の記述はどれか。**答え**: <span class="masked">➋</span>
+  - ❶ `ORDER BY name ASC age DESC`
+  - ❷ `ORDER BY name ASC, age DESC`
+  - ❸ `ORDER BY ASC name DESC age`
+  - ➍ `ORDER BY ASC name, DESC age`
+  
 #### SQLドリル💻
+
+SQLドリルに取り組む際は、演習環境の `sql/04` に SQL ファイルを作成することを推奨します。解答例は `from-teacher\04` を参照してください。 
 
 - `ex-01_1.sql` 👉 **w03.characters** テーブルのすべてのレコードについて、次に示すようなカラムを出力する SQL を記述せよ。整列の基準は、第1キーを **job** (昇順)、第2キーを **level** (降順)、第3キーを **name** (昇順) とすること。
 
@@ -396,8 +406,7 @@ ORDER BY -- ◀ ここに注目
 
 ### NULL 値のソート位置を指定
 
-先のセクションで確認したように、PostgreSQL では `NULL` の位置を明示せずに `ORDER BY` に `ASC` (昇順) を指定した場合、`NULL` 値は最後に配置されます。逆に `DESC` (降順) を指定した場合は、`NULL` 値が先頭に配置されます。
-
+先のセクションで確認したように、PostgreSQL において `ORDER BY` に `ASC` (昇順) を指定したときは `NULL` 値は最後に配置されます。逆に `DESC` (降順) を指定したときは `NULL` 値が先頭に配置されます。
 
 ::: {.balloon .char-01 .face-04 .tone-blue}
 `NULLS FIRST`・`NULLS LAST` を **省略した場合** の `NULL` の位置は、DBMS (PostgreSQL, MySQL, SQLite, Oracle etc.) によって異なります。これは
@@ -432,7 +441,10 @@ ORDER BY
   - **答え**: <span class="masked">`NULLS FIRST` (`NULL` ではなく `NULLS` である点に注意)</span>
 - `ORDER BY` 句で整列順を指示する際に `NULL` 値を末尾に配置したい。どのようなキーワードを使用すればよいか答えよ。
   - **答え**: <span class="masked">`NULLS LAST`</span>
-
+- PostgreSQL において、**構文エラーとはならない `ORDER BY` 句** の記述はどれか。**答え**: <span class="masked">❶</span>
+  - ❶ `ORDER BY name ASC NULLS LAST`
+  - ❷ `ORDER BY name NULLS LAST ASC`
+  - ❸ ❶と❷のどちらも構文エラーにならない。
 
 #### SQLドリル💻
 
@@ -536,6 +548,11 @@ ORDER BY
 ```
 
 レベルの降順が適用されるのは、同じ職業のレコード同士です。例えば、**Carol** (`Priest`・レベル28) が **Mallet** (`Wizard`・レベル64) より先に配置されるのは、レベルよりも職業の整列順が優先されるためです。
+
+#### 定着確認
+
+- あるテーブルには、文字列型の **course** カラムが存在する。このカラムには `D`、`E`、`I`、`M` のいずれかが格納されており、`NULL` は含まれない。`SELECT` 文において、通常の昇順・降順ではなく、`M` 👉 `D` 👉 `E` 👉 `I` の順に整列するための `ORDER BY` 句を、`CASE` 式を使用して記述せよ。
+  - **答え**: [こちら](https://github.com/TakeshiWada1980/DB-2026/blob/main/docs/codes/04/order-by-course.sql)
 
 #### SQLドリル💻
 
@@ -840,6 +857,9 @@ SELECT * FROM characters WHERE name = 'Alice';
 
 - `name = Alice` のようにシングルクォートで囲まなかった場合、どのようになるか予測し、実際に結果を確認してください。
 
+::: {.balloon .char-01 .face-05 .tone-blue}
+教科書 pp.62-65 の「**文字列に不等号を使うときの注意**」も参照してください。
+:::
 
 ---
 
@@ -923,6 +943,10 @@ SQL では `TRUE` と `FALSE` に加えて、「**不明**・**未知**」を表
 - `IS NULL` や `IS NOT NULL` は**特別に真偽を判定できる例外的な存在**です。
 
 この `UNKNOWN` が混ざると、**論理演算** (`AND`・`OR`・`NOT`) の結果も `UNKNOWN` を含む形で評価されることに十分に注意してください。
+
+::: {.balloon .char-01 .face-05 .tone-blue}
+教科書の pp.76-77 の「**NULL を含む場合の真理値**」も参照してください。
+:::
 
 #### SQLの3値論理の論理否定 (NOT)
 
