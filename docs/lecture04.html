@@ -298,6 +298,14 @@ class="toc-section-number">8</span> 授業時間外学習の指示 (宿題)</a><
       (<strong>論理的に保証されるものではない</strong>) ということを覚えておいてください。</p>
       <p>そこで、<strong><u>指定した条件に従って結果セットを整列する仕組み</u></strong>として、<code>SELECT</code>
       文には、<code>ORDER BY</code>句 というものが用意されています。</p>
+      <div class="prompts">
+      <ul>
+      <li>PostgreSQL では <code>ORDER BY</code> を指定しない限り、<code>SELECT</code>
+      文の結果セットにおけるレコードの順序は保証されないと学びました。しかし、実際に同じ
+      <code>SELECT</code>
+      文を何度実行しても、毎回同じ順番で表示されます。具体的にどのような操作や状況によって、レコードの順序が変わる可能性があるのですか。</li>
+      </ul>
+      </div>
       <div class="note type-senior">
       <p><strong>中級者向け: 補足</strong></p>
       <p>PostgreSQLはデータを <strong>ヒープファイル（Heap File）</strong>
@@ -541,6 +549,12 @@ class="toc-section-number">8</span> 授業時間外学習の指示 (宿題)</a><
       <code>DESC</code> が適用されるのは、<strong>level だけ</strong>です。</li>
       </ul>
       <p>実際に実行して結果を確認してみてください。</p>
+      <div class="prompts">
+      <ul>
+      <li><code>ORDER BY guild, level DESC</code>
+      は、まずギルド名でならべて、そのあとにレベルの高い順にならべ直すのだと思っていました。でも、それだと最初のギルド名のならびが崩れませんか。2つのソートキーで整列するって、どういうことですか？</li>
+      </ul>
+      </div>
       <h3 data-number="4.2.1" id="sqlドリル"><span class="header-section-number">4.2.1</span>
       SQLドリル💻</h3>
       <ul>
@@ -885,6 +899,15 @@ class="toc-section-number">8</span> 授業時間外学習の指示 (宿題)</a><
       ORDER BY Clause</a> と <a href="https://www.postgresql.org/docs/18/queries-limit.html">LIMIT
       and OFFSET</a>
       を参照してください。前者にはすべてのソートキーが同値の場合の扱い、後者には順序を一意に定める必要性が説明されています。</p>
+      </div>
+      <div class="prompts">
+      <ul>
+      <li><p>PostgreSQL で <code>ORDER BY level DESC</code> でレベル順にしてから、<code>LIMIT</code>
+      と <code>OFFSET</code>
+      で5件ずつ取得しています。同じレベルの人が何人かいると、前のページと同じ人が出てくることもあるそうです。データを追加も削除もしていないのに、どうしてそんなことが起こるんですか？</p></li>
+      <li><p>PostgreSQL で <code>ORDER BY RANDOM() LIMIT 5</code>
+      とすると、ランダムに5件取得できました。5件だけ選ぶのに、テーブル全体をならべ替えているんですか。それとも、レコードが1000万件あっても、5件だけならすぐに取得できるんでしょうか？</p></li>
+      </ul>
       </div>
       <h2 data-number="5.2" id="offset-句"><span class="header-section-number">5.2</span> OFFSET
       句</h2>
@@ -1536,6 +1559,15 @@ class="toc-section-number">8</span> 授業時間外学習の指示 (宿題)</a><
 <span id="cb35-2"><a href="#cb35-2"></a>  <span class="kw">True</span> <span class="kw">OR</span> <span class="kw">Null</span> <span class="kw">AS</span> <span class="ot">&quot;True OR Unknown&quot;</span>,</span>
 <span id="cb35-3"><a href="#cb35-3"></a>  <span class="kw">False</span> <span class="kw">OR</span> <span class="kw">Null</span> <span class="kw">AS</span> <span class="ot">&quot;False OR Unknown&quot;</span>,</span>
 <span id="cb35-4"><a href="#cb35-4"></a>  <span class="kw">Null</span> <span class="kw">OR</span> <span class="kw">Null</span> <span class="kw">AS</span> <span class="ot">&quot;Unknown OR Unknown&quot;</span>; </span></code></pre></div>
+      <div class="prompts">
+      <ul>
+      <li>PostgreSQL に関する質問です。年齢を表す <code>age</code> カラムに <code>NULL</code>
+      が入っている人がいます。<code>WHERE age &gt;= 20</code> と
+      <code>WHERE NOT (age &gt;= 20)</code>
+      に分ければ、全員がどちらかに入ると思っていました。年齢が不明な人は、どちらにも入らないんですか。条件を
+      <code>NOT</code> で反転するのに、なぜそうなるんでしょうか？</li>
+      </ul>
+      </div>
       <h2 data-number="6.3" id="where句でよく利用する述語"><span
       class="header-section-number">6.3</span> WHERE句でよく利用する述語</h2>
       <p>SQLにおいて、<code>TRUE</code>・<code>FALSE</code>・<code>UNKNOWN</code>
@@ -1672,6 +1704,14 @@ class="toc-section-number">8</span> 授業時間外学習の指示 (宿題)</a><
       などがマッチします。</li>
       </ul></li>
       </ul>
+      <div class="prompts">
+      <ul>
+      <li>PostgreSQL の <code>LIKE</code> で、<code>%</code>
+      は0文字以上の任意の文字列を表すと習いました。それなら <code>guild LIKE '%'</code>
+      は、ギルド名が何であっても一致するんですか。<code>NULL</code>
+      や、何も文字が入っていない空文字列 <code>''</code> も一致するのでしょうか？</li>
+      </ul>
+      </div>
       <h3 data-number="6.3.3" id="between述語-between条件範囲演算子"><span
       class="header-section-number">6.3.3</span> BETWEEN述語 (BETWEEN条件、範囲演算子)</h3>
       <p>「<strong>XX 以上 YY
@@ -1898,6 +1938,17 @@ class="toc-section-number">8</span> 授業時間外学習の指示 (宿題)</a><
  19 | Jack    | hameln |    61
   3 | Charlie |        |    57
   5 | Ivan    |        |    39</code></pre>
+      <div class="prompts">
+      <ul>
+      <li><p>SQL の <code>CASE</code>
+      は条件によって処理を分けるものだと思っていました。<code>WHERE level &gt;= CASE WHEN guild IS NOT NULL THEN 60 ELSE 30 END</code>
+      では、<code>CASE</code> が返すのは数字なんですか。<code>WHERE</code>
+      には真偽値を与えると習ったので、どの部分が条件になっているのか分からなくなりました。</p></li>
+      <li><p>PostgreSQL で、<code>CASE</code> を使用した <code>WHERE</code>
+      条件と、<code>AND</code>・<code>OR</code>
+      で書き換えた条件が、同じレコードを返しました。結果が同じなら、処理の速さも同じなんですか。データベースのなかでどんな手順で検索しているのか、確認する方法はありますか？</p></li>
+      </ul>
+      </div>
       <h3 data-number="6.4.1" id="sqlドリル-4"><span class="header-section-number">6.4.1</span>
       SQLドリル💻</h3>
       <ul>
@@ -2188,9 +2239,12 @@ class="toc-section-number">8</span> 授業時間外学習の指示 (宿題)</a><
       </div>
       <div class="prompts">
       <ul>
-      <li>リレーショナルデータベースにおいて、トランザクションおよびロールバックとは何ですか。先生から「繰り返し演習するために、INSERT文やDELETE文は
+      <li><p>リレーショナルデータベースにおいて、トランザクションおよびロールバックとは何ですか。先生から「繰り返し演習するために、INSERT文やDELETE文は
       <code>START TRANSACTION</code> ～ <code>ROLLBACK</code>
-      で囲んで実行するように」と指示されました。これはどういう意味でしょうか。</li>
+      で囲んで実行するように」と指示されました。これはどういう意味でしょうか。</p></li>
+      <li><p>PostgreSQL で <code>START TRANSACTION</code>
+      のあとにレコードを挿入すると、<code>COMMIT</code> する前でも、その接続の <code>SELECT</code>
+      では追加したレコードが見えます。同じデータベースに、別のクライアントから接続したら、そのレコードは見えるんですか。まだ確定していない変更は、自分だけに見えているのでしょうか？</p></li>
       </ul>
       </div>
       <h2 data-number="7.2" id="複数レコードの挿入"><span class="header-section-number">7.2</span>
@@ -2258,6 +2312,18 @@ class="toc-section-number">8</span> 授業時間外学習の指示 (宿題)</a><
       を手動で指定しましたが、このあとのドリルで使用する <strong>w03.characters</strong> では
       <strong>id</strong>
       が自動採番されます。自動採番の番号は、ロールバックしても元に戻りません。同じ演習を繰り返すと番号が飛ぶことがありますが、<strong>挿入したレコードが残ったという意味ではありません</strong>。</p>
+      </div>
+      <div class="prompts">
+      <ul>
+      <li><p>PostgreSQL で、id
+      が自動採番されるテーブルにレコードを挿入してからロールバックすると、レコードは消えるのに番号は元に戻らないと習いました。なぜ番号も戻してくれないんですか。番号が飛んだままでも問題ないのでしょうか？</p></li>
+      <li><p>PostgreSQL
+      の自動採番って、現状でどこまで番号を使用したかを、どこかに保存しているんですか。テーブルの id
+      の最大値を毎回調べているのでしょうか。それとも、テーブルとは別の場所で管理しているんですか。実際にどこまで進んでいるか、自分で調べることはできますか？</p></li>
+      <li><p>PostgreSQL
+      の自動採番を、練習前の番号にリセットしたいです。次に付ける番号を自分で指定する方法はありますか。すでにレコードが入っているテーブルでも、1
+      から振り直して大丈夫なのでしょうか？</p></li>
+      </ul>
       </div>
       <h3 data-number="7.3.1" id="sqlドリル-5"><span class="header-section-number">7.3.1</span>
       SQLドリル💻</h3>
