@@ -12,7 +12,8 @@ var:
 - 第02回講義 10月07日(水) [資料](lecture02.html)&ensp; **_小テスト❶_**&ensp; <font size="-1">Docker関連の環境構築</font>
 - 第03回講義 10月14日(水) [資料](lecture03.html)&ensp; **_小テスト❷_**&ensp; <font size="-1">SQL演習演習環境の構築、`SELECT`</font>
 - 第04回講義 10月21日(水) [資料](lecture04.html)&ensp; **_小テスト❸_**&ensp; <font size="-1">`ORDER BY`、`LIMIT`、`WHERE`、`INSERT`</font>
-- 第05回講義 10月28日(水) 資料&ensp; **_小テスト❹_**&ensp; <font size="-1">`UPDATE`、`DELETE`、集約関数、`GROUP BY`、`HAVING`</font>
+- 第05回講義 10月28日(水) [資料](lecture05.html)&ensp; **_小テスト❹_**&ensp; <font size="-1">`UPDATE`、`DELETE`、集約関数、`GROUP BY`、`HAVING`</font>
+- 第06回講義 11月04日(水) 資料&ensp; **_小テスト❺_** **_課題1_** <font size="-1">概念設計 (概念ER図)、論理設計 (論理ER図)</font> 
 
 ## 参考資料
 
