@@ -14,6 +14,14 @@ var:
 
 - 今回の講義内容は、[前回講義](lecture04.html)の内容を**ひととおり理解していること**を前提とします。まだ、前回の内容 (授業時間外学習のセクションを含む) を終えていない人は、まずは、そちらから取り組んでください。
 
+### 今回の達成目標
+
+- トランザクションの役割を説明し、`COMMIT` による確定と `ROLLBACK` による取消しを実行・確認できる。
+- CSV ファイルをコンテナに配置し、`COPY` によるレコードの一括挿入を実行できる。
+- `WHERE` 句で対象を指定してレコードを更新・削除し、変更前後とロールバック後の状態を確認できる。
+- `COUNT`、`SUM`、`AVG`、`MAX`、`MIN` を使用して集計し、`NULL` の扱いを説明できる。
+- `GROUP BY` でグループごとに集計し、`WHERE` と `HAVING` の役割を区別して条件を指定できる。
+
 ## 準備と前回の復習
 
 ### ハンズオン学習の準備
@@ -22,6 +30,16 @@ var:
 
 - [SQL演習環境の動作確認](lecture04.html#sql演習環境の動作確認-前回復習)@ 第04回講義
 - [教材の更新の取得](lecture04.html#教材の更新の取得)@ 第04回講義
+
+今回も、第03回・第04回と同じ **w03.users** と **w03.characters** テーブルを使用します。教材の更新後は、**from-teacher/05** に CSV ファイルと SQL ドリルの解答例があることを確認してください。
+
+::: {.balloon .char-01 .face-02 .tone-yellow}
+今回も、SQL ファイルごとに先頭で `SET search_path TO w03;` を実行してください。これにより、そのファイル内では **w03.users** を **users**、**w03.characters** を **characters** と記述できます。設定は別の SQL ファイルには引き継がれません。
+:::
+
+演習用の SQL ファイルは **sql/05** に作成してください。SQL ドリルの解答例は **from-teacher/05/drill** にあります。以下の実行結果は、先頭の `SET` の応答などを省略して掲載しています。
+
+SQL ドリルは、特に指定がない限り、**w03.characters が第03回の初期データ19件であること**を前提とします。更新・削除の問題は、`START TRANSACTION` ～ `ROLLBACK` の範囲内で実行し、対象のカラムや件数を変更前後に確認してください。ロールバック後も、元の状態に戻ったことを確認してください。
 
 ### 前回の復習
 
@@ -34,14 +52,14 @@ var:
 
 これらを組み合わせることで、テーブルから「どのレコードを」「どの順で」「どの位置から」「何件だけ」取り出すかを柔軟に制御できるようになりました。
 
-<div class="note type-tips">
+::: {.note .type-tips}
 **補足： `WHERE` の意味**
 
 SQL における `WHERE` は疑問詞としての「**どこ？**」ではなく、「**〜という場所 (〜であるような行)**」という関係副詞的な用法で使われています。つまり、`WHERE` 句は「**〜という条件に該当する行を選ぶ**」という指示になります。
 
 - I came from Japan, **where** I was born and raised.
 
-</div>
+:::
 
 また、前回講義では、テーブルにレコードを <span class="masked">挿入する</span> ための基本的な `INSERT` 文と、**その動作/挙動を安全に確認するため** の **_トランザクション_** (`START TRANSACTION` ～ `ROLLBACK`) についても学びました。
 
@@ -78,33 +96,36 @@ RDBMS において、**トランザクション** (**Transaction**) とは、デ
 
 ### トランザクションの使用例
 
-ここでは **s_users** テーブルを使って「トランザクションの基本的な使い方」を確認していきます。まずは、次のコマンドで **s_users** テーブルを初期化してください。
+ここでは **w03.users** テーブルを使用して「トランザクションの基本的な使い方」を確認していきます。まずは、次のコマンドで **w03.users** テーブルを初期化してください。**既存のデータも削除され、Alice と Bob の2件に戻ります**。
 
-```
-npm run sql from-teacher/03/init-s_users.sql
+```bash
+npm run sql from-teacher/03/init-users.sql
 ```
 
-現在、このテーブルには、Alice と Bob の2件のレコードが含まれます。この状態から、トランザクションを使って 3 件のレコードを挿入していきます。`sql/05/tmp.sql` などの適当なファイルを作成して、以下の SQL を貼り付けて実行してください。
+現在、このテーブルには、Alice と Bob の2件のレコードが含まれます。この状態から、トランザクションを使って 3 件のレコードを挿入していきます。**sql/05/tmp.sql** などの適当なファイルを作成して、以下の SQL を貼り付けて実行してください。
 
 ```sql{.numberLines caption="トランザクション～全成功してコミットされる例～"}
+SET
+  search_path TO w03;
+
 -- トランザクションの開始
 START TRANSACTION;
 
 -- 操作1 Carol の登録 (成功)
 INSERT INTO
-  s_users (id, name, age)
+  users (id, name, age)
 VALUES
   (3, 'Carol', 18);
 
 -- 操作2 Dave の登録 (成功)
 INSERT INTO
-  s_users (id, name, age)
+  users (id, name, age)
 VALUES
   (4, 'Dave', NULL);
 
 -- 操作3 Ellen の登録 (成功)
 INSERT INTO
-  s_users (id, name, age)
+  users (id, name, age)
 VALUES
   (5, 'Ellen', 17);
 
@@ -112,10 +133,10 @@ VALUES
 COMMIT;
 
 -- テーブルの状態を確認
-SELECT * FROM s_users;
+SELECT * FROM users ORDER BY id;
 ```
 
-この例では、`START TRANSACTION` から `COMMIT` までに含まれるすべての操作 (操作1から操作3) が正常完了するため、**第23行目** の `COMMIT` によって処理が確定され、結果がテーブルに反映されます。コンソールには、**第26行目** によって次のような結果が出力されるはずです。
+この例では、`START TRANSACTION` から `COMMIT` までに含まれるすべての操作 (操作1から操作3) が正常完了するため、**第26行目** の `COMMIT` によって処理が確定され、結果がテーブルに反映されます。コンソールには、**第29行目** によって次のような結果が出力されるはずです。
 
 ```
 START TRANSACTION
@@ -130,46 +151,49 @@ COMMIT
   3 | Carol |  18
   4 | Dave  |
   5 | Ellen |  17
-(5 行)  
+(5 行)
 ```
 
-ここで、上記の **第2行目** から **第4行目** の `INSERT 0 1` は <span class="masked">各操作で1件のレコードが挿入されたこと</span> を表す応答です。`0` は、 OID (Object Identifier) を表しています、気になる人は生成AIを使って調べてください。
+ここで、上記の **第2行目** から **第4行目** の `INSERT 0 1` は <span class="masked">各操作で1件のレコードが挿入されたこと</span> を表す応答です。`0` は、 OID (Object Identifier) を表しています。気になる人は生成AIを使って調べてください。
 
 - 厳密には、挿入先テーブルが OID を持つなら OID、そうでなければ `0` の応答を持ちます。
 
-**(プロンプト例)**
-
-> PostgreSQL 17 で、テーブルに1件のレコード挿入したとき、`INSERT 0 1` のような応答が返ってきます。ここでの `0` は、どのような意味ですか。
+::: prompts
+- PostgreSQL 17 で、テーブルに1件のレコードを挿入したとき、`INSERT 0 1` のような応答が返ってきます。ここでの `0` は、どのような意味ですか。
+:::
 
 ---
 
-つづいて、**トランザクションの途中で失敗が発生する例** を確認していきます。まずは、再度、次のコマンドで **s_users** テーブルの内容を初期化してください (レコードを2件に戻しておきます)。
+つづいて、**トランザクションの途中で失敗が発生する例** を確認していきます。まずは、再度、次のコマンドで **w03.users** テーブルの内容を初期化してください (レコードを2件に戻しておきます)。
 
-```
-npm run sql from-teacher/03/init-s_users.sql
+```bash
+npm run sql from-teacher/03/init-users.sql
 ```
 
-以下の SQL を貼り付けて実行してください。このコードでは **第17行目** からの `INSERT` 文に **id** の重複があり、「**操作3**」が失敗する (＝エラーが発生する) ようになっています。
+以下の SQL を貼り付けて実行してください。このコードでは **第20行目** からの `INSERT` 文に **id** の重複があり、「**操作3**」が失敗する (＝エラーが発生する) ようになっています。
 
 ```sql{.numberLines caption="トランザクション～失敗によるロールバック例～"}
+SET
+  search_path TO w03;
+
 -- トランザクションの開始
 START TRANSACTION;
 
 -- 操作1 Carol の登録 (成功)
 INSERT INTO
-  s_users (id, name, age)
+  users (id, name, age)
 VALUES
   (3, 'Carol', 18);
 
 -- 操作2 Dave の登録 (成功)
 INSERT INTO
-  s_users (id, name, age)
+  users (id, name, age)
 VALUES
   (4, 'Dave', NULL);
 
 -- 操作3 Ellen の登録 (❌失敗 id=4 が重複) 
 INSERT INTO
-  s_users (id, name, age)
+  users (id, name, age)
 VALUES
   (4, 'Ellen', 17);
 
@@ -177,19 +201,19 @@ VALUES
 COMMIT;
 
 -- テーブルの状態を確認
-SELECT * FROM s_users;
+SELECT * FROM users ORDER BY id;
 ```
 
 実行結果は、次のようになります。
 
 ```
-psql:<stdin>:20: ERROR:  重複したキー値は一意性制約"s_users_pkey"違反となります
+psql:<stdin>:23: ERROR:  重複したキー値は一意性制約"users_pkey"違反となります
 DETAIL:  キー (id)=(4) はすでに存在します。
 ```
 
-ここで注目してほしいのは、「操作1」と「操作2」についての <span class="masked">`INSERT 0 1` という応答が表示されていないこと</span>、そして、トランザクション終了後に記述された **第26行目** の `SELECT` 文も**実行されていないこと**です。
+ここで注目してほしいのは、「操作1」と「操作2」についての <span class="masked">`INSERT 0 1` という応答が表示されていないこと</span>、そして、トランザクション終了後に記述された **第29行目** の `SELECT` 文も**実行されていないこと**です。
 
-この状態で、別途 `SELECT * FROM s_users;` を単独で実行すると、次のような結果 (＝<span class="masked">トランザクション開始前の状態</span>) が得られます。
+この状態で、別途 `SELECT * FROM w03.users ORDER BY id;` を単独で実行すると、次のような結果 (＝<span class="masked">トランザクション開始前の状態</span>) が得られます。
 
 ```
  id | name  | age 
@@ -206,29 +230,32 @@ DETAIL:  キー (id)=(4) はすでに存在します。
 `START TRANSACTION` ～ `COMMIT` において、`COMMIT` の代わりに <span class="masked">`ROLLBACK`</span> を記述すると明示的に **ロールバック** をかけることができます。
 
 ```sql{.numberLines caption="明示的なロールバックの実行"}
+SET
+  search_path TO w03;
+
 -- トランザクションの開始
 START TRANSACTION;
 
 INSERT INTO
-  s_users (id, name, age)
+  users (id, name, age)
 VALUES
   (3, 'Carol', 18);
 
 -- テーブルの状態を確認 👉 Carol のレコードが存在する
-SELECT * FROM s_users;
+SELECT * FROM users ORDER BY id;
 
 -- 明示的にロールバックを実行
 ROLLBACK;
 
 -- テーブルの状態を確認 👉 Carol のレコードが存在しない
-SELECT * FROM s_users;
+SELECT * FROM users ORDER BY id;
 ```
 
-<div class="note type-caution">
+::: {.note .type-caution}
 **注意**
 
 以下、演習のなかで `UPDATE` 文や `DELETE` 文を扱いますが、特に指示のないかぎりは「`START TRANSACTION` ～ `ROLLBACK`」の内部で処理を実行するようにしてください。 
-</div>
+:::
 
 #### 定着確認
 
@@ -240,6 +267,15 @@ SELECT * FROM s_users;
   - **答え** : <span class="masked">`COMMIT`</span>
 
 
+- **w03.users** には Alice と Bob の2件だけが登録されている。トランザクションを開始し、Carol を1件挿入した。同じ接続で、`ROLLBACK` の直前と直後に `SELECT COUNT(*) FROM w03.users;` を実行したとき、それぞれ何件になるか答えよ。
+  - **答え**: <span class="masked">直前は3件、直後は2件。</span>
+
+- **w03.users** に対してトランザクションを開始し、Carol を1件挿入して `COMMIT` した。その後、新しいトランザクションを開始して、データを変更せずに `ROLLBACK` した。先に挿入した Carol のレコードは取り消されるか答えよ。
+  - **答え**: <span class="masked">取り消されない。先のCOMMITで確定した変更は、後から開始したトランザクションのROLLBACKでは取り消されない。</span>
+
+- Alice から Bob に送金するため、「Alice の残高を減らすUPDATE」と「Bob の残高を増やすUPDATE」を実行する。これらを1つのトランザクションに含める理由を説明せよ。
+  - **答え**: <span class="masked">片方だけが確定することを防ぎ、両方を確定するか、両方とも取り消すことで残高の整合性を保つため。</span>
+
 ## CSVファイルからのINSERT 
 
 [前回講義](lecture04.html#insert文-超基礎編)では `INSERT` 文を使って「テーブルに 1 件ずつレコードを挿入する方法」を紹介しました。しかし、実務では、**数十件から数千件といった大量データを扱うことが多く**、そのようなときは「**CSVファイル**」を使ってデータを一括挿入することが一般的となります。
@@ -248,21 +284,21 @@ SELECT * FROM s_users;
 
 ### CSV ファイルの作成
 
-テーブルにデータを挿入するための「CSVファイル」を作成します。ここでは、**s_users** テーブル用に予め用意した `from-teacher/05/insert-s_users.csv` (最新の教材の更新に含まれています) を使用します。
+テーブルにデータを挿入するための「CSVファイル」を作成します。ここでは、**w03.users** テーブル用に予め用意した `from-teacher/05/insert-users.csv` (最新の教材の更新に含まれています) を使用します。
 
-VSCode から `insert-s_users.csv` を開いて内容を確認してください。
+VSCode から `insert-users.csv` を開いて内容を確認してください。
 
 なお、PostgreSQL に挿入するための CSV ファイルを作成する際は、**文字コード**を <span class="masked">BOMなしのUTF-8</span>、**改行コード**を「**LF**」に設定しておくことが推奨されます。
 
-**プロンプト例**
-
-> UTF-8の「BOM付き」と「BOMなし」の違いについて教えてください。「BOM付き」が利用される場面としてはどのようなものがありますか。
+::: prompts
+- UTF-8の「BOM付き」と「BOMなし」の違いについて教えてください。「BOM付き」が利用される場面としてはどのようなものがありますか。
+:::
 
 ### CSV ファイルをコンテナに配置
 
 `insert-users.csv` は、ホストOS (Windows) 上に存在するため、**Docker コンテナ内で動作している PostgreSQL からは直接取り込むことができません**。
 
-そのため、まずこの CSV ファイルをコンテナの `/tmp/` にコピーします。VSCode のターミナルから次のコマンドを実行してください。コマンドのなかの `pg18` は<i class="fa-brands fa-github"></i>[docker/docker-compose.yaml](https://github.com/TakeshiWada1980/DB-2025-PostgreSQL/blob/main/docker/docker-compose.yaml)の **第04行目** で指定している PostgreSQL コンテナの「名前」になります。
+そのため、まずこの CSV ファイルをコンテナの `/tmp/` にコピーします。VSCode のターミナルから次のコマンドを実行してください。コマンドのなかの `pg18` は<i class="fa-brands fa-github"></i>[docker/docker-compose.yaml](https://github.com/TakeshiWada1980/DB-2026-PostgreSQL/blob/main/docker/docker-compose.yaml)の **第04行目** で指定している PostgreSQL コンテナの「名前」になります。
 
 ```bash
 docker cp from-teacher/05/insert-users.csv pg18:/tmp/
@@ -288,28 +324,51 @@ Docker Desktop のウィンドウで「**Containers**」を選択し、さらに
 
 PostgreSQL では、以下のような SQL により、**CSV ファイルからレコードを一括でテーブルに取り込むこと**ができます。
 
+実行前に、次のコマンドで **w03.users** を Alice と Bob の2件に戻してください。**既存のデータも初期状態に戻ります**。
+
+```bash
+npm run sql from-teacher/03/init-users.sql
+```
+
 ```sql{.numberLines caption="CSVファイルからレコードを挿入"}
+SET
+  search_path TO w03;
+
 START TRANSACTION;
 
 -- レコード挿入前のテーブルを確認
-SELECT * FROM s_users;
+SELECT * FROM users ORDER BY id;
 
 -- CSVファイルからレコードを挿入
-COPY w03.users (id, name, age)
+COPY users (id, name, age)
 FROM
   '/tmp/insert-users.csv'
 WITH
   (FORMAT csv, HEADER TRUE, NULL 'NULL', ENCODING 'UTF8');
 
 -- レコード挿入後のテーブルを確認
-SELECT * FROM w03.users;
+SELECT * FROM users ORDER BY id;
 
 ROLLBACK;
 ```
 
+挿入後の結果セットは次のようになります。**David の age は空欄 (NULL)** となっていることを確認してください。
+
+```
+ id | name  | age
+----+-------+-----
+  1 | Alice |  20
+  2 | Bob   |  25
+  3 | Carol |  18
+  4 | David |
+  5 | Ellen |  17
+```
+
+最後の `ROLLBACK` により、追加した3件は取り消されます。`SELECT * FROM w03.users ORDER BY id;` で、Alice と Bob の2件に戻ったことを確認してください。
+
 `COPY` は **PostgreSQL 独自のコマンド** で、CSV ファイルなどの外部データを <span class="masked">高速</span> に取り込むことができます。`FROM` 句で指定するパス (ここでは `/tmp/insert-users.csv`) は、Docker コンテナ内のファイルパス ということに注意してください。
 
-また、`WITH` 句 (**第11行目**) では以下のような設定を行っています。
+また、`WITH` 句 (**第13行目** から) では以下のような設定を行っています。
 
 - `FORMAT csv` : ファイルが CSV 形式であることを明示
 - `HEADER TRUE` : CSV の1行目をカラム名として無視
@@ -319,37 +378,57 @@ ROLLBACK;
 その他、`WITH` 句のオプションについては、以下の[公式ドキュメント](https://www.postgresql.org/docs/current/sql-copy.html?utm_source=chatgpt.com)を参照してください。
 
 
-:::prompts
+::: prompts
 
 - PostgreSQL において、`COPY ... WITH` 構文で CSVファイル からテーブルにデータを取り込みたいです。このとき、CSV ファイルには、改行やカンマを含む文字列データも含めたいです。どのように CSV ファイルを作成し、また、`WITH` 句にはどのようなオプションを指定すればよいですか。
 
 - PostgreSQL では、`COPY ... WITH` 構文で CSVファイルからテーブルにデータを取り込みできます。MySQL でも同じ構文でデータの取り込みができますか。
 
 :::
+#### 定着確認
+
+- PostgreSQL が Docker コンテナ内で動作している。SQLの `COPY users FROM '/tmp/insert-users.csv' WITH (FORMAT csv, HEADER TRUE);` に指定したパスは、ホストOSとコンテナのどちらのファイルを指すか答えよ。
+  - **答え**: <span class="masked">コンテナ内のファイルを指す。</span>
+
+- CSVの1行目が `id,name,age`、2行目以降がデータである。PostgreSQL の `COPY` で先頭行をデータとして取り込まないためのオプションを答えよ。
+  - **答え**: <span class="masked">`HEADER TRUE`</span>
+
+- **w03.users** の **age** はNULLを許すINTEGER型である。CSVの1行に `4,David,NULL` があり、`COPY users (id, name, age) ... WITH (FORMAT csv, HEADER TRUE, NULL 'NULL');` で取り込む。David の **age** は数値0、文字列NULL、SQLのNULLのどれになるか答えよ。
+  - **答え**: <span class="masked">SQLのNULLになる。</span>
+
+- **w03.users** には Alice と Bob の2件だけが登録されている。トランザクション内で、idが3・4・5の3件をCSVから取り込んだ。取込直後と、そのトランザクションを `ROLLBACK` した直後のレコード数を答えよ。
+  - **答え**: <span class="masked">取込直後は5件、ROLLBACK直後は2件。</span>
+
 ## DELETE文 (基礎編)
 
-テーブルからレコードを「削除」したとき `DELETE` 文を使用します。実際に、次の SQL を実行してみてください。
+テーブルからレコードを「削除」したいとき `DELETE` 文を使用します。実際に、次の SQL を実行してみてください。
 
 ```sql{.numberLines caption="テーブルからレコードを無条件で削除"}
+SET
+  search_path TO w03;
+
 START TRANSACTION;
 
 -- レコードを無条件削除
-DELETE FROM s_characters;
+DELETE FROM characters;
 
 -- 確認
-SELECT * FROM s_characters;
+SELECT * FROM characters;
 
 ROLLBACK;
 ```
 
 すべてのレコードが削除されたことが確認できます。
 
-一方で、「**特定の条件を満たすレコードだけ**」を削除したいような場合は <span class="masked">`WHERE`句</span> を使用します。例えば、**last_login_at** が、2025月7月31日以前 (`NULL` を含む) のレコード**だけ**を削除したい場合、次のようにします。
+一方で、「**特定の条件を満たすレコードだけ**」を削除したいような場合は <span class="masked">`WHERE`句</span> を使用します。例えば、**last_login_at** が、2025年7月31日以前 (`NULL` を含む) のレコード**だけ**を削除したい場合、次のようにします。
 
 ```sql{.numberLines caption="WHERE句を指定して条件に一致するレコードだけを削除"}
+SET
+  search_path TO w03;
+
 START TRANSACTION;
 
-DELETE FROM s_characters
+DELETE FROM characters
 WHERE
   last_login_at IS NULL OR
   last_login_at <= '2025-07-31';
@@ -360,7 +439,7 @@ SELECT
   name,
   last_login_at
 FROM
-  s_characters
+  characters
 ORDER BY
   last_login_at;
 
@@ -393,14 +472,28 @@ DELETE 5
 ROLLBACK
 ```
 
+#### 定着確認
+
+- **w03.characters** の **id** はINTEGER型である。idが3または5のレコードだけを削除するDELETE文を、`IN` を使用して記述せよ。
+  - **答え**: <span class="masked">`DELETE FROM w03.characters WHERE id IN (3, 5);`</span>
+
+- **w03.characters** には19件のレコードがある。トランザクション内で `DELETE FROM w03.characters;` を実行した直後と、`ROLLBACK` した直後のレコード数を答えよ。
+  - **答え**: <span class="masked">DELETE直後は0件、ROLLBACK直後は19件。</span>
+
+- **w03.characters** の **last_login_at** はTIMESTAMP型で、未ログインの場合はNULLとなる。未ログインのレコードだけを削除するために指定するWHERE句を答えよ。
+  - **答え**: <span class="masked">`WHERE last_login_at IS NULL`</span>
+
+- PostgreSQL でDELETE文を実行したところ、`DELETE 5` と表示された。この応答が示す内容を答えよ。
+  - **答え**: <span class="masked">5件のレコードが削除されたこと。</span>
+
 #### SQLドリル💻
 
-- `ex-01_1.sql` 👉 **s_characters** テーブルのレコードについて、2025年10月15日を起算日として60日以上ログインがなかったレコードを削除する SQL を記述せよ。
+- `ex-01_1.sql` 👉 **w03.characters** テーブルのレコードについて、2025年10月15日を基準日として、最終ログインから60日以上経過したレコードを削除する SQL を記述せよ。日数は **last_login_at を DATE 型に変換し、基準日との差**で求めること。**last_login_at が NULL のレコードは削除しない**こと。
   - `DATE` 型の「2025年10月15日」は、`CAST('2025-10-15' AS DATE)` または `DATE '2025-10-15'` で得ることができます。
 
-- `ex-01_2.sql` 👉 **s_characters** テーブルのレコードについて、**last_login_at** が `NULL` で、**created_on** が2023年12月31日以前のレコードを削除する SQL を記述せよ。
+- `ex-01_2.sql` 👉 **w03.characters** テーブルのレコードについて、**last_login_at** が `NULL` で、**created_on** が2023年12月31日以前のレコードを削除する SQL を記述せよ。
 
-- `ex-01_3.sql` 👉 **s_characters** テーブルのレコードについて、**id** が「3」「5」「8」「9」「10」「14」の6件のレコードを削除する SQL を記述せよ。
+- `ex-01_3.sql` 👉 **w03.characters** テーブルのレコードについて、**id** が「3」「5」「8」「9」「10」「14」の6件のレコードを削除する SQL を記述せよ。
 
 ## UPDATE文 (基礎編)
 
@@ -408,15 +501,18 @@ ROLLBACK
 
 ### すべてのレコードの値を固定値で更新
 
-たとえば、**s_characters** テーブルの全てのレコードについて、**バフ解除** (**buff** を `0.0` に上書き) するためには、次のように SQL を記述します。
+たとえば、**w03.characters** テーブルの全てのレコードについて、**バフ解除** (**buff** を `0.0` に上書き) するためには、次のように SQL を記述します。
 
 ```sql{.numberLines caption="すべてのレコードのbuffカラムを0.0に設定する"}
+SET
+  search_path TO w03;
+
 START TRANSACTION;
 
 -- 更新前のレコードを確認 (省略)
 
 -- 更新処理
-UPDATE s_characters
+UPDATE characters
 SET
   buff = 0.0;
 
@@ -429,7 +525,7 @@ ROLLBACK;
 
 #### SQLドリル💻
 
-- `ex-02_1.sql` 👉 上記SQLの「**更新前のレコードを確認 (省略)**」と「**更新後のレコードを確認 (省略)**」の箇所に、実際に更新処理が確認できるような `SELECT` 文を記述せよ。
+- `ex-02_1.sql` 👉 **w03.characters** テーブルの全レコードの **buff** を `0.0` に更新する SQL を記述せよ。`START TRANSACTION` ～ `ROLLBACK` を含め、更新前後には **id**、**name**、**buff** を **id** の昇順で取得して、更新結果を確認すること。
 
 ### 特定のレコードのみを更新
 
@@ -438,12 +534,15 @@ ROLLBACK;
 たとえば、**id** が「1」と「2」のキャラクタについて、**guild** カラムを `NULL` にして、**job** カラムを `Exile` (亡命者・追放者) に変更するには、次のように SQL を記述します。
 
 ```sql{.numberLines caption="特定のレコードを対象とした更新処理"}
+SET
+  search_path TO w03;
+
 START TRANSACTION;
 
 -- 更新前のレコードを確認 (省略)
 
 -- 更新処理
-UPDATE s_characters
+UPDATE characters
 SET
   guild = NULL,
   job = 'Exile'
@@ -455,7 +554,7 @@ WHERE
 ROLLBACK;
 ```
 
-実行すると `UPDATE 2` という応答が表示されます (2件のレコードが更新されたことが分かります)。更新後のレコードを確認する `SELECT` 文を記述すると次のように表示されます。
+実行すると `UPDATE 2` という応答が表示されます (2件のレコードが更新されたことが分かります)。トランザクション内の「更新後のレコードを確認」の箇所に `SELECT id, name, job, guild FROM characters ORDER BY id;` を記述すると、次のように表示されます (先頭2件を抜粋)。
 
 ```
  id |  name   |   job   | guild
@@ -467,7 +566,7 @@ ROLLBACK;
 
 #### SQLドリル💻
 
-- `ex-02_2.sql` 👉 **s_characters** テーブルの **job** カラムについて `Wizard` を `Mage` に更新する SQL を記述せよ。
+- `ex-02_2.sql` 👉 **w03.characters** テーブルの **job** カラムについて `Wizard` を `Mage` に更新する SQL を記述せよ。
 
 
 ### 現在の値を利用した更新
@@ -477,9 +576,16 @@ ROLLBACK;
 - 実際に実行するときは `START TRANSACTION` ～ `ROLLBACK` の内部で実行してください。
 
 ```sql{.numberLines caption="levelを2だけ増加させる更新"}
-UPDATE s_characters
+SET
+  search_path TO w03;
+
+START TRANSACTION;
+
+UPDATE characters
 SET
   level = level + 2;
+
+ROLLBACK;
 ```
 
 また、同じレコードのなかの「**他のカラム値**」を参照して更新することもできます。たとえば、**buff** を `SQRT(100-level)*0.05` に設定するには、次のように SQL を記述します。
@@ -487,16 +593,23 @@ SET
 - `SQRT` は平方根を計算する関数です。
 
 ```sql{.numberLines caption="同じレコード内の他のカラム値を参照して更新"}
-UPDATE s_characters
+SET
+  search_path TO w03;
+
+START TRANSACTION;
+
+UPDATE characters
 SET
   buff = SQRT(100 - level)*0.05;
+
+ROLLBACK;
 ```
 
 #### SQLドリル💻
 
-- `ex-02_3.sql` 👉 ソロプレイ前衛職応援キャンペーン🎉として、**guild** が `NULL` で、**job** が Fighter、Monk、Samurai、Ninja のキャラクタの **buff** を `現在値+0.25` (25\%Up) に更新するような SQL を記述せよ。また、更新の前後の **buff** カラムなどを確認する SQL も記述すること。
+- `ex-02_3.sql` 👉 ソロプレイ前衛職応援キャンペーン🎉として、**w03.characters** テーブルの **guild** が `NULL` で、**job** が Fighter、Monk、Samurai、Ninja のキャラクタについて、**buff** の現在値に `0.25` を加算する SQL を記述せよ。また、更新前後の **buff** などを確認する SQL も記述すること。
 
-- `ex-02_4.sql` 👉 おかえりなさいキャンペーン🎉として、2025年10月15日を基準日とし、最終ログイン日からの経過日数に応じて **buff** の値を更新 (上書き) するような SQL を記述せよ。
+- `ex-02_4.sql` 👉 おかえりなさいキャンペーン🎉として、**w03.characters** テーブルの **buff** を、2025年10月15日を基準日とした最終ログインからの経過日数に応じて、次の値に **上書き** する SQL を記述せよ。日数は **last_login_at を DATE 型に変換し、基準日との差**で求めること。複数の条件に該当するときは、日数の大きい条件を優先し、**last_login_at が NULL の場合は buff を `0.00`** にすること。更新前後の **buff** も確認すること。
   - 最終ログイン日から **60日以上** 経過していれば **buff** を `0.40`
   - 最終ログイン日から **40日以上** 経過していれば **buff** を `0.30`
   - 最終ログイン日から **20日以上** 経過していれば **buff** を `0.20`
@@ -505,11 +618,14 @@ SET
 
 ### CASE式による同時置換処理
 
-**s_characters** テーブルの **job** カラムについて、(ハロウィン仮装イベント🎃として) Priest なら Wizard に更新し、Wizard なら Priest に更新するような処理 (つまり、<span class="masked">Priest ↔ Wizard の入れ替え処理</span>) を考えます。
+**w03.characters** テーブルの **job** カラムについて、(ハロウィン仮装イベント🎃として) Priest なら Wizard に更新し、Wizard なら Priest に更新するような処理 (つまり、<span class="masked">Priest ↔ Wizard の入れ替え処理</span>) を考えます。
 
 この処理を次のように**2回に分けて実行すると**、期待する結果をえることができません。
 
 ```sql{.numberLines caption="2回に分けて更新処理を実行"}
+SET
+  search_path TO w03;
+
 START TRANSACTION;
 
 -- 更新前のレコードを確認
@@ -518,21 +634,21 @@ SELECT
   name,
   job
 FROM
-  s_characters
+  characters
 WHERE
   job IN ('Wizard', 'Priest')
 ORDER BY
   id;
 
 -- 更新処理 👉 Priest ならば Wizard に変更
-UPDATE s_characters
+UPDATE characters
 SET
   job = 'Wizard'
 WHERE
   job = 'Priest';
 
 -- 更新処理 👉 Wizard ならば Priest に変更
-UPDATE s_characters
+UPDATE characters
 SET
   job = 'Priest'
 WHERE
@@ -544,7 +660,7 @@ SELECT
   name,
   job
 FROM
-  s_characters
+  characters
 WHERE
   job IN ('Wizard', 'Priest')
 ORDER BY
@@ -557,7 +673,7 @@ ROLLBACK;
 
 ```
 START TRANSACTION
- id |  name   |  job   
+ id |  name   |  job
 ----+---------+--------
   1 | Marvin  | Priest
   3 | Charlie | Wizard
@@ -589,12 +705,15 @@ ROLLBACK
 このような場合、いったん別の値に退避してから入れ替える方法でも対応できますが、次のように **CASE式** を使用することで、より簡潔に SQL を記述することができます。
 
 ```sql{.numberLines caption="CASE式による同時置換処理"}
+SET
+  search_path TO w03;
+
 START TRANSACTION;
 
 -- 更新前のレコードを確認 (省略)
 
 -- 更新処理 👉 Priest と Wizard を入れ替え
-UPDATE s_characters
+UPDATE characters
 SET
   job = CASE
     WHEN job = 'Priest' THEN 'Wizard'
@@ -608,7 +727,7 @@ WHERE
 ROLLBACK;
 ```
 
-これにより、以下のように意図したジョブの入れ替えができます。
+トランザクション内の「更新後のレコードを確認」の箇所に、先ほどの例と同じ `SELECT` 文を記述すると、以下のように意図したジョブの入れ替えを確認できます。
 
 ```
  id |  name   |  job
@@ -625,20 +744,24 @@ ROLLBACK;
 
 #### SQLドリル💻
 
-- `ex-02_5.sql` 👉 **s_characters** テーブルについて、前衛職のジョブを次のように入れ替えるための SQL を記述せよ。
+- `ex-02_5.sql` 👉 **w03.characters** テーブルについて、前衛職のジョブを次のように入れ替えるための SQL を記述せよ。
   - Fighter を Monk に変更
   - Monk を Samurai に変更
   - Samurai を Ninja に変更
   - Ninja を Fighter に変更
+  - それ以外のジョブは変更しないこと。更新前後の **job** を確認すること。
 
 ### 補足: RETURNING句
 
 PostgreSQL では、`UPDATE` 文や `DELETE` 文を実行した際、変更後 (または削除した) レコードの内容を即座に取得できる `RETURNING` 句という構文があります。通常の `UPDATE` 文は、`UPDATE 2` のように**件数だけ**を返しますが、`RETURNING` を使うと <span class="masked">変更後のレコードを受け取り、任意のカラムを出力すること</span> ができます。
 
 ```sql{.numberLines caption="RETURNING句の利用"}
+SET
+  search_path TO w03;
+
 START TRANSACTION;
 
-UPDATE s_characters
+UPDATE characters
 SET
   buff = 0.3
 WHERE
@@ -669,6 +792,23 @@ UPDATE 5
 ROLLBACK
 ```
 
+#### 定着確認
+
+- **characters** テーブルのあるレコードの **buff** はNUMERIC型で、値は `-0.15` である。`SET buff = 0.25` と `SET buff = buff + 0.25` をそれぞれ元の値に対して適用した場合、更新後の値を答えよ。
+  - **答え**: <span class="masked">前者は0.25、後者は0.10。</span>
+
+- **w03.characters** には19件のレコードがあり、うち3件の **buff** は既に0.0である。`UPDATE w03.characters SET buff = 0.0;` を実行したとき、`UPDATE` の応答に表示される件数は16と19のどちらか答えよ。
+  - **答え**: <span class="masked">19。WHERE句がなく全レコードが対象となり、既に同じ値の行も更新件数に含まれる。</span>
+
+- **w03.characters** の **job** はVARCHAR型である。WizardのレコードだけをMageに変更するUPDATE文を記述せよ。
+  - **答え**: <span class="masked">`UPDATE w03.characters SET job = 'Mage' WHERE job = 'Wizard';`</span>
+
+- **characters** テーブルには、**job** がPriestのAliceと、WizardのBobだけが登録されている。`UPDATE characters SET job = 'Wizard' WHERE job = 'Priest';` の後に、`UPDATE characters SET job = 'Priest' WHERE job = 'Wizard';` を実行した。最後の2人のjobを答えよ。
+  - **答え**: <span class="masked">AliceもBobもPriestとなる。最初のUPDATEでWizardになったAliceも、2つ目のUPDATEの対象になるため。</span>
+
+- PostgreSQL でUPDATE文を実行し、更新した行の **id** と、更新後の **buff** を同じSQL文で取得したい。文末に追加する句を答えよ。
+  - **答え**: <span class="masked">`RETURNING id, buff`</span>
+
 ## 集約関数 (Aggregate Function)
 
 SQL には、`COUNT`、`SUM`、`MIN`、`MAX`、`AVG` などの **集約処理**（**集計処理**）を実行する関数が用意されています。これらは一般に **集約関数** (**Aggregate Function**、集計関数とも呼ばれる) と呼ばれ、基本的には `SELECT` 句および、後で解説する `HAVING` 句のなかだけで使用することができます。
@@ -680,24 +820,27 @@ SQL には、`COUNT`、`SUM`、`MIN`、`MAX`、`AVG` などの **集約処理**�
 次の SQL の実行結果を予想し、その後、実際に実行して結果を確認してください。
 
 ```sql{.numberLines caption="COUNT関数の利用例"}
+SET
+  search_path TO w03;
+
 SELECT
   COUNT(*) AS "num_record",
   COUNT(name) AS "num_name", 
   COUNT(guild) AS "num_guild",
   COUNT(last_login_at) AS "num_last_login_at"
 FROM
-  s_characters;
+  characters;
 ```
 
 実際の実行結果は次のようになります。
 
 ```
- num_record | num_name | num_guild | num_last_login_at 
-------------+----------+-----------+-------------------      
-         19 |       19 |        14 |                18    
+ num_record | num_name | num_guild | num_last_login_at
+------------+----------+-----------+-------------------
+         19 |       19 |        14 |                18
 ```
 
-**s_characters** には 19件 のレコードが存在するので、`COUNT(*)` は「19」となります。また、**name** カラムは `NULL` が許可されないので (＝`NULL` のフィールドを含まないので)、`COUNT(name)` は `COUNT(*) ` と同じく「19」となります。
+**w03.characters** には 19件 のレコードが存在するので、`COUNT(*)` は「19」となります。また、**name** カラムは `NULL` が許可されないので (＝`NULL` のフィールドを含まないので)、`COUNT(name)` は `COUNT(*) ` と同じく「19」となります。
 
 一方で、**guild** カラムは `NULL` を許可しており、5名がギルド無所属のため `COUNT(guild)` は「14」となります。また、**last_login_at** には、1件の `NULL` を含むので `COUNT(last_login_at)` は「18」となります。
 
@@ -708,18 +851,21 @@ FROM
 次の SQL の実行結果を予想し、その後、実際に実行して結果を確認してください。
 
 ```sql{.numberLines caption="COUNT関数の利用例(DISTINCT付き)"}
+SET
+  search_path TO w03;
+
 SELECT
   COUNT(*) AS "num_record",
   COUNT(DISTINCT job) AS "num_job_distinct",
   COUNT(DISTINCT guild) AS "num_guild_distinct"
 FROM
-  s_characters;
+  characters;
 ```
 
 実際の実行結果は次のようになります。
 
 ```
- num_record | num_job_distinct | num_guild_distinct 
+ num_record | num_job_distinct | num_guild_distinct
 ------------+------------------+--------------------
          19 |                6 |                  3
 ```
@@ -728,11 +874,25 @@ FROM
 
 また、**guild** カラムには「Yamato」「D.D.D」「hameln」「NULL」の4種類が存在しますが <span class="masked">`NULL` はカウントされない</span> ため `COUNT(DISTINCT guild)` は「**3**」となります。
 
-- <i class="fa-brands fa-github"></i>[from-teacher/03/init-s_users.sql](https://github.com/TakeshiWada1980/DB-2025-PostgreSQL/blob/main/from-teacher/03/init-s_characters.sql) 参考
+- <i class="fa-brands fa-github"></i>[from-teacher/03/init-characters.sql](https://github.com/TakeshiWada1980/DB-2026-PostgreSQL/blob/main/from-teacher/03/init-characters.sql) 参考
+
+#### 定着確認
+
+- あるテーブルの **guild** カラムには、`A`、`A`、`B`、`NULL`、`NULL` の5件が格納されている。WHERE句を指定せずに `COUNT(*)`、`COUNT(guild)`、`COUNT(DISTINCT guild)` を求めた結果を、それぞれ答えよ。
+  - **答え**: <span class="masked">順に5、3、2。</span>
+
+- **w03.characters** の **guild** がNULLであるレコードは5件存在する。`SELECT COUNT(*) FROM w03.characters WHERE guild IS NULL;` の結果は19と5のどちらか答えよ。
+  - **答え**: <span class="masked">5。WHERE句によって絞り込まれたレコードを数える。</span>
+
+- あるテーブルの **age** カラムには、`18`、`20`、`NULL` の3件がある。`SELECT COUNT(age) FROM テーブル名;` は、値の合計38、平均19、NULL以外の件数2のどれを返すか答えよ。
+  - **答え**: <span class="masked">NULL以外の件数2を返す。</span>
+
+- あるテーブルの **guild** カラムには、`A`、`A`、`B`、`NULL` の4件がある。ギルド名の種類を、NULLを除いて数える集約式を記述せよ。
+  - **答え**: <span class="masked">`COUNT(DISTINCT guild)`</span>
 
 #### SQLドリル💻
 
-- `ex-03_1.sql` 👉 **s_characters** テーブルから次のような結果セットを得る SQL を記述せよ。
+- `ex-03_1.sql` 👉 **w03.characters** テーブルから次のような結果セットを得る SQL を記述せよ。
 
 ```
  ジョブ種 
@@ -740,7 +900,7 @@ FROM
  6種類
 ```
 
-- `ex-03_2.sql` 👉 **s_characters** テーブルから次のような結果セットを得る SQL を記述せよ。
+- `ex-03_2.sql` 👉 **w03.characters** テーブルから次のような結果セットを得る SQL を記述せよ。
 
 ```
  ギルド所属 | 無所属 
@@ -759,17 +919,20 @@ FROM
 次の SQL の実行結果を予想し、その後、実際に実行して結果を確認してください。
 
 ```sql{.numberLines caption="SUM関数とAVG関数の利用例"}
+SET
+  search_path TO w03;
+
 SELECT
   ROUND(AVG(level),1) AS "avg_level",
   SUM(level) AS "sum_level"
 FROM
-  s_characters;
+  characters;
 ```
 
-実際の実行結果は次のようになります。なお、上記の**第02行目**の `ROUND` は[第03回講義](lecture03.html#カラム値に文字列演算と算術演算を適用する)で紹介したように四捨五入を適用する関数になります。
+実際の実行結果は次のようになります。なお、上記の**第05行目**の `ROUND` は[第03回講義](lecture03.html#カラム値に文字列演算と算術演算を適用する)で紹介したように四捨五入を適用する関数になります。
 
 ```
- avg_level | sum_level 
+ avg_level | sum_level
 -----------+-----------
       48.8 |       928
 ```
@@ -780,17 +943,26 @@ FROM
 
 次の SQL は、**age** カラムが `NULL` のとき、それを `16` に置き換えて合計と平均を適用するものです。実行結果を予想し、その後、実際に実行して結果を確認してください。
 
+この例も **w03.users** が Alice と Bob の2件であることを前提とします。別のレコードを残している場合は、**既存データが初期状態に戻ることを確認したうえで**、次のコマンドで初期化してください。
+
+```bash
+npm run sql from-teacher/03/init-users.sql
+```
+
 ```sql{.numberLines caption="SUM関数とAVG関数の利用例"}
+SET
+  search_path TO w03;
+
 START TRANSACTION;
 
 INSERT INTO
-  s_users (id, name, age)
+  users (id, name, age)
 VALUES
   (3, 'Carol', 18),
   (4, 'Dave', NULL),
   (5, 'Ellen', 17);
 
-SELECT * FROM s_users;
+SELECT * FROM users ORDER BY id;
 
 SELECT
   SUM(age) AS "sum",
@@ -798,7 +970,7 @@ SELECT
   ROUND(AVG(age), 1) AS "avg",
   ROUND(AVG(COALESCE(age, 16)), 1) AS "avg_with_default"
 FROM
-  s_users;
+  users;
 
 ROLLBACK;
 ```
@@ -814,7 +986,7 @@ INSERT 0 3
   2 | Bob   |  25
   3 | Carol |  18
   4 | Dave  |
-  5 | Ellen  |  17
+  5 | Ellen |  17
 (5 行)
 
  sum | sum_with_default | avg  | avg_with_default
@@ -825,9 +997,20 @@ INSERT 0 3
 ROLLBACK
 ```
 
+#### 定着確認
+
+- あるテーブルの **num** はINTEGER型で、`3`、`5`、`NULL` の3件がある。`SUM(num)` と `AVG(num)` の結果を答えよ。
+  - **答え**: <span class="masked">SUMは8、AVGは4。NULLは計算の対象から除外される。</span>
+
+- あるテーブルの **age** はINTEGER型で、`18`、`20`、`NULL` の3件がある。NULLを16に置き換えて平均する `AVG(COALESCE(age, 16))` の結果を答えよ。
+  - **答え**: <span class="masked">18。NULLを含む3件を対象に、(18+20+16)/3を計算する。</span>
+
+- **w03.characters** の **level** はINTEGER型、**guild** はVARCHAR型で、無所属の場合はNULLとなる。無所属のレコードだけを対象に、平均レベルの小数第3位を四捨五入して、小数第2位まで表示するSELECT文を記述せよ。
+  - **答え**: <span class="masked">`SELECT ROUND(AVG(level), 2) FROM w03.characters WHERE guild IS NULL;`</span>
+
 #### SQLドリル💻
 
-- `ex-03_3.sql` 👉 **s_characters** テーブルから、次のようにギルド無所属 (＝**guild** が `NULL`) のキャラクタについて、レベルの平均と合計を求める SQL を記述せよ。ただし、レベルの平均は小数第3位を四捨五入して、小数第2位まで表示すること。
+- `ex-03_3.sql` 👉 **w03.characters** テーブルから、次のようにギルド無所属 (＝**guild** が `NULL`) のキャラクタについて、レベルの平均と合計を求める SQL を記述せよ。ただし、レベルの平均は小数第3位を四捨五入して、小数第2位まで表示すること。
   - **ヒント** : <span class="masked">ギルド無所属のキャラクタだけを対象にするには `WHERE` 句を利用する</span>
 
 ```
@@ -836,7 +1019,7 @@ ROLLBACK
         39.60 |          198
 ```
 
-- `ex-03_4.sql` 👉 **s_characters** テーブルから、前衛職 (Fighter、Monk、Samurai、Ninja) の人数と平均レベル、後衛職 (Wizard、Priest) の人数と平均レベルを求める SQL を記述せよ (現時点までに学んでいる範囲では、2つの `SELECT` 文を記述する必要がある)。ただし、レベルの平均は小数第2位を四捨五入して、小数第1位まで表示すること。
+- `ex-03_4.sql` 👉 **w03.characters** テーブルから、前衛職 (Fighter、Monk、Samurai、Ninja) の人数と平均レベル、後衛職 (Wizard、Priest) の人数と平均レベルを求める SQL を記述せよ (ここでは、`WHERE` 句で対象の職を絞り込む2つの `SELECT` 文を記述すること)。ただし、レベルの平均は小数第2位を四捨五入して、小数第1位まで表示すること。
 
 ```
  前衛職人数 | 前衛職平均Lv 
@@ -860,25 +1043,28 @@ ROLLBACK
 次の SQL の実行結果を予想し、その後、実際に実行して結果を確認してください。
 
 ```sql{.numberLines caption="MAX関数とMIN関数の利用例"}
+SET
+  search_path TO w03;
+
 SELECT
-  MIN(level) AS "min_lv.",
-  MAX(level) AS "max_lv.",
+  MIN(level) AS "min_lv",
+  MAX(level) AS "max_lv",
   MIN(name) AS "min_name",
   MAX(name) AS "max_name"
 FROM
-  s_characters;
+  characters;
 
 SELECT
   MIN(created_on) AS "min_created_on",
   MAX(created_on) AS "max_created_on"
 FROM
-  s_characters;
+  characters;
 ```
 
 実際の実行結果は次のようになります。
 
 ```
- min_lv | max_lv | min_name | max_name 
+ min_lv | max_lv | min_name | max_name
 --------+--------+----------+----------
       1 |     73 | Alice    | Zach
 (1 行)
@@ -894,49 +1080,55 @@ FROM
 文字列型に対して、**文字数をカウントしたい場合** は `LENGTH` 関数を使用します。次の SQL の実行結果を予想し、その後、実際に実行して結果を確認してください。
 
 ```sql{.numberLines caption="最小文字数と最大文字数を求める例"}
+SET
+  search_path TO w03;
+
 SELECT
   MIN(LENGTH(name)) AS "min_len_name",
   MAX(LENGTH(name)) AS "max_len_name"
 FROM
-  s_characters;
+  characters;
 ```
 
 実際の実行結果は次のようになります。
 
 ```
- min_len_name | max_len_name 
+ min_len_name | max_len_name
 --------------+--------------
             3 |            7
 ```
 
-<div class="note type-senior">
+::: {.note .type-senior}
 **EX: 最も短い名前と最も長い名前を取得する**
 
 今後の講義で学ぶ「**サブクエリ**」というものを利用すると、テーブルのなかから「最も短い名前」や「最も長い名前」を抽出することができます。
 
 ```sql{.numberLines caption="「最も短い名前」と「最も長い名前」を取得する"}
+SET
+  search_path TO w03;
+
 SELECT
   name AS "最も短い名前"
 FROM
-  s_characters
+  characters
 WHERE
   LENGTH(name) = (
     SELECT
       MIN(LENGTH(name))
     FROM
-      s_characters
+      characters
   );
 
 SELECT
   name AS "最も長い名前"
 FROM
-  s_characters
+  characters
 WHERE
   LENGTH(name) = (
     SELECT
       MAX(LENGTH(name))
     FROM
-      s_characters
+      characters
   );
 ```
 
@@ -956,20 +1148,29 @@ WHERE
 (1 行)
 ```
 
-</div>
+:::
+
+#### 定着確認
+
+- あるテーブルの **name** はVARCHAR型で、Tom、Charlie、Bobの3件がある。`MIN(LENGTH(name))` と `MAX(LENGTH(name))` の結果を答えよ。
+  - **答え**: <span class="masked">順に3と7。文字列自体ではなく、文字数の最小値と最大値を返す。</span>
+
+- あるテーブルの **last_login_at** はTIMESTAMP型で、`2025-07-01 10:00:00`、`2025-08-01 09:00:00`、`NULL` の3件がある。`MIN(last_login_at)` と `MAX(last_login_at)` の結果を答えよ。
+  - **答え**: <span class="masked">MINは2025-07-01 10:00:00、MAXは2025-08-01 09:00:00。NULLは除外される。</span>
+
+- **w03.characters** の **buff** はNUMERIC型である。最大値と最小値の差を求める集約式を記述せよ。
+  - **答え**: <span class="masked">`MAX(buff) - MIN(buff)`</span>
 
 #### SQLドリル💻
 
-- `ex-03_5.sql` 👉 **s_characters** テーブルから、次に示すように **buff** カラムの「最小値」「最大値」「最大値と最小値の差」を求める SQL を記述せよ。
+- `ex-03_5.sql` 👉 **w03.characters** テーブルから、次に示すように **buff** カラムの「最小値」「最大値」「最大値と最小値の差」を求める SQL を記述せよ。
 
 ```
  min_buff | max_buff | max-min 
 ----------+----------+---------
     -0.20 |     0.10 |    0.30
 ```
-- `ex-03_6.sql` 👉 **s_characters** テーブルにおいて、最も長いギルド名が何文字かを求める SQL を記述せよ。ただし、**guild** カラムの `NULL` 値は `Freelancer` という文字列に置き換えて評価すること。
-
-- 現時点では、ギルド名が小文字に変換されていても問題ない。
+- `ex-03_6.sql` 👉 **w03.characters** テーブルにおいて、最も長いギルド名が何文字かを求める SQL を記述せよ。ただし、**guild** カラムの `NULL` 値は `Freelancer` という文字列に置き換えて評価すること。
 
 ## GROUP BY
 
@@ -978,13 +1179,16 @@ WHERE
 例えば、**job** ごとに「人数」「最大レベル」「平均レベル」を求める SQL は次のようになります。なお、`GROUP BY` 句に指定するカラムのことを <span class="masked">集約キー</span> と言います。
 
 ```sql{.numberLines caption="GROUP BY句の利用"}
+SET
+  search_path TO w03;
+
 SELECT
   job,
   COUNT(*) AS "num",
   MAX(level) AS "max_lv",
   ROUND(AVG(level),1) AS "avg_lv"
 FROM
-  s_characters
+  characters
 GROUP BY
   job -- ◀ job でグループ化処理
 ORDER BY
@@ -994,7 +1198,7 @@ ORDER BY
 実行結果は、次のようになります。
 
 ```
-   job   | num | max_lv | avg_lv 
+   job   | num | max_lv | avg_lv
 ---------+-----+--------+--------
  Fighter |   4 |     56 |   37.3
  Monk    |   2 |     39 |   36.0
@@ -1013,13 +1217,16 @@ ORDER BY
 値に `NULL` を含む **guild** カラムを「集約キー」に使用します。
 
 ```sql{.numberLines caption="GROUP BY句の集約キーにNULLが含まれる場合"}
+SET
+  search_path TO w03;
+
 SELECT
   guild,
   COUNT(*) AS "num",
   MAX(level) AS "max_lv",
   ROUND(AVG(level),1) AS "avg_lv"
 FROM
-  s_characters
+  characters
 GROUP BY
   guild -- ◀ guild を集約キーに指定
 ORDER BY
@@ -1029,7 +1236,7 @@ ORDER BY
 実行結果は、次のようになります。
 
 ```
- guild  | num | max_lv | avg_lv 
+ guild  | num | max_lv | avg_lv
 --------+-----+--------+--------
  D.D.D  |   5 |     64 |   55.8
  hameln |   4 |     70 |   52.0
@@ -1051,19 +1258,20 @@ ORDER BY
 ```
 #### SQLドリル💻
 
-- `ex-04_1.sql` 👉 **s_characters** テーブルから、次のような結果セットを得る SQL を記述せよ。
-    - **guild** が `NULL` のグループを先頭に配置して「無所属」というエイリアスを設定すること。
+- `ex-04_1.sql` 👉 **w03.characters** テーブルから、次のような結果セットを得る SQL を記述せよ。
+    - **guild** が `NULL` のグループを先頭に配置し、その **guild** を「無所属」という文字列に置き換えて表示すること。
     - **guild** が `Yamato` のグループを結果セットに含めないこと。
 
 ```
- guild  | num | max_lv | mim_lv | max_buff | min_buff 
+ guild  | num | max_lv | min_lv | max_buff | min_buff
 --------+-----+--------+--------+----------+----------
  無所属 |   5 |     73 |      1 |     0.00 |    -0.20
  D.D.D  |   5 |     64 |     46 |     0.10 |     0.10
  hameln |   4 |     70 |     33 |     0.05 |     0.05
 ```
 
-- `ex-04_2.sql` 👉 **s_characters** テーブルから、次のような結果セットを得る SQL を記述せよ。
+- `ex-04_2.sql` 👉 **w03.characters** テーブルから、次のような結果セットを得る SQL を記述せよ。
+  - 平均レベルは小数第2位を四捨五入して、小数第1位まで表示すること。
   - 平均レベルの降順に整列 (ソート) すること。
 
 ```
@@ -1079,16 +1287,19 @@ ORDER BY
 
 ### GROUP BY句の使用時にSELECT句で指定可能な値 (重要🚨)
 
-`GROUP BY` 句を使用したとき、`SELECT` 句に記述可能なカラムは「`GROUP BY` **で指定したカラム (＝集約キー) に限られる**」というルールがあります。たとえば、`GROUP BY job` としたとき、`SELECT` 句にそのまま記述できるカラムは <span class="masked">`job`</span> だけでであり、<span class="masked">`id` や `level`、`name`、`guild`</span> などを直接指定することはできません。それらを利用したい場合は、`MAX(id)` や `AVG(level)` のように集約関数 (グループごとに計算する関数) を適用する必要があります。
+`GROUP BY` 句を使用したとき、`SELECT` 句に記述可能なカラムは「`GROUP BY` **で指定したカラム (＝集約キー) に限られる**」というルールがあります。たとえば、`GROUP BY job` としたとき、`SELECT` 句にそのまま記述できるカラムは <span class="masked">`job`</span> だけであり、<span class="masked">`id` や `level`、`name`、`guild`</span> などを直接指定することはできません。それらを利用したい場合は、`MAX(id)` や `AVG(level)` のように集約関数 (グループごとに計算する関数) を適用する必要があります。
 
 実際に、次の SQL が「**エラーになること**」を確認してください。
 
 ```sql{.numberLines caption="集約キー以外のカラムをSELECT句に指定"}
+SET
+  search_path TO w03;
+
 SELECT
   job,
   level -- 集約キー以外のカラムを指定
 FROM
-  s_characters
+  characters
 GROUP BY
   job; -- 集約キーは job
 ```
@@ -1096,32 +1307,35 @@ GROUP BY
 実行結果は、次のようになります。
 
 ```
-psql:<stdin>:7: ERROR:  列"s_characters.level"はGROUP BY句で指定するか、集約関数内で使用しなければなりません
+psql:<stdin>:10: ERROR:  列"characters.level"はGROUP BY句で指定するか、集約関数内で使用しなければなりません
 ```
 
 英語環境では次のようになります。
 
 ```
-psql:<stdin>:7: ERROR:  column "s_characters.level" must appear in the GROUP BY clause or be used in an aggregate function
+psql:<stdin>:10: ERROR:  column "characters.level" must appear in the GROUP BY clause or be used in an aggregate function
 ```
 
-**第03行目** の `level` を、集約関数を適用した形 (たとえば `MAX(level)` や `AVG(level)`) にすると問題なく実行できることを確認してください。
+**第06行目** の `level` を、集約関数を適用した形 (たとえば `MAX(level)` や `AVG(level)`) にすると問題なく実行できることを確認してください。
 
-**(プロンプト例)**
-
-> SQLにおいて、`GROUP BY` 句に指定したカラム以外を、`SELECT` 句に指定するとエラーになるのはなぜですか。たとえば、`SELECT job, level FROM characters GROUP BY job;` がエラーになるのはなぜですか。
+::: prompts
+- SQLにおいて、`GROUP BY` 句に指定したカラム以外を、`SELECT` 句に指定するとエラーになるのはなぜですか。たとえば、`SELECT job, level FROM w03.characters GROUP BY job;` がエラーになるのはなぜですか。
+:::
 
 ### GROUP BY句に複数の集約キーを指定
 
 GROUP BY句には、以下のように **複数のカラム** を指定することができます。
 
 ```sql{.numberLines caption="GROUP BY句に複数の集約キーを指定"}
+SET
+  search_path TO w03;
+
 SELECT
   COALESCE(guild, '(Freelancer)') AS "guild",
   job,
   COUNT(*)
 FROM
-  s_characters
+  characters
 GROUP BY
   guild,
   job
@@ -1133,7 +1347,7 @@ ORDER BY
 実行結果は次のようになります。実行結果からわかるように、まず **guild** ごとにグループ化され、その内部でさらに **job** ごとにグループ化されています。つまり、2つのカラムを組み合わせて「ギルド×ジョブ」単位で件数を集計できていることが確認できます。
 
 ```
-    guild     |   job   | count 
+    guild     |   job   | count
 --------------+---------+-------
  (Freelancer) | Fighter |     1
  (Freelancer) | Monk    |     1
@@ -1155,13 +1369,14 @@ ORDER BY
 - `GROUP BY` の集約キーの順序を変えても (すなわち `GROUP BY guild, job` を `GROUP BY job, guild` に変更しても)、結果セットが同じになることを確認してください。
   - ただし `ORDER BY` 句を指定しない場合、整列順が変わる可能性があります。
 
-**(プロンプト例)**
-
-> SQLにおいて、`GROUP BY guild, job` を `GROUP BY job, guild` に書き換えても (`ORDER BY` 句が指定されている限りは)、結果セットが変わらないのはなぜですか。集約キーの順番は関係ないのですか。
+::: prompts
+- SQLにおいて、`GROUP BY guild, job` を `GROUP BY job, guild` に書き換えても (`ORDER BY` 句が指定されている限りは)、結果セットが変わらないのはなぜですか。集約キーの順番は関係ないのですか。
+:::
 
 #### SQLドリル
 
-- `ex-04_3.sql` 👉 **s_characters** テーブルから、次のような結果セットを得るような SQL を記述せよ。
+- `ex-04_3.sql` 👉 **w03.characters** テーブルから、次のような結果セットを得るような SQL を記述せよ。
+  - 平均レベルは小数第2位を四捨五入して、小数第1位まで表示すること。
   - 後衛職 (Priest、Wizard) のみを対象とすること。
 
 ```
@@ -1179,22 +1394,26 @@ ORDER BY
 `GROUP BY` でカテゴリ別に集計したときに、「**レコード全体の集計**」も同時に出力したいときは、`ROLLUP` という `GROUP BY` 句の拡張構文を使用します。たとえば、以下のようにすると「`guild` ごとの集計」に「全体の集計」を加えた結果セットを取得することができます。
 
 ```sql{.numberLines caption="ROLLUPの利用"}
+SET
+  search_path TO w03;
+
 SELECT
   guild,
   ROUND(AVG(level), 1) AS "avg_lv",
   COUNT(*) AS "num"
 FROM
-  s_characters
+  characters
 GROUP BY
   ROLLUP (guild) -- ◀ ここに注目
 ORDER BY
-  guild;
+  guild,
+  GROUPING(guild) DESC; -- NULLの2行は全体集計、無所属の順
 ```
 
-実行結果は、次のようになります。結果セットの**第5行目** ( num が `5` の行) が **guild** が `NULL` のキャラクタの集計、**第4行目** ( num が `19` の行) がテーブル全体の集計となります。
+実行結果は、次のようになります。**guild** が空欄の2行のうち、**num が `5` の行** がギルド無所属のキャラクタの集計、**num が `19` の行** がテーブル全体の集計となります。ここでは、後述する `GROUPING` 関数により、全体集計の行を先に表示しています。
 
 ```
- guild  | avg_lv | num 
+ guild  | avg_lv | num
 --------+--------+-----
  D.D.D  |   55.8 |   5
  Yamato |   48.6 |   5
@@ -1206,6 +1425,9 @@ ORDER BY
 空欄を別の文字に置き換えたいときは、次のように `GROUPING` 関数と **CASE式** を組み合わせて利用します。ここで `GROUPING(guild)` は、集計行なら`1`、通常行なら `0` を返す特殊関数です。
 
 ```sql{.numberLines caption="GROUPING関数の利用"}
+SET
+  search_path TO w03;
+
 SELECT
   CASE
     WHEN GROUPING(guild) = 1 THEN '(Total)'
@@ -1215,7 +1437,7 @@ SELECT
   ROUND(AVG(level), 1) AS "avg_lv",
   COUNT(*) AS "num"
 FROM
-  s_characters
+  characters
 GROUP BY
   ROLLUP (guild)
 ORDER BY
@@ -1225,7 +1447,7 @@ ORDER BY
 実行結果は次のようになります。
 
 ```
-    guild     | avg_lv | num 
+    guild     | avg_lv | num
 --------------+--------+-----
  (Freelancer) |   39.6 |   5
  (Total)      |   48.8 |  19
@@ -1234,12 +1456,15 @@ ORDER BY
  hameln       |   52.0 |   4
 ```
 
-<div class="note type-senior">
+::: {.note .type-senior}
 **EX: 並び順も厳密に制御したいときは...**
 
 次のように `ORDER BY` 句のなかで、`GROUPING` 関数と **CASE式** を組み合わせて利用します。
 
 ```sql{.numberLines caption="GROUPING関数の利用"}
+SET
+  search_path TO w03;
+
 SELECT
   CASE
     WHEN GROUPING(guild) = 1 THEN '(Total)'
@@ -1249,11 +1474,11 @@ SELECT
   ROUND(AVG(level), 1) AS "avg_lv",
   COUNT(*) AS "num"
 FROM
-  s_characters
+  characters
 GROUP BY
   ROLLUP (guild)
 ORDER BY
-  CASE -- ◀ ここからを注目
+  CASE -- ◀ ここからに注目
     WHEN GROUPING(guild) = 1 THEN 3 -- 整列順第3位
     WHEN guild IS NULL THEN 2 -- 整列順第2位
     ELSE 1 -- 整列順第1位
@@ -1264,7 +1489,7 @@ ORDER BY
 実行結果は次のようになります。
 
 ```
-    guild     | avg_lv | num 
+    guild     | avg_lv | num
 --------------+--------+-----
  D.D.D        |   55.8 |   5
  hameln       |   52.0 |   4
@@ -1274,11 +1499,12 @@ ORDER BY
 ```
 
 なお、`ROLLUP` の結果を含めた並び順や表示体裁の細かい制御は、SQLでも実現は可能ですが、**複雑になりやすい処理**です。可読性や保守性を考えると、最終的な表示順や体裁はアプリケーション側で調整するほうが実用的なケースも多いことを覚えておいてください。
-</div>
+:::
 
 #### SQLドリル💻
 
-- `ex-04_4.sql` 👉 **s_characters** テーブルから、次のように **job** ごとに最大レベル、平均レベル、人数を得るような SQL を記述せよ。
+- `ex-04_4.sql` 👉 **w03.characters** テーブルから、次のように **job** ごとに最大レベル、平均レベル、人数を得るような SQL を記述せよ。
+  - 平均レベルは小数第2位を四捨五入して、小数第1位まで表示すること。
   - 全体についても、同様の集計処理を実施して `-TOTAL-` というラベルをつけること。
 
 ```
@@ -1298,6 +1524,9 @@ ORDER BY
 `GROUP BY` 句に **CASE式** を利用することで、**より柔軟にグループを定義して**集計処理をすることが可能となります。たとえば「ギルド所属者」と「無所属者」でグループを分けて集計処理をしたい場合は、次のように SQL を記述します。
 
 ```sql{.numberLines caption="GROUP BY句 に CASE式 を利用"}
+SET
+  search_path TO w03;
+
 SELECT
   CASE
     WHEN guild IS NULL THEN '無所属'
@@ -1306,12 +1535,14 @@ SELECT
   ROUND(AVG(level), 1) AS "avg_lv",
   COUNT(*) AS "num"
 FROM
-  s_characters
+  characters
 GROUP BY
   CASE
     WHEN guild IS NULL THEN '無所属'
     ELSE 'ギルド所属'
-  END;
+  END
+ORDER BY
+  "カテゴリ";
 ```
 
 ここで、`SELECT` 句には <span class="masked">`GROUP BY` 句で指定した CASE式 と同じ結果を返す式を記述する必要</span> があります。
@@ -1320,18 +1551,21 @@ GROUP BY
 実行結果は次のようになります。
 
 ```
-  カテゴリ  | avg_lv | num 
+  カテゴリ  | avg_lv | num
 ------------+--------+-----
  ギルド所属 |   52.1 |  14
  無所属     |   39.6 |   5
 ```
 
-<div class="note type-senior">
+::: {.note .type-senior}
 **EX: 整列順も厳密に制御したい場合は...**
 
 `GROUP BY` 句に **CASE式** を使用したとき、整列順も厳密に制御したい場合は、次のようにします。
 
 ```sql{.numberLines caption="整列順を制御する例"}
+SET
+  search_path TO w03;
+
 SELECT
   CASE
     WHEN guild IS NULL THEN 2
@@ -1344,7 +1578,7 @@ SELECT
   ROUND(AVG(level), 1) AS "avg_lv",
   COUNT(*) AS "num"
 FROM
-  s_characters
+  characters
 GROUP BY
   CASE
     WHEN guild IS NULL THEN '無所属'
@@ -1364,17 +1598,18 @@ ORDER BY
 実行結果は次のようになります。
 
 ```
- ID |  カテゴリ  | avg_lv | num 
+ ID |  カテゴリ  | avg_lv | num
 ----+------------+--------+-----
   1 | ギルド所属 |   52.1 |  14
   2 | 無所属     |   39.6 |   5
 ```
 
-</div>
+:::
 
 #### SQLドリル💻
 
-- `ex-04_5.sql` 👉 **s_characters** テーブルから、次のように前衛職と後衛職でグループをわけて最大レベル、平均レベル、人数を得るような SQL を記述せよ。
+- `ex-04_5.sql` 👉 **w03.characters** テーブルから、次のように前衛職と後衛職でグループをわけて最大レベル、平均レベル、人数を得る SQL を記述せよ。前衛職は Fighter、Monk、Samurai、Ninja、後衛職は Priest、Wizard とする。
+  - 平均レベルは小数第2位を四捨五入して、小数第1位まで表示すること。
 
 ```
  battle_position | max_lv | avg_lv | num 
@@ -1397,36 +1632,44 @@ ORDER BY
 たとえば、**最終ログイン日時** (`last_login_at`) を、月単位でまとめて、その件数を求めたいとき、`DATE_TRUNC` を利用すれば以下のように SQL を書くことができます。
 
 ```sql{.numberLines caption="最終ログイン日時の月別集計(1)"}
+SET
+  search_path TO w03;
+
 SELECT
   DATE_TRUNC('month', last_login_at) AS "date", -- ◀ ここに注目
   COUNT(*) AS "num"
 FROM
-  s_characters
+  characters
 WHERE
   last_login_at IS NOT NULL
 GROUP BY
-  DATE_TRUNC('month', last_login_at); -- ◀ ここに注目
+  DATE_TRUNC('month', last_login_at) -- ◀ ここに注目
+ORDER BY
+  "date";
 ```
 
 実行結果は、次のようになります。
 
 ```
-        date         | num 
+        date         | num
 ---------------------+-----
- 2025-09-01 00:00:00 |   6
  2025-07-01 00:00:00 |   4
  2025-08-01 00:00:00 |   4
+ 2025-09-01 00:00:00 |   6
  2025-10-01 00:00:00 |   4
 ```
 
-体裁を整えたバージョンは以下のようになります。以下の SQL の **第02行目** の `TO_CHAR` 関数は、[第03回講義](lecture03.html#日付時刻関数を利用する-授業時間外学習)で紹介したように日時などを整形出力する関数です。
+体裁を整えたバージョンは以下のようになります。以下の SQL の **第05行目** の `TO_CHAR` 関数は、[第03回講義](lecture03.html#日付時刻関数を利用する)で紹介したように日時などを整形出力する関数です。
 
 ```sql{.numberLines caption="最終ログイン日時の月別集計(2)"}
+SET
+  search_path TO w03;
+
 SELECT
   TO_CHAR(DATE_TRUNC('month', last_login_at), 'YYYY/MM') AS "date",
   COUNT(*) AS "num"
 FROM
-  s_characters
+  characters
 WHERE
   last_login_at IS NOT NULL
 GROUP BY
@@ -1438,7 +1681,7 @@ ORDER BY
 実行結果は、次のようになります。
 
 ```
-  date   | num 
+  date   | num
 ---------+-----
  2025/07 |   4
  2025/08 |   4
@@ -1451,6 +1694,9 @@ ORDER BY
 `DATE_TRUNC` 関数を使用せずに、標準SQLで同様の処理をしたい場合には、**CASE式** で月ごとの区分を表現することができます。
 
 ```sql{.numberLines caption="最終ログイン日時の月別集計(DATE_TRUNC関数を不使用)"}
+SET
+  search_path TO w03;
+
 SELECT
   CASE
     WHEN last_login_at >= DATE '2025-07-01' AND
@@ -1465,7 +1711,7 @@ SELECT
   END AS "date",
   COUNT(*) AS "num"
 FROM
-  s_characters
+  characters
 WHERE
   last_login_at IS NOT NULL
 GROUP BY
@@ -1484,18 +1730,19 @@ ORDER BY
   "date";
 ```
 
-<div class="note type-caution">
+::: {.note .type-caution}
 **日時の取り扱いに関する注意**
 
 **last_login_at** がTIMESTAMP型のとき、`last_login_at BETWEEN DATE '2025-07-01' AND DATE '2025-07-31'` のような条件を記述すると、2025年07月31日の **00時00分00秒ちょうど** までしか含まれなくなるので注意してください。これは <span class="masked">`DATE '2025-07-31'` が `2025-07-31 00:00:00`</span> に変換されるためです。
 
 そのため、**last_login_at** が <span class="masked">`2025-07-31 01:00:00`</span> のときは、その条件は **真にはならない** ので注意してください。
 
-</div>
+:::
 
 #### SQLドリル💻
 
-- `ex-04_6.sql` 👉 **s_characters** テーブルについて、次のように **created_on** で年別に「人数」と「平均レベル」を集計した結果セットを得るような SQL を記述せよ。
+- `ex-04_6.sql` 👉 **w03.characters** テーブルについて、次のように **created_on** で年別に「人数」と「平均レベル」を集計した結果セットを得るような SQL を記述せよ。
+  - 平均レベルは小数第2位を四捨五入して、小数第1位まで表示すること。
 
 ```
  year | num | avg_lv 
@@ -1506,6 +1753,23 @@ ORDER BY
  2023 |   4 |   57.0
  2024 |   4 |   53.8
 ```
+
+#### 定着確認
+
+- あるテーブルの **guild** には、`A`、`A`、`B`、`NULL`、`NULL` の5件がある。`SELECT guild, COUNT(*) FROM テーブル名 GROUP BY guild;` の結果は何行になり、各グループの件数はいくつになるか答えよ。
+  - **答え**: <span class="masked">3行。Aは2件、Bは1件、NULLは2件。NULLも1つのグループになる。</span>
+
+- あるテーブルに、(guild, job) が (A, Fighter)、(A, Fighter)、(A, Wizard)、(NULL, Fighter) の4件がある。`GROUP BY guild, job` によってグループ化すると、グループ数はいくつになるか答えよ。
+  - **答え**: <span class="masked">3グループ。AとFighterの組は2件、他の2組はそれぞれ1件。</span>
+
+- **characters** テーブルには、**job** がFighterで **level** が10と20の2件がある。`SELECT job, level FROM characters GROUP BY job;` がエラーになる理由を答えよ。
+  - **答え**: <span class="masked">1つのjobグループにlevelが10と20の複数の値があり、どのlevelを返すか決まらないため。levelにはMAXやAVGなどの集約関数を適用する。</span>
+
+- PostgreSQL で `GROUP BY ROLLUP(guild)` を使用し、ギルド別集計と全体集計を得る。元データのguildがNULLのグループと、全体集計の行を区別するために `GROUPING(guild)` を取得した場合、それぞれの値を答えよ。
+  - **答え**: <span class="masked">元データのguildがNULLのグループは0、全体集計の行は1。</span>
+
+- PostgreSQL で `DATE_TRUNC('month', TIMESTAMP '2025-10-23 14:25:30')` を実行した結果を答えよ。
+  - **答え**: <span class="masked">2025-10-01 00:00:00。月の先頭まで切り捨てられる。</span>
 
 ## HAVING 句
 
@@ -1518,12 +1782,15 @@ ORDER BY
 - `HAVING` 句では、集約関数を使わずに集約キー以外のカラムを直接参照することはできません。例えば `buff > 0.0` のような条件式は `HAVING` ではなく `WHERE` 句で指定します。
 
 ```sql{.numberLines caption="HAVING句の使用例"}
+SET
+  search_path TO w03;
+
 SELECT
   COALESCE(guild,'Freelancer') AS "guild",
   COUNT(*) AS "num",
   ROUND(AVG(level), 1) AS "avg_lv"
 FROM
-  s_characters
+  characters
 GROUP BY
   guild
 HAVING
@@ -1535,7 +1802,7 @@ ORDER BY
 実行結果は、次のようになります。
 
 ```
- guild  | num | avg_lv 
+ guild  | num | avg_lv
 --------+-----+--------
  D.D.D  |   5 |   55.8
  hameln |   4 |   52.0
@@ -1545,10 +1812,10 @@ ORDER BY
 
 #### SQLドリル💻
 
-`ex-05_1.sql` 👉 **s_characters** テーブルについて、次のようにジョブごとの「平均レベル」と「人数」を集計した結果セットを得る SQL を記述せよ。
-
-- 人数が2名以下のジョブは結果セットに含めないこと
-- 平均レベルの降順で表示すること
+- `ex-05_1.sql` 👉 **w03.characters** テーブルについて、次のようにジョブごとの「平均レベル」と「人数」を集計した結果セットを得る SQL を記述せよ。
+  - 平均レベルは小数第2位を四捨五入して、小数第1位まで表示すること。
+  - 人数が2名以下のジョブは結果セットに含めないこと。
+  - 平均レベルの降順で表示すること。
 
 ```
    job   | avg_lv | num 
@@ -1574,6 +1841,18 @@ ORDER BY
   - **答え** : <span class="masked">❺❻➊❸❷❹</span>
 
 
+- **w03.characters** をjobごとに集計し、人数が3人以上のグループだけを残したい。GROUP BY句の後に記述するHAVING句を答えよ。
+  - **答え**: <span class="masked">`HAVING COUNT(*) >= 3`</span>
+
+- **w03.characters** の **level** はINTEGER型である。レベルが30以上のレコードだけを集計対象にしたい場合と、jobごとの平均レベルが50以上のグループだけを残したい場合に、それぞれ使用する句を答えよ。
+  - **答え**: <span class="masked">前者はWHERE句（WHERE level >= 30）、後者はHAVING句（HAVING AVG(level) >= 50）。</span>
+
+- **characters** テーブルには、Fighterがレベル20と60、Wizardがレベル40と60で各2件ずつ登録されている。`GROUP BY job HAVING AVG(level) >= 50` で残るjobと、その平均レベルを答えよ。
+  - **答え**: <span class="masked">Wizardだけが残り、平均レベルは50。Fighterの平均は40なので残らない。</span>
+
+- **characters** テーブルには、**guild** と **level** が存在する。`SELECT guild, COUNT(*) FROM characters WHERE COUNT(*) >= 3 GROUP BY guild;` の誤りを説明し、修正せよ。
+  - **答え**: <span class="masked">WHERE句ではそのグループのCOUNT(*)を条件にできない。`SELECT guild, COUNT(*) FROM characters GROUP BY guild HAVING COUNT(*) >= 3;` とする。</span>
+
 ## 授業時間外学習の指示 (宿題)
 
 🚨**本科目は「学修単位科目」であり、1回の講義あたり「4時間相当」の授業時間外学習が求められる科目です**🏃
@@ -1581,8 +1860,8 @@ ORDER BY
 - 次回の講義で「**小テスト❺**」を実施します。
   - **定着確認** および **SQLドリル** から主に出題します。
   - 講義が進行するにつれて、当然ながら小テストの内容も複雑で高度なものになっていきます。
-- ここまでの第03回講義～第05回講義では、実践的な SQL について学んできました。次回講義では、データベースの**概念設計** (概念データモデルの設計) および**論理設計** (データモデルの設計) などの理論に寄せた内容を学んできます。
-- 予習として📖 教科書「達人に学ぶDB設計 徹底指南書 (第2版)」の以下ページを読んできてください。内容が理解できなくても構いません。この予習の目的は <span class="masked">「ここがよく分からなかった」というポイントを自覚的に整理して、次回の授業に望んでもらうこと</span> にあります。
+- ここまでの第03回講義～第05回講義では、実践的な SQL について学んできました。次回講義では、データベースの**概念設計** (概念データモデルの設計) および**論理設計** (データモデルの設計) などの理論に寄せた内容を学んでいきます。
+- 予習として📖 教科書「達人に学ぶDB設計 徹底指南書 (第2版)」の以下ページを読んできてください。内容が理解できなくても構いません。この予習の目的は <span class="masked">「ここがよく分からなかった」というポイントを自覚的に整理して、次回の授業に臨んでもらうこと</span> にあります。
   - 皆さんは既に PG3 で、複数テーブルから構成される DB を扱っているので、以下の順で読むほうが納得感があると思います。
   - pp.145-164 第4章「ER図」
       - 4-1 テーブルが多すぎる
@@ -1603,5 +1882,5 @@ ORDER BY
 ---
 
 - この講義資料を再読・熟読し「不明な用語」や「理解が不十分な用語」があればインターネットや、ChatGPTなどの生成AIを利用して解決してください。また、興味関心を持ったトピックについて、ウェブ、生成AI、YouTube動画などを利用して知識を広げ、理解を深めてください。
-  - 特に **(プロンプト例)** を示しているものについては、実際に生成AIにプロンプトを投げ、さらに対話を重ねることで、知識の幅を広げるだけでなく、理解をより深く確かなものにしてください。
+  - 特に **プロンプト例** を示しているものについては、実際に生成AIにプロンプトを投げ、さらに対話を重ねることで、知識の幅を広げるだけでなく、理解をより深く確かなものにしてください。
 - 講義資料内の「**演習**」や「**SQLドリル**」に再度取り組んでください。特に、**SQLドリル**💻 は、授業時間中に1回取り組むだけでは定着しないので注意してください。
