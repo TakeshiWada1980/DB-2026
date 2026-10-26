@@ -241,7 +241,24 @@ class="toc-section-number">10</span> 授業時間外学習の指示 (宿題)</a>
       <li><strong>すべての変更を取り消して元に戻す</strong></li>
       </ul>
       <p>つまり、トランザクションに含まれる変更は「<strong>すべて確定する</strong>」か「<strong>すべて取り消される</strong>」の二択であり、一部だけが確定することが無いようになっています。この性質を
-      <strong>原子性（Atomicity）</strong> といいます。</p>
+      <strong><u>原子性 (Atomicity) </u></strong> といいます。</p>
+      <div class="note type-tips">
+      <p><strong>ACID特性</strong></p>
+      <p>RDBMS のトランザクションには、<strong>ACID特性</strong>
+      と呼ばれる4つの重要な性質があります。</p>
+      <ul>
+      <li><strong>原子性（Atomicity）</strong>：すべての変更を確定するか、すべて取り消す。</li>
+      <li><strong>一貫性（Consistency）</strong>：データの整合性が保たれる。</li>
+      <li><strong>独立性（Isolation）</strong>：同時に実行されるトランザクションが不適切に干渉しない。</li>
+      <li><strong>永続性（Durability）</strong>：確定した変更は、障害が発生しても失われない。</li>
+      </ul>
+      </div>
+      <div class="prompts">
+      <ul>
+      <li>RDBMS のトランザクションが備える
+      ACID特性について、銀行口座間の送金を例に、それぞれの性質が保証されなかった場合にどのような問題が発生するのか、具体的に分かりやすく解説してください。</li>
+      </ul>
+      </div>
       <hr />
       <p>例えば、ひとつのトランザクションのなかに (＝ <code>START TRANSACTION</code> ～
       <code>COMMIT</code> のなかに)、<code>SQL-1</code>、<code>SQL-2</code>、<code>SQL-3</code>
@@ -299,6 +316,11 @@ class="toc-section-number">10</span> 授業時間外学習の指示 (宿題)</a>
       <li><strong>ECサイトの注文処理</strong>：注文情報の登録と、商品の在庫数の減算をセットで実行する。片方だけが成功すると、注文情報と在庫数に不整合が生じる。</li>
       <li><strong>映画館やイベントの座席予約</strong>：座席を予約済みに変更する処理と、利用者の予約情報の登録をセットで実行する。片方だけが成功すると、予約情報と座席の空き状況が一致しなくなる。</li>
       <li><strong>ポイントを利用した商品購入</strong>：保有ポイントの減算と、注文へのポイント利用の反映をセットで実行する。片方だけが成功すると、ポイント残高と注文内容に不整合が生じる。</li>
+      </ul>
+      </div>
+      <div class="prompts">
+      <ul>
+      <li>ネットショップで、残り1個の商品を2人が同時に購入する場合を考えています。「在庫を確認する処理」と「在庫を減らす処理」をひとつのトランザクションにまとめれば、在庫以上に販売することを防げると思ったのですが、この考え方で十分でしょうか。</li>
       </ul>
       </div>
       <h3 data-number="3.1.1" id="定着確認"><span class="header-section-number">3.1.1</span>
@@ -535,6 +557,14 @@ DETAIL:  キー (id)=(4) はすでに存在します。</code></pre>
 <span id="cb8-17"><a href="#cb8-17"></a></span>
 <span id="cb8-18"><a href="#cb8-18"></a><span class="co">-- テーブルの状態を確認 👉 Carol のレコードが存在しない</span></span>
 <span id="cb8-19"><a href="#cb8-19"></a><span class="kw">SELECT</span> <span class="op">*</span> <span class="kw">FROM</span> users <span class="kw">ORDER</span> <span class="kw">BY</span> <span class="kw">id</span>;</span></code></pre></div>
+      <div class="prompts">
+      <ul>
+      <li>PostgreSQLで、<code>UPDATE</code> や <code>DELETE</code> を実行したあとに
+      <code>ROLLBACK</code>
+      すると、変更前の状態に戻ります。これは、変更前のデータをどこかに保存しているのでしょうか。それとも、<code>COMMIT</code>
+      するまでは実際のデータを書き換えていないのでしょうか。内部でどのような仕組みになっているのか気になって眠れません。</li>
+      </ul>
+      </div>
       <div class="note type-caution">
       <p><strong>注意</strong></p>
       <p>以下、演習のなかで <code>UPDATE</code> 文や <code>DELETE</code>
@@ -1166,6 +1196,15 @@ ROLLBACK</code></pre>
  15 | Trent   | Wizard
  18 | Carol   | Wizard
  19 | Jack    | Priest</code></pre>
+      <div class="prompts">
+      <ul>
+      <li>PostgreSQL に、INTEGER 型の a と b というカラムを持つ samples テーブルがあり、1
+      件だけ入っているレコードの値は a が 1、b が 2 です。ここで
+      <code>UPDATE sample SET a = b, b = a;</code>
+      を実行すると、値を入れ替えられるのでしょうか。それとも、先にaが 2 になるので、b も 2
+      になるのでしょうか。実際に試せば分かるのですが、面倒なので教えてください。</li>
+      </ul>
+      </div>
       <h3 data-number="6.4.1" id="sqlドリル-4"><span class="header-section-number">6.4.1</span>
       SQLドリル💻</h3>
       <ul>
@@ -1827,6 +1866,15 @@ ROLLBACK</code></pre>
  hameln     |   4 |     70 |   52.0
  Yamato     |   5 |     68 |   48.6
  Freelancer |   5 |     73 |   39.6</code></pre>
+      <div class="prompts">
+      <ul>
+      <li>SQLでは <code>NULL = NULL</code> は TRUE
+      にならないと学びました。一方、<code>GROUP BY</code> では、集約キーが <code>NULL</code>
+      のレコードがひとつのグループにまとまります。<code>NULL</code>
+      同士が等しいか分からないのに、同じグループにまとめてよいのでしょうか。この 2
+      つの扱いが矛盾しない理由を知りたいです。</li>
+      </ul>
+      </div>
       <h3 data-number="8.0.2" id="sqlドリル-8"><span class="header-section-number">8.0.2</span>
       SQLドリル💻</h3>
       <ul>
@@ -1902,7 +1950,7 @@ ROLLBACK</code></pre>
       <div class="prompts">
       <ul>
       <li>SQLにおいて、<code>GROUP BY</code> 句に指定したカラム以外を、<code>SELECT</code>
-      句に指定するとエラーになるのはなぜですか。たとえば、<code>SELECT job, level FROM w03.characters GROUP BY job;</code>
+      句に指定するとエラーになるのはなぜですか。たとえば、<code>SELECT job, level FROM characters GROUP BY job;</code>
       がエラーになるのはなぜですか。</li>
       </ul>
       </div>
@@ -2276,6 +2324,13 @@ ROLLBACK</code></pre>
  2025/08 |   4
  2025/09 |   6
  2025/10 |   4</code></pre>
+      <div class="prompts">
+      <ul>
+      <li>PostgreSQLの <code>DATE_TRUNC</code> と <code>GROUP BY</code> で、登録日時 created_at
+      を月単位にまとめ、登録件数を集計する方法を学びました。ただ、登録が 0
+      件だった月も「0件」と表示したい場合は、どうすればよいのでしょうか。元のテーブルにその月のレコードがないとき、表示するための月のデータは、どこから用意するのでしょうか。</li>
+      </ul>
+      </div>
       <h3 data-number="8.5.1" id="参考-date_trunc関数を使用せずに同様の集計をする"><span
       class="header-section-number">8.5.1</span> 参考:
       DATE_TRUNC関数を使用せずに同様の集計をする</h3>
