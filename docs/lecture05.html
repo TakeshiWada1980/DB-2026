@@ -1,0 +1,2554 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, user-scalable=yes"
+    />
+    <meta name="robots" content="noindex,nofollow,noarchive" />
+    <meta name="referrer" content="no-referrer" />
+
+    <script>
+      MathJax = {
+        chtml: {
+          displayAlign: "left",
+          displayIndent: "1em",
+        },
+      };
+    </script>
+
+     <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js"
+type="text/javascript"></script> 
+
+    <link rel="icon" href="favicon.ico" sizes="any" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css"
+      integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c&family=JetBrains+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap"
+    />
+    <link rel="stylesheet" href="style.css" />
+    <script src="site.js" defer></script>
+
+    <title>第05回 4I-データベース工学</title>
+  </head>
+
+  <body>
+    <button
+      type="button"
+      class="openbtn"
+      aria-label="目次を開く"
+      aria-controls="g-nav"
+      aria-expanded="false"
+    >
+      <span></span><span></span><span></span>
+    </button>
+    <nav id="g-nav" aria-hidden="true">
+      <div id="g-nav-list">
+        <!-- ---------------------------------------- -->
+         <ul>
+<li><a href="#連絡" id="toc-連絡"><span class="toc-section-number">1</span> 連絡</a>
+<ul>
+<li><a href="#今回の達成目標" id="toc-今回の達成目標"><span class="toc-section-number">1.1</span>
+今回の達成目標</a></li>
+</ul></li>
+<li><a href="#準備と前回の復習" id="toc-準備と前回の復習"><span class="toc-section-number">2</span>
+準備と前回の復習</a>
+<ul>
+<li><a href="#ハンズオン学習の準備" id="toc-ハンズオン学習の準備"><span
+class="toc-section-number">2.1</span> ハンズオン学習の準備</a></li>
+<li><a href="#前回の復習" id="toc-前回の復習"><span class="toc-section-number">2.2</span>
+前回の復習</a></li>
+</ul></li>
+<li><a href="#トランザクション" id="toc-トランザクション"><span class="toc-section-number">3</span>
+トランザクション</a>
+<ul>
+<li><a href="#トランザクションが必要とされる理由-銀行送金の例"
+id="toc-トランザクションが必要とされる理由-銀行送金の例"><span class="toc-section-number">3.1</span>
+トランザクションが必要とされる理由 (銀行送金の例)</a></li>
+<li><a href="#トランザクションの使用例" id="toc-トランザクションの使用例"><span
+class="toc-section-number">3.2</span> トランザクションの使用例</a></li>
+<li><a href="#明示的なロールバック" id="toc-明示的なロールバック"><span
+class="toc-section-number">3.3</span> 明示的なロールバック</a></li>
+</ul></li>
+<li><a href="#csvファイルからのinsert" id="toc-csvファイルからのinsert"><span
+class="toc-section-number">4</span> CSVファイルからのINSERT</a>
+<ul>
+<li><a href="#csv-ファイルの作成" id="toc-csv-ファイルの作成"><span
+class="toc-section-number">4.1</span> CSV ファイルの作成</a></li>
+<li><a href="#csv-ファイルをコンテナに配置" id="toc-csv-ファイルをコンテナに配置"><span
+class="toc-section-number">4.2</span> CSV ファイルをコンテナに配置</a></li>
+<li><a href="#csv-ファイルからテーブルに取り込み" id="toc-csv-ファイルからテーブルに取り込み"><span
+class="toc-section-number">4.3</span> CSV ファイルからテーブルに取り込み</a></li>
+</ul></li>
+<li><a href="#delete文-基礎編" id="toc-delete文-基礎編"><span class="toc-section-number">5</span>
+DELETE文 (基礎編)</a></li>
+<li><a href="#update文-基礎編" id="toc-update文-基礎編"><span class="toc-section-number">6</span>
+UPDATE文 (基礎編)</a>
+<ul>
+<li><a href="#すべてのレコードの値を固定値で更新" id="toc-すべてのレコードの値を固定値で更新"><span
+class="toc-section-number">6.1</span> すべてのレコードの値を固定値で更新</a></li>
+<li><a href="#特定のレコードのみを更新" id="toc-特定のレコードのみを更新"><span
+class="toc-section-number">6.2</span> 特定のレコードのみを更新</a></li>
+<li><a href="#現在の値を利用した更新" id="toc-現在の値を利用した更新"><span
+class="toc-section-number">6.3</span> 現在の値を利用した更新</a></li>
+<li><a href="#case式による同時置換処理" id="toc-case式による同時置換処理"><span
+class="toc-section-number">6.4</span> CASE式による同時置換処理</a></li>
+<li><a href="#補足-returning-句" id="toc-補足-returning-句"><span
+class="toc-section-number">6.5</span> 補足: RETURNING 句</a></li>
+</ul></li>
+<li><a href="#集約関数-aggregate-function" id="toc-集約関数-aggregate-function"><span
+class="toc-section-number">7</span> 集約関数 (Aggregate Function)</a>
+<ul>
+<li><a href="#count関数" id="toc-count関数"><span class="toc-section-number">7.1</span>
+COUNT関数</a></li>
+<li><a href="#sum-関数とavg-関数" id="toc-sum-関数とavg-関数"><span
+class="toc-section-number">7.2</span> SUM 関数とAVG 関数</a></li>
+<li><a href="#max-関数とmin-関数" id="toc-max-関数とmin-関数"><span
+class="toc-section-number">7.3</span> MAX 関数とMIN 関数</a></li>
+</ul></li>
+<li><a href="#group-by-句" id="toc-group-by-句"><span class="toc-section-number">8</span> GROUP BY
+句</a>
+<ul>
+<li><a href="#group-by-句の使用時に-select-句で指定可能な値-重要"
+id="toc-group-by-句の使用時に-select-句で指定可能な値-重要"><span
+class="toc-section-number">8.1</span> GROUP BY 句の使用時に SELECT 句で指定可能な値
+(重要🚨)</a></li>
+<li><a href="#group-by-句に複数の集約キーを指定" id="toc-group-by-句に複数の集約キーを指定"><span
+class="toc-section-number">8.2</span> GROUP BY 句に複数の集約キーを指定</a></li>
+<li><a href="#rollup-による全体集計" id="toc-rollup-による全体集計"><span
+class="toc-section-number">8.3</span> ROLLUP による全体集計</a></li>
+<li><a href="#group-by-句に-case-式を利用" id="toc-group-by-句に-case-式を利用"><span
+class="toc-section-number">8.4</span> GROUP BY 句に CASE 式を利用</a></li>
+<li><a href="#date_trunc関数を利用した時間軸に沿った集計処理"
+id="toc-date_trunc関数を利用した時間軸に沿った集計処理"><span class="toc-section-number">8.5</span>
+DATE_TRUNC関数を利用した時間軸に沿った集計処理</a></li>
+</ul></li>
+<li><a href="#having-句" id="toc-having-句"><span class="toc-section-number">9</span> HAVING 句</a>
+<ul>
+<li><a href="#where句とhaving句の使い分けについて"
+id="toc-where句とhaving句の使い分けについて"><span class="toc-section-number">9.1</span>
+WHERE句とHAVING句の使い分けについて</a></li>
+</ul></li>
+<li><a href="#授業時間外学習の指示-宿題" id="toc-授業時間外学習の指示-宿題"><span
+class="toc-section-number">10</span> 授業時間外学習の指示 (宿題)</a></li>
+</ul> 
+        <!-- ---------------------------------------- -->
+      </div>
+    </nav>
+
+    <header class="markdown-body">
+      <p>2026-4I データベース工学 第05回 講義資料</p>
+      <p>2026年10月28日 (水) 1時限</p>
+    </header>
+
+    <main class="markdown-body">
+      <!-- ---------------------------------------- -->
+      <h1 data-number="1" id="連絡"><span class="header-section-number">1</span> 連絡</h1>
+      <ul>
+      <li>小テスト➍ を実施します。
+      <ul>
+      <li>シラバス記載のように、小テストは最終評価の <span class="masked">35%</span>
+      に相当します。</li>
+      <li>遅刻・欠席等により追試験を希望する場合は <a
+      href="lecture01.html#成績評価法と履修上の注意">第01回講義で案内した手続き</a>
+      をしてください。</li>
+      </ul></li>
+      <li>今回の講義内容は、<a href="lecture04.html">前回講義</a>
+      の内容を<strong>ひととおり理解していること</strong>を前提とします。まだ、前回の内容
+      (授業時間外学習のセクションを含む)
+      を終えていない人は、まずは、そちらから取り組んでください。</li>
+      </ul>
+      <h2 data-number="1.1" id="今回の達成目標"><span class="header-section-number">1.1</span>
+      今回の達成目標</h2>
+      <ul>
+      <li>トランザクションの役割を説明し、<code>COMMIT</code> と <code>ROLLBACK</code>
+      を使用して、一連のデータ変更を確定・取り消すことができる。</li>
+      <li><code>UPDATE</code>・<code>DELETE</code> と <code>WHERE</code>
+      句を使用して必要なレコードを更新・削除し、トランザクションによって変更を確定・取り消すことができる。</li>
+      <li><code>COUNT</code> や <code>AVG</code> などの集約関数を使用して、<code>NULL</code>
+      の扱いに注意しながら件数や平均値などを求めることができる。</li>
+      <li><code>GROUP BY</code>・<code>WHERE</code>・<code>HAVING</code>
+      を組み合わせ、集計対象と集計結果に条件を指定して、必要なグループ別の集計結果を取得できる。</li>
+      </ul>
+      <h1 data-number="2" id="準備と前回の復習"><span class="header-section-number">2</span>
+      準備と前回の復習</h1>
+      <h2 data-number="2.1" id="ハンズオン学習の準備"><span class="header-section-number">2.1</span>
+      ハンズオン学習の準備</h2>
+      <p>次の手順でSQL演習環境を立ち上げ、教材の更新を取得してください。</p>
+      <ul>
+      <li><a href="lecture04.html#sql演習環境の動作確認-前回復習">SQL演習環境の動作確認</a> @
+      第04回講義</li>
+      <li><a href="lecture04.html#教材の更新の取得">教材の更新の取得</a> @ 第04回講義</li>
+      </ul>
+      <p>今回も、第03回・第04回と同じ <strong>w03.users</strong> と <strong>w03.characters</strong>
+      テーブルを使用します。教材の更新後は、<strong>from-teacher/05</strong> に CSV ファイルと SQL
+      ドリルの解答例があることを確認してください。</p>
+      <div class="balloon char-01 face-02 tone-yellow">
+      <p>今回も、SQL ファイルごとに先頭で <code>SET search_path TO w03;</code>
+      を実行してください。これにより、そのファイル内では <strong>w03.users</strong> を
+      <strong>users</strong>、<strong>w03.characters</strong> を <strong>characters</strong>
+      と記述できます。</p>
+      </div>
+      <p>以降、演習用の SQL ファイルは、基本的に <strong>sql/05</strong>
+      の配下に作成してください。</p>
+      <h2 data-number="2.2" id="前回の復習"><span class="header-section-number">2.2</span>
+      前回の復習</h2>
+      <p>前回講義では <code>SELECT</code> 文における <code>ORDER BY</code> 句、<code>LIMIT</code>
+      句、<code>OFFSET</code> 句、<code>WHERE</code> 句について学びました。</p>
+      <ul>
+      <li><code>ORDER BY</code> は、レコードの <strong>整列順 (ソート順) を指定する</strong>
+      ための句でした。</li>
+      <li><code>LIMIT</code> は、取得するレコードの <strong>件数を制限する</strong>
+      ための句でした。</li>
+      <li><code>OFFSET</code> は、レコードの <span class="masked">取得開始位置を調整する
+      (スキップする)</span> ための句でした。</li>
+      <li><code>WHERE</code> は、<strong>抽出条件を指定する</strong> ための句でした。</li>
+      </ul>
+      <p>これらを組み合わせることで、テーブルから「どのレコードを」「どの順で」「どの位置から」「何件だけ」取り出すかを柔軟に制御できるようになりました。</p>
+      <div class="note type-tips">
+      <p>SQL における <code>WHERE</code>
+      は疑問詞としての「<strong>どこ？</strong>」ではなく、「<strong>〜という場所
+      (〜であるような行)</strong>」という関係副詞的な用法で使われています。つまり、<code>WHERE</code>
+      句は「<strong>〜という条件に該当する行を選ぶ</strong>」という指示になります。</p>
+      <ul>
+      <li>I came from Japan, <strong>where</strong> I was born and raised.</li>
+      </ul>
+      </div>
+      <p>また、前回講義では、テーブルにレコードを<strong>挿入</strong>するための基本的な
+      <code>INSERT</code> 文と、<strong>その動作/挙動を安全に確認するため</strong> の
+      <strong>トランザクション</strong> ( <code>START TRANSACTION</code> ～ <code>ROLLBACK</code> )
+      についても学びました。</p>
+      <h1 data-number="3" id="トランザクション"><span class="header-section-number">3</span>
+      トランザクション</h1>
+      <p>RDBMS における
+      <strong>トランザクション</strong>（<strong>Transaction</strong>）とは、データの一貫性や整合性を保つために「<strong><u>論理的にひとまとまりとして扱う一連の操作や処理</u></strong>」のことです。</p>
+      <div class="balloon char-01 face-02 tone-yellow">
+      <p>例えば、銀行口座から別の口座に送金する場合を考えてみます。この処理には「送金元の残高を減らす」「送金先の残高を増やす」という
+      2 つの操作がセットで必要です。</p>
+      <p>このように、ひとつの目的を達成するために必要な複数の操作を「一連の操作や処理」と呼んでいます。データの一貫性や整合性を保つためには、これらを「<strong>ひとまとまり</strong>」として扱う必要があります。</p>
+      </div>
+      <p>RDBMS
+      では、トランザクションに含まれる一連の操作による変更を、必ず次のいずれかの形で処理します。</p>
+      <ul>
+      <li><strong>すべての変更をまとめて確定する</strong></li>
+      <li><strong>すべての変更を取り消して元に戻す</strong></li>
+      </ul>
+      <p>つまり、トランザクションに含まれる変更は「<strong>すべて確定する</strong>」か「<strong>すべて取り消される</strong>」の二択であり、一部だけが確定することが無いようになっています。この性質を
+      <strong>原子性（Atomicity）</strong> といいます。</p>
+      <hr />
+      <p>例えば、ひとつのトランザクションのなかに (＝ <code>START TRANSACTION</code> ～
+      <code>COMMIT</code> のなかに)、<code>SQL-1</code>、<code>SQL-2</code>、<code>SQL-3</code>
+      という3つの SQL 文が含まれているとすれば、</p>
+      <blockquote>
+      <p><code>SQL-1</code> と <code>SQL-2</code> は <strong>成功</strong> し、<code>SQL-3</code> は
+      <strong>失敗</strong> したが、<code>SQL-1</code> と <code>SQL-2</code>
+      による変更だけが確定した</p>
+      </blockquote>
+      <p>…といった <strong>中途半端な状態で変更が確定することを防ぐ</strong>
+      仕組みが用意されています。</p>
+      <p>具体的には、PostgreSQL では、<code>SQL-3</code>
+      の実行でエラーが発生すると、通常、そのトランザクションは失敗状態となり、<code>SQL-1</code> と
+      <code>SQL-2</code> の変更だけを確定することはできません。<code>ROLLBACK</code> によって、<span
+      class="masked">そのトランザクションで行ったすべての変更</span> をまとめて取り消します。</p>
+      <ul>
+      <li>📖 教科書 pp.139-146 の「<strong>4-4 トランザクション</strong>」も参照してください。</li>
+      </ul>
+      <h2 data-number="3.1" id="トランザクションが必要とされる理由-銀行送金の例"><span
+      class="header-section-number">3.1</span> トランザクションが必要とされる理由
+      (銀行送金の例)</h2>
+      <p>一般に、トランザクションは次のような場面で非常に強力に機能します。</p>
+      <blockquote>
+      <p>預金管理DBにおいて、Alice の口座から Bob の口座に 10,000 円を送金する。</p>
+      </blockquote>
+      <p>この送金処理は、実際には次のような <strong>2つの操作を組み合わせることで実現</strong>
+      されます。</p>
+      <ol type="1">
+      <li>送金元（Alice）の口座残高を10,000円減らす。</li>
+      <li>送金先（Bob）の口座残高を10,000円増やす。</li>
+      </ol>
+      <p>この2つの操作は、<strong>必ずセットで成功させる必要があります</strong>。</p>
+      <div class="balloon char-01 face-01 tone-pink">
+      <p>Alice の残高だけが減ってしまえば、送金したはずのお金が「消える」ことになります。反対に、Bob
+      の残高だけが増えてしまえば、存在しなかったお金が「増える」ことになります。つまり、2つの操作は両方とも成功するか、両方とも取り消されなければ、整合性が失われてしまいます。</p>
+      </div>
+      <p>そこで RDBMS では、複数の操作を
+      <strong>ひとつのトランザクションとしてまとめ、すべて成功するか、すべて取り消すかのどちらかで扱う</strong>
+      仕組みを提供しています。</p>
+      <ul>
+      <li><strong>コミット</strong> ( <code>COMMIT</code>
+      )：すべての操作が正常に完了したときに、変更を確定する。</li>
+      <li><strong>ロールバック</strong> ( <code>ROLLBACK</code>
+      )：途中でエラーが発生したときなどに、それまでの変更をすべて取り消し、元の状態に戻す。</li>
+      </ul>
+      <p>先にも述べたように、複数の操作による変更を <span
+      class="masked">「すべて確定するか」もしくは「すべて取り消すか」</span>
+      という単位で扱う性質を、<strong>原子性</strong>
+      (<strong>アトミック性</strong>、<strong>不可分性</strong>、<strong>Atomicity</strong>)
+      といいます。</p>
+      <div class="balloon char-01 face-02 tone-yellow">
+      <p>銀行送金以外にも、トランザクションが必要となる操作 (原子性が要求される操作)
+      は数多く存在します。</p>
+      <ul>
+      <li><strong>ECサイトの注文処理</strong>：注文情報の登録と、商品の在庫数の減算をセットで実行する。片方だけが成功すると、注文情報と在庫数に不整合が生じる。</li>
+      <li><strong>映画館やイベントの座席予約</strong>：座席を予約済みに変更する処理と、利用者の予約情報の登録をセットで実行する。片方だけが成功すると、予約情報と座席の空き状況が一致しなくなる。</li>
+      <li><strong>ポイントを利用した商品購入</strong>：保有ポイントの減算と、注文へのポイント利用の反映をセットで実行する。片方だけが成功すると、ポイント残高と注文内容に不整合が生じる。</li>
+      </ul>
+      </div>
+      <h3 data-number="3.1.1" id="定着確認"><span class="header-section-number">3.1.1</span>
+      定着確認</h3>
+      <ul>
+      <li><p>RDBMS
+      において、データの一貫性や整合性を保つために、論理的にひとまとまりとして扱う一連の操作や処理を何というか答えよ。</p>
+      <ul>
+      <li><strong>答え</strong>: <span class="masked">トランザクション。</span></li>
+      </ul></li>
+      <li><p>トランザクションに含まれる変更が「すべて確定する」か「すべて取り消される」かのいずれかとなり、一部の変更だけが確定しない性質を何というか。日本語と英語で答えよ。</p>
+      <ul>
+      <li><strong>答え</strong>: <span class="masked">原子性
+      (アトミック性、不可分性)。Atomicity。</span></li>
+      </ul></li>
+      <li><p>トランザクションによる変更をまとめて確定する処理と、変更をまとめて取り消す処理の名称を、それぞれ対応する
+      SQL キーワードとともに答えよ。</p>
+      <ul>
+      <li><strong>答え</strong>: <span class="masked">確定する処理はコミット
+      (COMMIT)、取り消す処理はロールバック (ROLLBACK)。</span></li>
+      </ul></li>
+      <li><p>Alice の残高が 50,000 円、Bob の残高が 20,000 円である。1つのトランザクション内で Alice
+      から Bob に 10,000 円を送金する2つの残高更新を行った後、COMMIT せずに ROLLBACK
+      した。他の処理による残高変更はないものとして、ロールバック後の2人の残高を答えよ。</p>
+      <ul>
+      <li><strong>答え</strong>: <span class="masked">Alice は 50,000 円、Bob は 20,000
+      円。トランザクション内の残高更新は両方とも取り消される。</span></li>
+      </ul></li>
+      <li><p>PostgreSQL の1つのトランザクション内で SQL-1 と SQL-2 が成功した後、SQL-3
+      の実行でエラーが発生し、トランザクションが失敗状態になった。そのまま SQL-1 と SQL-2
+      の変更だけをコミットできるか、理由とともに答えよ。</p>
+      <ul>
+      <li><strong>答え</strong>: <span
+      class="masked">できない。失敗状態のトランザクションでは、それまでに成功した操作の変更だけを確定することはできない。</span></li>
+      </ul></li>
+      <li><p>🏅 応用情報技術者試験 平成 24 年度春期 午前 <a
+      href="https://www.ap-siken.com/kakomon/24_haru/q30.html">問30</a></p></li>
+      <li><p>🏅 データベーススペシャリスト試験 令和 4 年度秋期 午前Ⅱ <a
+      href="https://www.db-siken.com/kakomon/04_aki/am2_15.html">問15</a></p></li>
+      <li><p>🏅 データベーススペシャリスト試験 平成 28 年度春期 午前Ⅱ <a
+      href="https://www.db-siken.com/kakomon/28_haru/am2_17.html">問17</a></p></li>
+      </ul>
+      <h2 data-number="3.2" id="トランザクションの使用例"><span
+      class="header-section-number">3.2</span> トランザクションの使用例</h2>
+      <p>ここでは <strong>w03.users</strong>
+      テーブルを使用して「トランザクションの基本的な使い方」を確認していきます。まずは、次のコマンドで
+      <strong>w03.users</strong>
+      テーブルを初期化してください。<strong>既存のデータも削除され、テーブルのレコードは Alice と
+      Bob の2件に戻ります</strong>。</p>
+      <div class="sourceCode" id="cb1"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">npm</span> run sql from-teacher/03/init-users.sql</span></code></pre></div>
+      <p>現在、このテーブルには、Alice と Bob
+      の2件のレコードのみが含まれています。この状態から、3件のレコードを挿入する一連の操作を
+      <strong>ひとつのトランザクションとして実行</strong> し、その動作を確認してみます。</p>
+      <p><strong>sql/05/tmp.sql</strong> などの適当なファイルを作成して、以下の SQL
+      を貼り付けて実行してください。</p>
+      <div class="sourceCode" id="cb2"
+      data-caption="トランザクション～全成功してコミットされる例～"><pre
+      class="sourceCode numberSource sql numberLines"><code class="sourceCode sql"><span id="cb2-1"><a href="#cb2-1"></a><span class="kw">SET</span></span>
+<span id="cb2-2"><a href="#cb2-2"></a>  search_path <span class="kw">TO</span> w03;</span>
+<span id="cb2-3"><a href="#cb2-3"></a></span>
+<span id="cb2-4"><a href="#cb2-4"></a><span class="co">-- トランザクションの開始</span></span>
+<span id="cb2-5"><a href="#cb2-5"></a><span class="kw">START</span> <span class="kw">TRANSACTION</span>;</span>
+<span id="cb2-6"><a href="#cb2-6"></a></span>
+<span id="cb2-7"><a href="#cb2-7"></a><span class="co">-- 操作1 Carol の登録 (成功)</span></span>
+<span id="cb2-8"><a href="#cb2-8"></a><span class="kw">INSERT</span> <span class="kw">INTO</span></span>
+<span id="cb2-9"><a href="#cb2-9"></a>  users (<span class="kw">id</span>, name, age)</span>
+<span id="cb2-10"><a href="#cb2-10"></a><span class="kw">VALUES</span></span>
+<span id="cb2-11"><a href="#cb2-11"></a>  (<span class="dv">3</span>, <span class="st">&#39;Carol&#39;</span>, <span class="dv">18</span>);</span>
+<span id="cb2-12"><a href="#cb2-12"></a></span>
+<span id="cb2-13"><a href="#cb2-13"></a><span class="co">-- 操作2 Dave の登録 (成功)</span></span>
+<span id="cb2-14"><a href="#cb2-14"></a><span class="kw">INSERT</span> <span class="kw">INTO</span></span>
+<span id="cb2-15"><a href="#cb2-15"></a>  users (<span class="kw">id</span>, name, age)</span>
+<span id="cb2-16"><a href="#cb2-16"></a><span class="kw">VALUES</span></span>
+<span id="cb2-17"><a href="#cb2-17"></a>  (<span class="dv">4</span>, <span class="st">&#39;Dave&#39;</span>, <span class="kw">NULL</span>);</span>
+<span id="cb2-18"><a href="#cb2-18"></a></span>
+<span id="cb2-19"><a href="#cb2-19"></a><span class="co">-- 操作3 Ellen の登録 (成功)</span></span>
+<span id="cb2-20"><a href="#cb2-20"></a><span class="kw">INSERT</span> <span class="kw">INTO</span></span>
+<span id="cb2-21"><a href="#cb2-21"></a>  users (<span class="kw">id</span>, name, age)</span>
+<span id="cb2-22"><a href="#cb2-22"></a><span class="kw">VALUES</span></span>
+<span id="cb2-23"><a href="#cb2-23"></a>  (<span class="dv">5</span>, <span class="st">&#39;Ellen&#39;</span>, <span class="dv">17</span>);</span>
+<span id="cb2-24"><a href="#cb2-24"></a></span>
+<span id="cb2-25"><a href="#cb2-25"></a><span class="co">-- START TRANSACTION 以降の全ての操作が成功していれば「確定」</span></span>
+<span id="cb2-26"><a href="#cb2-26"></a><span class="kw">COMMIT</span>;</span>
+<span id="cb2-27"><a href="#cb2-27"></a></span>
+<span id="cb2-28"><a href="#cb2-28"></a><span class="co">-- テーブルの状態を確認</span></span>
+<span id="cb2-29"><a href="#cb2-29"></a><span class="kw">SELECT</span> <span class="op">*</span> <span class="kw">FROM</span> users <span class="kw">ORDER</span> <span class="kw">BY</span> <span class="kw">id</span>;</span></code></pre></div>
+      <p>この例では、<strong>第05行目</strong> の <code>START TRANSACTION</code>
+      から、<strong>第26行目</strong> の <code>COMMIT</code> までに含まれる操作
+      (「操作1」から「操作3」) がすべて正常完了するため、<strong>第26行目</strong> の
+      <code>COMMIT</code> によって処理が確定され、結果がテーブルに反映されます。</p>
+      <p>コンソールには、次のような結果が出力されるはずです。</p>
+      <pre><code>START TRANSACTION
+INSERT 0 1
+INSERT 0 1
+INSERT 0 1
+COMMIT
+ id | name  | age
+----+-------+-----
+  1 | Alice |  20
+  2 | Bob   |  25
+  3 | Carol |  18
+  4 | Dave  |
+  5 | Ellen |  17
+(5 行)</code></pre>
+      <p>ここで、実行結果の <strong>第02行目</strong> から <strong>第04行目</strong> の
+      <code>INSERT 0 1</code> は <span class="masked">各操作で1件のレコードが挿入されたこと</span>
+      を表す応答となります。</p>
+      <div class="prompts">
+      <ul>
+      <li>PostgreSQL 18 で、テーブルに1件のレコードを挿入したとき、<code>INSERT 0 1</code>
+      のような応答が返ってきます。ここでの <code>0</code> は、どのような意味ですか。</li>
+      </ul>
+      </div>
+      <hr />
+      <p>つづいて、<font color="deeppink"><b>トランザクションの途中で SQL 文の実行に失敗
+      (エラーが発生) した場合の挙動</b></font> について確認していきます。</p>
+      <p>まず、次のコマンドを実行して <strong>w03.users</strong>
+      テーブルを初期化してください。先ほどの操作で追加したレコードを削除し、Alice と Bob
+      の2件分のレコードだけが存在する状態に戻します。</p>
+      <div class="sourceCode" id="cb4"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="ex">npm</span> run sql from-teacher/03/init-users.sql</span></code></pre></div>
+      <p>次に、以下の SQL 文を <strong>sql/05/tmp.sql</strong> に記述し、実行してみてください。</p>
+      <div class="sourceCode" id="cb5"
+      data-caption="トランザクション～失敗によるロールバック例～"><pre
+      class="sourceCode numberSource sql numberLines"><code class="sourceCode sql"><span id="cb5-1"><a href="#cb5-1"></a><span class="kw">SET</span></span>
+<span id="cb5-2"><a href="#cb5-2"></a>  search_path <span class="kw">TO</span> w03;</span>
+<span id="cb5-3"><a href="#cb5-3"></a></span>
+<span id="cb5-4"><a href="#cb5-4"></a><span class="co">-- トランザクションの開始</span></span>
+<span id="cb5-5"><a href="#cb5-5"></a><span class="kw">START</span> <span class="kw">TRANSACTION</span>;</span>
+<span id="cb5-6"><a href="#cb5-6"></a></span>
+<span id="cb5-7"><a href="#cb5-7"></a><span class="co">-- 操作1 Carol の登録 (成功)</span></span>
+<span id="cb5-8"><a href="#cb5-8"></a><span class="kw">INSERT</span> <span class="kw">INTO</span></span>
+<span id="cb5-9"><a href="#cb5-9"></a>  users (<span class="kw">id</span>, name, age)</span>
+<span id="cb5-10"><a href="#cb5-10"></a><span class="kw">VALUES</span></span>
+<span id="cb5-11"><a href="#cb5-11"></a>  (<span class="dv">3</span>, <span class="st">&#39;Carol&#39;</span>, <span class="dv">18</span>);</span>
+<span id="cb5-12"><a href="#cb5-12"></a></span>
+<span id="cb5-13"><a href="#cb5-13"></a><span class="co">-- 操作2 Dave の登録 (成功)</span></span>
+<span id="cb5-14"><a href="#cb5-14"></a><span class="kw">INSERT</span> <span class="kw">INTO</span></span>
+<span id="cb5-15"><a href="#cb5-15"></a>  users (<span class="kw">id</span>, name, age)</span>
+<span id="cb5-16"><a href="#cb5-16"></a><span class="kw">VALUES</span></span>
+<span id="cb5-17"><a href="#cb5-17"></a>  (<span class="dv">4</span>, <span class="st">&#39;Dave&#39;</span>, <span class="kw">NULL</span>);</span>
+<span id="cb5-18"><a href="#cb5-18"></a></span>
+<span id="cb5-19"><a href="#cb5-19"></a><span class="co">-- 操作3 Ellen の登録 (❌失敗 id=4 が重複)</span></span>
+<span id="cb5-20"><a href="#cb5-20"></a><span class="kw">INSERT</span> <span class="kw">INTO</span></span>
+<span id="cb5-21"><a href="#cb5-21"></a>  users (<span class="kw">id</span>, name, age)</span>
+<span id="cb5-22"><a href="#cb5-22"></a><span class="kw">VALUES</span></span>
+<span id="cb5-23"><a href="#cb5-23"></a>  (<span class="dv">4</span>, <span class="st">&#39;Ellen&#39;</span>, <span class="dv">17</span>);</span>
+<span id="cb5-24"><a href="#cb5-24"></a></span>
+<span id="cb5-25"><a href="#cb5-25"></a><span class="co">-- START TRANSACTION 以降の全ての操作が成功していれば「確定」</span></span>
+<span id="cb5-26"><a href="#cb5-26"></a><span class="kw">COMMIT</span>;</span>
+<span id="cb5-27"><a href="#cb5-27"></a></span>
+<span id="cb5-28"><a href="#cb5-28"></a><span class="co">-- テーブルの状態を確認</span></span>
+<span id="cb5-29"><a href="#cb5-29"></a><span class="kw">SELECT</span> <span class="op">*</span> <span class="kw">FROM</span> users <span class="kw">ORDER</span> <span class="kw">BY</span> <span class="kw">id</span>;</span></code></pre></div>
+      <ul>
+      <li>上記の SQL 文では、「操作2」でDaveの <strong>id</strong> に <code>4</code>
+      を指定し、さらに「操作3」でも、Ellenの <strong>id</strong> に同じ <code>4</code>
+      を指定しようとしています。そのため、「操作3」では <strong>主キーの重複によるエラー</strong>
+      が生じることになります。</li>
+      </ul>
+      <p>実行すると、次のような応答が得られます。</p>
+      <pre><code>SET
+START TRANSACTION
+INSERT 0 1
+INSERT 0 1
+ROLLBACK
+ id | name  | age
+----+-------+-----
+  1 | Alice |  20
+  2 | Bob   |  25
+(2 行)
+
+----- stderr from psql (sql/05/tmp.sql) -----
+psql:&lt;stdin&gt;:23: ERROR:  重複したキー値は一意性制約&quot;users_pkey&quot;違反となります
+DETAIL:  キー (id)=(4) はすでに存在します。</code></pre>
+      <p><code>INSERT 0 1</code> が 2
+      回出力されていることから、「操作1」と「操作2」の挿入には成功したことが分かります。ただし、この時点では、<strong>これらの変更はまだ確定されていません</strong>。</p>
+      <p>ここで注目してほしいのは、<strong>第26行目</strong> に <code>COMMIT</code>
+      と記述しているにもかかわらず、その応答が <code>ROLLBACK</code> になっていることです。</p>
+      <div class="balloon char-01 face-01 tone-pink">
+      <p>「操作3」によってエラーが発生したことにより、トランザクションは失敗状態となります。</p>
+      <p>このような失敗状態で <code>COMMIT</code>
+      文に到達すると、<strong>「コミット」ではなく「ロールバック」が実行されます</strong>。その結果、途中まで成功していた「操作1」と「操作2」の変更もまとめて取り消され、トランザクション開始前の状態に戻ります。</p>
+      </div>
+      <p>実際、<strong>第29行目</strong> の <code>SELECT</code>
+      文を実行すると、(ロールバックされた結果として) Alice と Bob
+      の2件だけが表示されることが分かります。</p>
+      <div class="note type-senior">
+      <p><strong>中級者向け：SQL演習環境のSQLランナーの動作</strong></p>
+      <p><code>npm run sql</code> で使用しているSQLランナー
+      (<strong>scripts/sqlFileRunner.ts</strong>) は、<code>psql</code>
+      の応答（標準出力）をまとめて表示したあと、<code>stderr from psql (...)</code>
+      という見出しを付けて、エラーメッセージ（標準エラー出力）を表示するように実装されています。</p>
+      <p>そのため、<strong>エラーメッセージが最後に表示されていても、最後の <code>SELECT</code>
+      文のあとにエラーが発生したわけではありません</strong>。エラーメッセージに含まれる
+      <code>psql:&lt;stdin&gt;:23</code>
+      は、SQLファイルの第23行目でエラーが発生したことを示しています。</p>
+      </div>
+      <h3 data-number="3.2.1" id="演習"><span class="header-section-number">3.2.1</span> 演習</h3>
+      <p><strong>sql/05/tmp.sql</strong> の「操作3」と <code>COMMIT</code>
+      の間に、次の「操作4」を追加してみてください。ここで「操作3」の <strong>id
+      の重複は、意図的に残しておきます</strong>。</p>
+      <div class="sourceCode" id="cb7" data-caption="「操作4」の追加"><pre
+      class="sourceCode numberSource sql numberLines"><code class="sourceCode sql"><span id="cb7-1"><a href="#cb7-1"></a><span class="co">-- 操作4 Frank の登録</span></span>
+<span id="cb7-2"><a href="#cb7-2"></a><span class="kw">INSERT</span> <span class="kw">INTO</span></span>
+<span id="cb7-3"><a href="#cb7-3"></a>  users (<span class="kw">id</span>, name, age)</span>
+<span id="cb7-4"><a href="#cb7-4"></a><span class="kw">VALUES</span></span>
+<span id="cb7-5"><a href="#cb7-5"></a>  (<span class="dv">6</span>, <span class="st">&#39;Frank&#39;</span>, <span class="dv">21</span>);</span></code></pre></div>
+      <p>「操作3」でエラーが発生したあと、<strong>「操作4」の <code>INSERT</code>
+      文が実行されるかどうか</strong>
+      を予想してください。具体的には、直ちにロールバックされて「操作4」まで処理が進まないのか、それとも「操作4」の実行も試みられるのかを考えてみてください。</p>
+      <p>そのうえで、実際に実行して、どのような結果になるか (どのような応答が返ってくるのか)
+      を確認してください。</p>
+      <h2 data-number="3.3" id="明示的なロールバック"><span class="header-section-number">3.3</span>
+      明示的なロールバック</h2>
+      <p><code>START TRANSACTION</code> ～ <code>COMMIT</code> において、<code>COMMIT</code>
+      の代わりに <span class="masked"><code>ROLLBACK</code></span> を記述すると明示的に
+      <strong>ロールバック</strong> をかけることができます。</p>
+      <div class="sourceCode" id="cb8" data-caption="明示的なロールバックの実行"><pre
+      class="sourceCode numberSource sql numberLines"><code class="sourceCode sql"><span id="cb8-1"><a href="#cb8-1"></a><span class="kw">SET</span></span>
+<span id="cb8-2"><a href="#cb8-2"></a>  search_path <span class="kw">TO</span> w03;</span>
+<span id="cb8-3"><a href="#cb8-3"></a></span>
+<span id="cb8-4"><a href="#cb8-4"></a><span class="co">-- トランザクションの開始</span></span>
+<span id="cb8-5"><a href="#cb8-5"></a><span class="kw">START</span> <span class="kw">TRANSACTION</span>;</span>
+<span id="cb8-6"><a href="#cb8-6"></a></span>
+<span id="cb8-7"><a href="#cb8-7"></a><span class="kw">INSERT</span> <span class="kw">INTO</span></span>
+<span id="cb8-8"><a href="#cb8-8"></a>  users (<span class="kw">id</span>, name, age)</span>
+<span id="cb8-9"><a href="#cb8-9"></a><span class="kw">VALUES</span></span>
+<span id="cb8-10"><a href="#cb8-10"></a>  (<span class="dv">3</span>, <span class="st">&#39;Carol&#39;</span>, <span class="dv">18</span>);</span>
+<span id="cb8-11"><a href="#cb8-11"></a></span>
+<span id="cb8-12"><a href="#cb8-12"></a><span class="co">-- テーブルの状態を確認 👉 Carol のレコードが存在する</span></span>
+<span id="cb8-13"><a href="#cb8-13"></a><span class="kw">SELECT</span> <span class="op">*</span> <span class="kw">FROM</span> users <span class="kw">ORDER</span> <span class="kw">BY</span> <span class="kw">id</span>;</span>
+<span id="cb8-14"><a href="#cb8-14"></a></span>
+<span id="cb8-15"><a href="#cb8-15"></a><span class="co">-- 明示的にロールバックを実行</span></span>
+<span id="cb8-16"><a href="#cb8-16"></a><span class="kw">ROLLBACK</span>;</span>
+<span id="cb8-17"><a href="#cb8-17"></a></span>
+<span id="cb8-18"><a href="#cb8-18"></a><span class="co">-- テーブルの状態を確認 👉 Carol のレコードが存在しない</span></span>
+<span id="cb8-19"><a href="#cb8-19"></a><span class="kw">SELECT</span> <span class="op">*</span> <span class="kw">FROM</span> users <span class="kw">ORDER</span> <span class="kw">BY</span> <span class="kw">id</span>;</span></code></pre></div>
+      <div class="note type-caution">
+      <p><strong>注意</strong></p>
+      <p>以下、演習のなかで <code>UPDATE</code> 文や <code>DELETE</code>
+      文を扱いますが、特に指示のないかぎりは「<code>START TRANSACTION</code> ～
+      <code>ROLLBACK</code>」の内部で処理を実行するようにしてください。</p>
+      </div>
+      <h3 data-number="3.3.1" id="定着確認-1"><span class="header-section-number">3.3.1</span>
+      定着確認</h3>
+      <ul>
+      <li>PostgreSQL において、トランザクションを開始する際に使用する SQL キーワード (2語)
+      を答えよ。大文字で答えること。
+      <ul>
+      <li><strong>答え</strong> : <span class="masked"><code>START TRANSACTION</code></span></li>
+      </ul></li>
+      <li>PostgreSQL において、トランザクションを取り消す (元に戻す) 際に使用する SQL
+      キーワードを答えよ。大文字で答えること。
+      <ul>
+      <li><strong>答え</strong> : <span class="masked"><code>ROLLBACK</code></span></li>
+      </ul></li>
+      <li>PostgreSQL において、トランザクション内の処理を確定する際に使用する SQL
+      キーワードを答えよ。大文字で答えること。
+      <ul>
+      <li><strong>答え</strong> : <span class="masked"><code>COMMIT</code></span></li>
+      </ul></li>
+      <li><strong>w03.users</strong> には Alice と Bob
+      の2件だけが登録されている。トランザクションを開始し、Carol
+      を1件挿入した。同じ接続で、<code>ROLLBACK</code> の直前と直後に
+      <code>SELECT COUNT(*) FROM w03.users;</code> を実行したとき、それぞれ何件になるか答えよ。
+      <ul>
+      <li><strong>答え</strong>: <span class="masked">直前は3件、直後は2件。</span></li>
+      </ul></li>
+      <li><strong>w03.users</strong> に対してトランザクションを開始し、Carol を1件挿入して
+      <code>COMMIT</code> した。その後、新しいトランザクションを開始して、データを変更せずに
+      <code>ROLLBACK</code> した。先に挿入した Carol のレコードは取り消されるか答えよ。
+      <ul>
+      <li><strong>答え</strong>: <span
+      class="masked">取り消されない。先のCOMMITで確定した変更は、後から開始したトランザクションのROLLBACKでは取り消されない。</span></li>
+      </ul></li>
+      </ul>
+      <h1 data-number="4" id="csvファイルからのinsert"><span class="header-section-number">4</span>
+      CSVファイルからのINSERT</h1>
+      <p><a href="lecture04.html#insert文-超基礎編">前回講義</a> では <code>INSERT</code>
+      文を使って「テーブルに 1
+      件ずつレコードを挿入する方法」を紹介しました。しかし、実務では、<strong>数十件から数千件といった大量データを扱うことが多く</strong>、そのようなときは「<strong>CSVファイル</strong>」を使ってデータを一括挿入することが一般的となります。</p>
+      <p>ここでは、<u><strong>CSVファイルを使ってレコードを一括挿入する手順</strong></u>
+      について説明します。</p>
+      <h2 data-number="4.1" id="csv-ファイルの作成"><span class="header-section-number">4.1</span>
+      CSV ファイルの作成</h2>
+      <p>テーブルにデータを挿入するための <strong>CSVファイル</strong> を用意します。</p>
+      <p>ここでは、<strong>w03.users</strong> テーブル用にあらかじめ用意された
+      <code>from-teacher/05/insert-users.csv</code>
+      を使用します。このファイルは、最新の教材の更新に含まれています。</p>
+      <p>VSCodeで <code>insert-users.csv</code> を開き、内容を確認してください。</p>
+      <p>なお、PostgreSQL へのデータの取り込みに使用する CSV
+      ファイルは、<strong>文字コードを「BOMなしのUTF-8」、改行コードを「LF」</strong>
+      に設定しておくことを推奨します。</p>
+      <div class="balloon char-01 face-05 tone-blue">
+      <p>PostgreSQL は Windows 形式の改行コード (CR+LF) にも対応していますが、この授業では
+      <strong>Docker 上の Linux 環境との統一や、Git での管理を考慮して「LF」を推奨</strong>
+      しています。</p>
+      </div>
+      <div class="prompts">
+      <ul>
+      <li>UTF-8の「BOM付き」と「BOMなし」の違いについて教えてください。「BOM付き」が利用される場面としてはどのようなものがありますか。</li>
+      </ul>
+      </div>
+      <h2 data-number="4.2" id="csv-ファイルをコンテナに配置"><span
+      class="header-section-number">4.2</span> CSV ファイルをコンテナに配置</h2>
+      <p><code>insert-users.csv</code> は、ホストOS (Windows) 上に存在するため、<strong>Docker
+      コンテナ内で動作している PostgreSQL からは直接取り込むことができません</strong>。</p>
+      <p>そのため、まずこの CSV ファイルをコンテナの <code>/tmp/</code> にコピーします。VSCode
+      のターミナルから次のコマンドを実行してください。コマンドのなかの <code>pg18</code>
+      は<i class="fa-brands fa-github"></i><a
+      href="https://github.com/TakeshiWada1980/DB-2026-PostgreSQL/blob/main/docker/docker-compose.yaml">docker/docker-compose.yaml</a>
+      の <strong>第04行目</strong> で指定している PostgreSQL コンテナの「名前」になります。</p>
+      <div class="sourceCode" id="cb9"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="ex">docker</span> cp from-teacher/05/insert-users.csv pg18:/tmp/</span></code></pre></div>
+      <p>ファイルのコピーに成功すると、次のようなメッセージが返ってきます。</p>
+      <pre><code>Successfully copied 46B (transferred 2.05kB) to pg18:/tmp/</code></pre>
+      <p>コピーが完了したら、実際にコンテナのなかにCSVファイルが配置されたことを確認していきます。<a
+      href="lecture02.html#コンテナの利用-bash経由">第02回講義</a> で紹介したように
+      <code>docker container exec -it pg18 bash</code>
+      コマンドを使ってコンテナに接続してもよいですが、ここでは <span class="masked">Docker
+      Desktop</span> から確認する方法を紹介しておきます。</p>
+      <p>Docker Desktop
+      のウィンドウで「<strong>Containers</strong>」を選択し、さらに「<strong>pg18</strong>」の三点リーダ
+      <i class="fa-solid fa-ellipsis-vertical"></i> から「<strong>Open in
+      terminal</strong>」を選択してください。</p>
+      <figure>
+      <img src="figs/05/docker-01.png" alt="img" />
+      <figcaption aria-hidden="true">img</figcaption>
+      </figure>
+      <p>これで、コンテナ内のシェル (<code>/bin/sh</code>)
+      に接続した状態になります。<code>ls -al /tmp</code> のコマンドで、コンテナ内の
+      <code>/tmp</code> に CSV ファイルがあることを確認してください。</p>
+      <figure>
+      <img src="figs/05/docker-02.png" alt="img" />
+      <figcaption aria-hidden="true">img</figcaption>
+      </figure>
+      <div class="balloon char-01 face-02 tone-yellow">
+      <p>この画面で <code>bash</code> と入力してEnterキーを押すと、<strong>標準のシェル</strong>（
+      <code>/bin/sh</code> ）から <strong>Bash</strong>（ <code>/usr/bin/bash</code>
+      ）に切り替わり、プロンプトが次のように変化します。</p>
+      <pre class="text"><code># bash
+root@...:/#</code></pre>
+      <p>Bash
+      では、上下のカーソルキーで過去に実行したコマンドを呼び出したり、左右のカーソルキーで入力位置を移動したりできます。</p>
+      </div>
+      <div class="prompts">
+      <ul>
+      <li>Linux (Debian / Ubuntu 系) における sh ( <code>/bin/sh</code> ) と bash (
+      <code>/bin/bash</code> ) の違いについて解説してください。</li>
+      </ul>
+      </div>
+      <h2 data-number="4.3" id="csv-ファイルからテーブルに取り込み"><span
+      class="header-section-number">4.3</span> CSV ファイルからテーブルに取り込み</h2>
+      <p>PostgreSQL では、以下のような SQL 文 (<strong>第10行目</strong> から
+      <strong>第14行目</strong>) により、<strong>CSV
+      ファイルからレコードを一括でテーブルに取り込むこと</strong>ができます。</p>
+      <p>なお、実行前に、次のコマンドで <strong>w03.users</strong> を Alice と Bob
+      の2件に戻してください。</p>
+      <div class="sourceCode" id="cb12"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="ex">npm</span> run sql from-teacher/03/init-users.sql</span></code></pre></div>
+      <div class="sourceCode" id="cb13" data-caption="CSVファイルからレコードを挿入"><pre
+      class="sourceCode numberSource sql numberLines"><code class="sourceCode sql"><span id="cb13-1"><a href="#cb13-1"></a><span class="kw">SET</span></span>
+<span id="cb13-2"><a href="#cb13-2"></a>  search_path <span class="kw">TO</span> w03;</span>
+<span id="cb13-3"><a href="#cb13-3"></a></span>
+<span id="cb13-4"><a href="#cb13-4"></a><span class="kw">START</span> <span class="kw">TRANSACTION</span>;</span>
+<span id="cb13-5"><a href="#cb13-5"></a></span>
+<span id="cb13-6"><a href="#cb13-6"></a><span class="co">-- レコード挿入前のテーブルを確認</span></span>
+<span id="cb13-7"><a href="#cb13-7"></a><span class="kw">SELECT</span> <span class="op">*</span> <span class="kw">FROM</span> users <span class="kw">ORDER</span> <span class="kw">BY</span> <span class="kw">id</span>;</span>
+<span id="cb13-8"><a href="#cb13-8"></a></span>
+<span id="cb13-9"><a href="#cb13-9"></a><span class="co">-- CSVファイルからレコードを挿入</span></span>
+<span id="cb13-10"><a href="#cb13-10"></a><span class="kw">COPY</span> users (<span class="kw">id</span>, name, age)</span>
+<span id="cb13-11"><a href="#cb13-11"></a><span class="kw">FROM</span></span>
+<span id="cb13-12"><a href="#cb13-12"></a>  <span class="st">&#39;/tmp/insert-users.csv&#39;</span></span>
+<span id="cb13-13"><a href="#cb13-13"></a><span class="kw">WITH</span></span>
+<span id="cb13-14"><a href="#cb13-14"></a>  (FORMAT csv, <span class="kw">HEADER</span> <span class="kw">TRUE</span>, <span class="kw">NULL</span> <span class="st">&#39;NULL&#39;</span>, ENCODING <span class="st">&#39;UTF8&#39;</span>);</span>
+<span id="cb13-15"><a href="#cb13-15"></a></span>
+<span id="cb13-16"><a href="#cb13-16"></a><span class="co">-- レコード挿入後のテーブルを確認</span></span>
+<span id="cb13-17"><a href="#cb13-17"></a><span class="kw">SELECT</span> <span class="op">*</span> <span class="kw">FROM</span> users <span class="kw">ORDER</span> <span class="kw">BY</span> <span class="kw">id</span>;</span>
+<span id="cb13-18"><a href="#cb13-18"></a></span>
+<span id="cb13-19"><a href="#cb13-19"></a><span class="kw">ROLLBACK</span>;</span></code></pre></div>
+      <p><strong>第17行目</strong> の <code>SELECT</code>
+      文の結果セットは次のようになります。<strong>David の age は空欄 (NULL)</strong>
+      となっていることを確認してください。</p>
+      <pre><code> id | name  | age
+----+-------+-----
+  1 | Alice |  20
+  2 | Bob   |  25
+  3 | Carol |  18
+  4 | David |
+  5 | Ellen |  17</code></pre>
+      <p><strong>第19行目</strong> の <code>ROLLBACK</code>
+      により、追加した3件は取り消されます。<code>SELECT * FROM w03.users ORDER BY id;</code>
+      で、Alice と Bob の2件に戻ったことを確認してください。</p>
+      <p><code>COPY</code> は <strong>PostgreSQL 独自のコマンド</strong> で、CSV
+      ファイルなどの外部データを <span class="masked">高速</span>
+      に取り込むことができます。<code>FROM</code> 句で指定するパス (ここでは
+      <code>/tmp/insert-users.csv</code>) は、Docker コンテナ内のファイルパス
+      ということに注意してください。</p>
+      <p>また、<code>WITH</code> 句 (<strong>第13行目</strong> から)
+      では以下のような設定を行っています。</p>
+      <ul>
+      <li><code>FORMAT csv</code> : ファイルが CSV 形式であることを明示</li>
+      <li><code>HEADER TRUE</code> : CSV の1行目をカラム名として無視</li>
+      <li><code>NULL 'NULL'</code> : CSV 内で「NULL」という文字列を NULL 値として扱う</li>
+      <li><code>ENCODING 'UTF8'</code> : 文字コードを UTF-8 として読み込む</li>
+      </ul>
+      <p>その他、<code>WITH</code> 句のオプションについては、以下の <a
+      href="https://www.postgresql.org/docs/current/sql-copy.html?utm_source=chatgpt.com">公式ドキュメント</a>
+      を参照してください。</p>
+      <div class="prompts">
+      <ul>
+      <li><p>PostgreSQL において、<code>COPY ... WITH</code> 構文で CSVファイル
+      からテーブルにデータを取り込みたいです。このとき、CSV
+      ファイルには、改行やカンマを含む文字列データも含めたいです。どのように CSV
+      ファイルを作成し、また、<code>WITH</code>
+      句にはどのようなオプションを指定すればよいですか。</p></li>
+      <li><p>PostgreSQL では、<code>COPY ... WITH</code> 構文で
+      CSVファイルからテーブルにデータを取り込むことができます。MySQL
+      でも同じ構文でデータの取り込みができますか。</p></li>
+      </ul>
+      </div>
+      <h3 data-number="4.3.1" id="定着確認-2"><span class="header-section-number">4.3.1</span>
+      定着確認</h3>
+      <ul>
+      <li>PostgreSQL が Docker コンテナ内で動作している。SQLの
+      <code>COPY users FROM '/tmp/insert-users.csv' WITH (FORMAT csv, HEADER TRUE);</code>
+      に指定したパスは、ホストOSとコンテナのどちらのファイルを指すか答えよ。
+      <ul>
+      <li><strong>答え</strong>: <span class="masked">コンテナ内のファイルを指す。</span></li>
+      </ul></li>
+      <li>CSVの1行目が <code>id,name,age</code>、2行目以降がデータである。PostgreSQL の
+      <code>COPY</code> で先頭行をデータとして取り込まないためのオプションを答えよ。
+      <ul>
+      <li><strong>答え</strong>: <span class="masked"><code>HEADER TRUE</code></span></li>
+      </ul></li>
+      <li><strong>w03.users</strong> の <strong>age</strong> は NULL を 許容する INTEGER
+      型である。CSV の1行に <code>4,David,NULL</code>
+      があり、<code>COPY users (id, name, age) ... WITH (FORMAT csv, HEADER TRUE, NULL 'NULL');</code>
+      で取り込む。David の <strong>age</strong> は、「数値 0」、「文字列 NULL」、「SQL の
+      NULL」のどれになるか答えよ。
+      <ul>
+      <li><strong>答え</strong>: <span class="masked">SQL の NULL になる。</span></li>
+      </ul></li>
+      <li><strong>w03.users</strong> には Alice と Bob
+      の2件だけが登録されている。トランザクション内で、id が3、4、5 の 3 件を CSV
+      から取り込んだ。取込直後と、そのトランザクションを <code>ROLLBACK</code>
+      した直後のレコード数を答えよ。
+      <ul>
+      <li><strong>答え</strong>: <span class="masked">取込直後は5件、ROLLBACK直後は2件。</span></li>
+      </ul></li>
+      </ul>
+      <h1 data-number="5" id="delete文-基礎編"><span class="header-section-number">5</span> DELETE文
+      (基礎編)</h1>
+      <p>テーブルからレコードを「削除」したいとき <code>DELETE</code> 文を使用します。実際に、次の
+      SQL を実行してみてください。</p>
+      <div class="sourceCode" id="cb15" data-caption="テーブルからレコードを無条件で削除"><pre
+      class="sourceCode numberSource sql numberLines"><code class="sourceCode sql"><span id="cb15-1"><a href="#cb15-1"></a><span class="kw">SET</span></span>
+<span id="cb15-2"><a href="#cb15-2"></a>  search_path <span class="kw">TO</span> w03;</span>
+<span id="cb15-3"><a href="#cb15-3"></a></span>
+<span id="cb15-4"><a href="#cb15-4"></a><span class="kw">START</span> <span class="kw">TRANSACTION</span>;</span>
+<span id="cb15-5"><a href="#cb15-5"></a></span>
+<span id="cb15-6"><a href="#cb15-6"></a><span class="co">-- レコードを無条件削除</span></span>
+<span id="cb15-7"><a href="#cb15-7"></a><span class="kw">DELETE</span> <span class="kw">FROM</span> characters;</span>
+<span id="cb15-8"><a href="#cb15-8"></a></span>
+<span id="cb15-9"><a href="#cb15-9"></a><span class="co">-- 確認</span></span>
+<span id="cb15-10"><a href="#cb15-10"></a><span class="kw">SELECT</span> <span class="op">*</span> <span class="kw">FROM</span> characters;</span>
+<span id="cb15-11"><a href="#cb15-11"></a></span>
+<span id="cb15-12"><a href="#cb15-12"></a><span class="kw">ROLLBACK</span>;</span></code></pre></div>
+      <p><strong>第10行目</strong> の <code>SELECT</code>
+      文によって、すべてのレコードが削除されたことが確認できます。ただし、最後の
+      <code>ROLLBACK</code> によって削除が取り消され、元の状態に戻ります。</p>
+      <p>一方で、「<strong>特定の条件を満たすレコードだけ</strong>」を削除したいような場合は <span
+      class="masked"><code>WHERE</code></span> 句
+      を使用します。例えば、<strong>last_login_at</strong> が、2025年7月31日以前 ( <code>NULL</code>
+      を含む) のレコード<strong>だけ</strong>を削除したい場合は、次のようにします
+      (<strong>第07行目</strong> から <strong>第10行目</strong> に注目)。</p>
+      <div class="sourceCode" id="cb16"
+      data-caption="WHERE句を指定して条件に一致するレコードだけを削除"><pre
+      class="sourceCode numberSource sql numberLines"><code class="sourceCode sql"><span id="cb16-1"><a href="#cb16-1"></a><span class="kw">SET</span></span>
+<span id="cb16-2"><a href="#cb16-2"></a>  search_path <span class="kw">TO</span> w03;</span>
+<span id="cb16-3"><a href="#cb16-3"></a></span>
+<span id="cb16-4"><a href="#cb16-4"></a><span class="kw">START</span> <span class="kw">TRANSACTION</span>;</span>
+<span id="cb16-5"><a href="#cb16-5"></a></span>
+<span id="cb16-6"><a href="#cb16-6"></a><span class="kw">DELETE</span> <span class="kw">FROM</span> characters</span>
+<span id="cb16-7"><a href="#cb16-7"></a><span class="kw">WHERE</span></span>
+<span id="cb16-8"><a href="#cb16-8"></a>  last_login_at <span class="kw">IS</span> <span class="kw">NULL</span> <span class="kw">OR</span></span>
+<span id="cb16-9"><a href="#cb16-9"></a>  last_login_at <span class="op">&lt;</span> <span class="dt">DATE</span> <span class="st">&#39;2025-08-01&#39;</span>;</span>
+<span id="cb16-10"><a href="#cb16-10"></a></span>
+<span id="cb16-11"><a href="#cb16-11"></a><span class="co">-- 確認</span></span>
+<span id="cb16-12"><a href="#cb16-12"></a><span class="kw">SELECT</span></span>
+<span id="cb16-13"><a href="#cb16-13"></a>  <span class="kw">id</span>,</span>
+<span id="cb16-14"><a href="#cb16-14"></a>  name,</span>
+<span id="cb16-15"><a href="#cb16-15"></a>  last_login_at</span>
+<span id="cb16-16"><a href="#cb16-16"></a><span class="kw">FROM</span></span>
+<span id="cb16-17"><a href="#cb16-17"></a>  characters</span>
+<span id="cb16-18"><a href="#cb16-18"></a><span class="kw">ORDER</span> <span class="kw">BY</span></span>
+<span id="cb16-19"><a href="#cb16-19"></a>  last_login_at;</span>
+<span id="cb16-20"><a href="#cb16-20"></a></span>
+<span id="cb16-21"><a href="#cb16-21"></a><span class="kw">ROLLBACK</span>;</span></code></pre></div>
+      <p>実行結果は、次のようになります。以下の <strong>第02行目</strong> の <code>DELETE 5</code>
+      という応答から <span class="masked">5件のレコードが削除されたこと</span> が確認できます。</p>
+      <pre><code>START TRANSACTION
+DELETE 5
+ id |  name  |    last_login_at
+----+--------+---------------------
+  8 | Bob    | 2025-08-03 09:11:00
+ 17 | Wendy  | 2025-08-08 10:56:00
+ 12 | Dave   | 2025-08-15 16:08:00
+ 13 | Mallet | 2025-08-27 18:50:00
+ 19 | Jack   | 2025-09-02 15:43:00
+ 10 | Oscar  | 2025-09-10 21:00:00
+  9 | Walter | 2025-09-14 22:10:00
+  6 | Alice  | 2025-09-18 14:22:00
+ 11 | Ellen  | 2025-09-25 23:55:00
+  7 | Trudy  | 2025-09-29 12:37:00
+ 18 | Carol  | 2025-10-03 11:42:00
+ 16 | Steve  | 2025-10-06 09:14:00
+ 14 | Eve    | 2025-10-07 10:17:00
+ 15 | Trent  | 2025-10-11 17:20:00
+(14 行)
+
+ROLLBACK</code></pre>
+      <ul>
+      <li>📖 教科書 pp.129-132 の「<strong>4-2 データの削除
+      (DELETE文の使い方)</strong>」も参照してください。</li>
+      </ul>
+      <h3 data-number="5.0.1" id="定着確認-3"><span class="header-section-number">5.0.1</span>
+      定着確認</h3>
+      <ul>
+      <li><strong>w03.characters</strong> の <strong>id</strong> はINTEGER型である。id が 3 または 5
+      のレコードだけを削除する <code>DELETE</code> 文を、<code>IN</code> を使用して記述せよ。
+      <ul>
+      <li><strong>答え</strong>: <span
+      class="masked"><code>DELETE FROM w03.characters WHERE id IN (3, 5);</code></span></li>
+      </ul></li>
+      <li><strong>w03.characters</strong> には 19 件のレコードがある。トランザクション内で
+      <code>DELETE FROM w03.characters;</code> を実行した直後と、<code>ROLLBACK</code>
+      した直後のレコード数を答えよ。
+      <ul>
+      <li><strong>答え</strong>: <span class="masked">DELETE 直後は0件、ROLLBACK
+      直後は19件。</span></li>
+      </ul></li>
+      <li><strong>w03.characters</strong> テーブルの <strong>last_login_at</strong> カラムは
+      TIMESTAMP 型であり、未ログインの場合は <code>NULL</code>
+      が格納されている。未ログインのレコードだけを削除するための <code>WHERE</code> 句を記述せよ。
+      <ul>
+      <li><strong>答え</strong>: <span
+      class="masked"><code>WHERE last_login_at IS NULL</code></span></li>
+      </ul></li>
+      <li>PostgreSQL で <code>DELETE</code> 文を実行したところ、<code>DELETE 5</code>
+      と表示された。この応答が示す内容を答えよ。
+      <ul>
+      <li><strong>答え</strong>: <span class="masked">5件のレコードが削除されたこと。</span></li>
+      </ul></li>
+      </ul>
+      <h3 data-number="5.0.2" id="sqlドリル"><span class="header-section-number">5.0.2</span>
+      SQLドリル💻</h3>
+      <ul>
+      <li><p><code>ex-01_1.sql</code> 👉 <strong>w03.characters</strong>
+      テーブルのレコードについて、2025年10月15日を基準日として、最終ログインから60日以上経過したレコードを削除する
+      SQL 文を記述せよ。日数は <strong>last_login_at を DATE
+      型に変換し、基準日との差</strong>で求めること。<strong>last_login_at が NULL
+      のレコードは削除しない</strong>こと。</p>
+      <ul>
+      <li><code>DATE</code> 型の「2025年10月15日」は、<code>CAST('2025-10-15' AS DATE)</code> または
+      <code>DATE '2025-10-15'</code> で得ることができます。</li>
+      </ul></li>
+      <li><p><code>ex-01_2.sql</code> 👉 <strong>w03.characters</strong>
+      テーブルのレコードについて、<strong>last_login_at</strong> が <code>NULL</code>
+      で、<strong>created_on</strong> が2023年12月31日以前のレコードを削除する SQL
+      文を記述せよ。</p></li>
+      <li><p><code>ex-01_3.sql</code> 👉 <strong>w03.characters</strong>
+      テーブルのレコードについて、<strong>id</strong> が、3、5、8、9、10、14 の 6
+      件のレコードを削除する SQL 文を記述せよ。</p></li>
+      </ul>
+      <h1 data-number="6" id="update文-基礎編"><span class="header-section-number">6</span> UPDATE文
+      (基礎編)</h1>
+      <p>既存のレコードの値を変更するには、<code>UPDATE</code> 文を使用します。<code>DELETE</code>
+      文でレコードを削除し、<code>INSERT</code> 文で再登録する方法も考えられますが、通常は
+      <code>UPDATE</code> 文で直接更新します。</p>
+      <div class="balloon char-01 face-02 tone-yellow">
+      <p>関数型プログラミングでは、元のデータを変更せず、新しいデータを生成するイミュータブルな更新がよく用いられます。一方、RDBMS
+      では、データの整合性や他のテーブルとの関連を維持しながら、既存のレコードを更新する
+      <code>UPDATE</code> 文が基本となります。</p>
+      </div>
+      <ul>
+      <li>📖 教科書 pp.133-138 の「<strong>4-3 データの更新
+      (UPDATE文の使い方)</strong>」も参照してください。</li>
+      </ul>
+      <h2 data-number="6.1" id="すべてのレコードの値を固定値で更新"><span
+      class="header-section-number">6.1</span> すべてのレコードの値を固定値で更新</h2>
+      <p>たとえば、<strong>w03.characters</strong>
+      テーブルの全てのレコードについて、<strong>バフ解除</strong> (<strong>buff</strong> を
+      <code>0.0</code> に上書き) するためには、次のように SQL を記述します。</p>
+      <div class="sourceCode" id="cb18"
+      data-caption="すべてのレコードのbuffカラムを0.0に設定する"><pre
+      class="sourceCode numberSource sql numberLines"><code class="sourceCode sql"><span id="cb18-1"><a href="#cb18-1"></a><span class="kw">SET</span></span>
+<span id="cb18-2"><a href="#cb18-2"></a>  search_path <span class="kw">TO</span> w03;</span>
+<span id="cb18-3"><a href="#cb18-3"></a></span>
+<span id="cb18-4"><a href="#cb18-4"></a><span class="kw">START</span> <span class="kw">TRANSACTION</span>;</span>
+<span id="cb18-5"><a href="#cb18-5"></a></span>
+<span id="cb18-6"><a href="#cb18-6"></a><span class="co">-- 更新前のレコードを確認 (省略)</span></span>
+<span id="cb18-7"><a href="#cb18-7"></a></span>
+<span id="cb18-8"><a href="#cb18-8"></a><span class="co">-- 更新処理</span></span>
+<span id="cb18-9"><a href="#cb18-9"></a><span class="kw">UPDATE</span> characters</span>
+<span id="cb18-10"><a href="#cb18-10"></a><span class="kw">SET</span></span>
+<span id="cb18-11"><a href="#cb18-11"></a>  buff <span class="op">=</span> <span class="fl">0.0</span>;</span>
+<span id="cb18-12"><a href="#cb18-12"></a></span>
+<span id="cb18-13"><a href="#cb18-13"></a><span class="co">-- 更新後のレコードを確認 (省略)</span></span>
+<span id="cb18-14"><a href="#cb18-14"></a></span>
+<span id="cb18-15"><a href="#cb18-15"></a><span class="kw">ROLLBACK</span>;</span></code></pre></div>
+      <p>実行すると <code>UPDATE 19</code> のような応答が表示されます。</p>
+      <div class="balloon char-01 face-02 tone-pink">
+      <p>もともと <strong>buff</strong> が <code>0.0</code> であったレコードについても、再度
+      <code>0.0</code> に上書きされ、処理件数に含まれている点に注意してください。</p>
+      </div>
+      <h3 data-number="6.1.1" id="sqlドリル-1"><span class="header-section-number">6.1.1</span>
+      SQLドリル💻</h3>
+      <ul>
+      <li><code>ex-02_1.sql</code> 👉 <strong>w03.characters</strong> テーブルの全レコードの
+      <strong>buff</strong> を <code>0.0</code> に更新する SQL
+      を記述せよ。<code>START TRANSACTION</code> ～ <code>ROLLBACK</code> を含め、更新前後には
+      <strong>id</strong>、<strong>name</strong>、<strong>buff</strong> を <strong>id</strong>
+      の昇順で取得して、更新結果を確認すること。</li>
+      </ul>
+      <h2 data-number="6.2" id="特定のレコードのみを更新"><span
+      class="header-section-number">6.2</span> 特定のレコードのみを更新</h2>
+      <p>特定のレコードを指定して値を更新する場合は、<code>WHERE</code>
+      句を使用します。なお、<code>UPDATE</code> 文の <code>SET</code> 句では、カンマで区切って <span
+      class="masked">複数のカラムを同時に更新すること</span> ができます。</p>
+      <p>たとえば、<strong>id</strong> が「1」と「2」のキャラクタについて、<strong>guild</strong>
+      カラムを <code>NULL</code> にして、<strong>job</strong> カラムを <code>Exile</code>
+      (亡命者・追放者) に変更するには、次のように SQL 文を記述します。</p>
+      <div class="sourceCode" id="cb19" data-caption="特定のレコードを対象とした更新処理"><pre
+      class="sourceCode numberSource sql numberLines"><code class="sourceCode sql"><span id="cb19-1"><a href="#cb19-1"></a><span class="kw">SET</span></span>
+<span id="cb19-2"><a href="#cb19-2"></a>  search_path <span class="kw">TO</span> w03;</span>
+<span id="cb19-3"><a href="#cb19-3"></a></span>
+<span id="cb19-4"><a href="#cb19-4"></a><span class="kw">START</span> <span class="kw">TRANSACTION</span>;</span>
+<span id="cb19-5"><a href="#cb19-5"></a></span>
+<span id="cb19-6"><a href="#cb19-6"></a><span class="co">-- 更新前のレコードを確認 (省略)</span></span>
+<span id="cb19-7"><a href="#cb19-7"></a></span>
+<span id="cb19-8"><a href="#cb19-8"></a><span class="co">-- 更新処理</span></span>
+<span id="cb19-9"><a href="#cb19-9"></a><span class="kw">UPDATE</span> characters</span>
+<span id="cb19-10"><a href="#cb19-10"></a><span class="kw">SET</span></span>
+<span id="cb19-11"><a href="#cb19-11"></a>  guild <span class="op">=</span> <span class="kw">NULL</span>,</span>
+<span id="cb19-12"><a href="#cb19-12"></a>  job <span class="op">=</span> <span class="st">&#39;Exile&#39;</span></span>
+<span id="cb19-13"><a href="#cb19-13"></a><span class="kw">WHERE</span></span>
+<span id="cb19-14"><a href="#cb19-14"></a>  <span class="kw">id</span> <span class="kw">IN</span> (<span class="dv">1</span>, <span class="dv">2</span>);</span>
+<span id="cb19-15"><a href="#cb19-15"></a></span>
+<span id="cb19-16"><a href="#cb19-16"></a><span class="co">-- 更新後のレコードを確認 (省略)</span></span>
+<span id="cb19-17"><a href="#cb19-17"></a></span>
+<span id="cb19-18"><a href="#cb19-18"></a><span class="kw">ROLLBACK</span>;</span></code></pre></div>
+      <p>実行すると <code>UPDATE 2</code> という応答が表示されます (2
+      件のレコードが更新されたことが分かります)。トランザクション内の「更新後のレコードを確認」の箇所に
+      <code>SELECT id, name, job, guild FROM characters ORDER BY id;</code>
+      を記述すると、次のように表示されます (先頭 2 件のみを抜粋)。</p>
+      <pre><code> id |  name   |   job   | guild
+----+---------+---------+--------
+  1 | Marvin  | Exile   |
+  2 | Zach    | Exile   |
+ ～～以下略～～</code></pre>
+      <div class="balloon char-01 face-05 tone-blue">
+      <p>この例で変更されるのは、<strong>id</strong> が 1 と 2 のレコードの <strong>guild</strong>
+      と <strong>job</strong> だけです。<strong>name</strong> や <strong>level</strong>
+      など、<code>SET</code> 句に記述していないカラムの値は変わりません。</p>
+      </div>
+      <h3 data-number="6.2.1" id="sqlドリル-2"><span class="header-section-number">6.2.1</span>
+      SQLドリル💻</h3>
+      <ul>
+      <li><code>ex-02_2.sql</code> 👉 <strong>w03.characters</strong> テーブルの
+      <strong>job</strong> カラムについて <code>Wizard</code> を <code>Mage</code> に更新する SQL
+      を記述せよ。</li>
+      </ul>
+      <h2 data-number="6.3" id="現在の値を利用した更新"><span
+      class="header-section-number">6.3</span> 現在の値を利用した更新</h2>
+      <p><code>UPDATE</code> 文では <span class="masked">現在のカラム値</span>
+      を参照した更新も可能です。たとえば、<strong>level</strong> を <code>現在値+2</code>
+      にするには、次のように SQL を記述します。</p>
+      <div class="sourceCode" id="cb21" data-caption="levelを2だけ増加させる更新"><pre
+      class="sourceCode numberSource sql numberLines"><code class="sourceCode sql"><span id="cb21-1"><a href="#cb21-1"></a><span class="kw">SET</span></span>
+<span id="cb21-2"><a href="#cb21-2"></a>  search_path <span class="kw">TO</span> w03;</span>
+<span id="cb21-3"><a href="#cb21-3"></a></span>
+<span id="cb21-4"><a href="#cb21-4"></a><span class="kw">START</span> <span class="kw">TRANSACTION</span>;</span>
+<span id="cb21-5"><a href="#cb21-5"></a></span>
+<span id="cb21-6"><a href="#cb21-6"></a><span class="co">-- 更新前のレコードを確認 (省略)</span></span>
+<span id="cb21-7"><a href="#cb21-7"></a></span>
+<span id="cb21-8"><a href="#cb21-8"></a><span class="kw">UPDATE</span> characters</span>
+<span id="cb21-9"><a href="#cb21-9"></a><span class="kw">SET</span></span>
+<span id="cb21-10"><a href="#cb21-10"></a>  <span class="kw">level</span> <span class="op">=</span> <span class="kw">level</span> <span class="op">+</span> <span class="dv">2</span>;</span>
+<span id="cb21-11"><a href="#cb21-11"></a></span>
+<span id="cb21-12"><a href="#cb21-12"></a><span class="co">-- 更新後のレコードを確認 (省略)</span></span>
+<span id="cb21-13"><a href="#cb21-13"></a></span>
+<span id="cb21-14"><a href="#cb21-14"></a><span class="kw">ROLLBACK</span>;</span></code></pre></div>
+      <p>また、同じレコードのなかの「<strong>他のカラム値</strong>」を参照して更新することもできます。たとえば、<strong>buff</strong>
+      を <code>SQRT(100-level)*0.05</code> に設定するには、次のように SQL 文を記述します。</p>
+      <ul>
+      <li><code>SQRT</code> は平方根を計算する関数です。</li>
+      </ul>
+      <div class="sourceCode" id="cb22"
+      data-caption="同じレコード内の他のカラム値を参照して更新"><pre
+      class="sourceCode numberSource sql numberLines"><code class="sourceCode sql"><span id="cb22-1"><a href="#cb22-1"></a><span class="kw">SET</span></span>
+<span id="cb22-2"><a href="#cb22-2"></a>  search_path <span class="kw">TO</span> w03;</span>
+<span id="cb22-3"><a href="#cb22-3"></a></span>
+<span id="cb22-4"><a href="#cb22-4"></a><span class="kw">START</span> <span class="kw">TRANSACTION</span>;</span>
+<span id="cb22-5"><a href="#cb22-5"></a></span>
+<span id="cb22-6"><a href="#cb22-6"></a><span class="co">-- 更新前のレコードを確認 (省略)</span></span>
+<span id="cb22-7"><a href="#cb22-7"></a></span>
+<span id="cb22-8"><a href="#cb22-8"></a><span class="kw">UPDATE</span> characters</span>
+<span id="cb22-9"><a href="#cb22-9"></a><span class="kw">SET</span></span>
+<span id="cb22-10"><a href="#cb22-10"></a>  buff <span class="op">=</span> <span class="fu">SQRT</span>(<span class="dv">100</span> <span class="op">-</span> <span class="kw">level</span>)<span class="op">*</span><span class="fl">0.05</span>;</span>
+<span id="cb22-11"><a href="#cb22-11"></a></span>
+<span id="cb22-12"><a href="#cb22-12"></a><span class="co">-- 更新後のレコードを確認 (省略)</span></span>
+<span id="cb22-13"><a href="#cb22-13"></a></span>
+<span id="cb22-14"><a href="#cb22-14"></a><span class="kw">ROLLBACK</span>;</span></code></pre></div>
+      <p>ここで、<strong>buff</strong> は <code>NUMERIC(3,2)</code>
+      型なので、計算結果は小数第2位まで丸められて保存されます。</p>
+      <div class="sourceCode" id="cb23" data-caption="更新結果の確認 (ROLLBACKの前に追加)"><pre
+      class="sourceCode numberSource sql numberLines"><code class="sourceCode sql"><span id="cb23-1"><a href="#cb23-1"></a><span class="kw">SELECT</span> <span class="kw">id</span>, name, <span class="kw">level</span>, buff <span class="kw">FROM</span> characters <span class="kw">ORDER</span> <span class="kw">BY</span> <span class="kw">id</span>;</span></code></pre></div>
+      <h3 data-number="6.3.1" id="sqlドリル-3"><span class="header-section-number">6.3.1</span>
+      SQLドリル💻</h3>
+      <ul>
+      <li><p><code>ex-02_3.sql</code> 👉 <u>ソロプレイ前衛職応援キャンペーン🎉</u>
+      として、<strong>w03.characters</strong> テーブルの <strong>guild</strong> が <code>NULL</code>
+      で、<strong>job</strong> が Fighter、Monk、Samurai、Ninja
+      のキャラクタについて、<strong>buff</strong> の現在値に <code>0.25</code> を加算する SQL
+      を記述せよ。また、更新前後の <strong>buff</strong> などを確認する SQL
+      も記述すること。</p></li>
+      <li><p><code>ex-02_4.sql</code> 👉 <u>おかえりなさいキャンペーン🎉</u>
+      として、<strong>w03.characters</strong> テーブルの <strong>buff</strong>
+      を、2025年10月15日を基準日とした最終ログインからの経過日数に応じて、次の値に
+      <strong>上書き</strong> する SQL を記述せよ。日数は <strong>last_login_at を DATE
+      型に変換し、基準日との差</strong>で求めること。複数の条件に該当するときは、日数の大きい条件を優先し、<strong>last_login_at
+      が NULL の場合は buff を <code>0.00</code></strong> にすること。更新前後の
+      <strong>buff</strong> も確認すること。</p>
+      <ul>
+      <li>最終ログイン日から <strong>60日以上</strong> 経過していれば <strong>buff</strong> を
+      <code>0.40</code></li>
+      <li>最終ログイン日から <strong>40日以上</strong> 経過していれば <strong>buff</strong> を
+      <code>0.30</code></li>
+      <li>最終ログイン日から <strong>20日以上</strong> 経過していれば <strong>buff</strong> を
+      <code>0.20</code></li>
+      <li>最終ログイン日から <strong>10日以上</strong> 経過していれば <strong>buff</strong> を
+      <code>0.10</code></li>
+      <li>それ以外は <strong>buff</strong> を <code>0.00</code> に設定</li>
+      </ul></li>
+      </ul>
+      <h2 data-number="6.4" id="case式による同時置換処理"><span
+      class="header-section-number">6.4</span> CASE式による同時置換処理</h2>
+      <p><strong>w03.characters</strong> テーブルの <strong>job</strong>
+      カラムについて、(ハロウィン仮装イベント🎃として) Priest なら Wizard に更新し、Wizard なら
+      Priest に更新するような処理 (つまり、<span class="masked">Priest ↔︎ Wizard
+      の入れ替え処理</span>) を考えます。</p>
+      <p>この処理を次のように<strong>2回に分けて実行すると</strong>、期待する結果を得ることができません。</p>
+      <div class="sourceCode" id="cb24" data-caption="2回に分けて更新処理を実行"><pre
+      class="sourceCode numberSource sql numberLines"><code class="sourceCode sql"><span id="cb24-1"><a href="#cb24-1"></a><span class="kw">SET</span></span>
+<span id="cb24-2"><a href="#cb24-2"></a>  search_path <span class="kw">TO</span> w03;</span>
+<span id="cb24-3"><a href="#cb24-3"></a></span>
+<span id="cb24-4"><a href="#cb24-4"></a><span class="kw">START</span> <span class="kw">TRANSACTION</span>;</span>
+<span id="cb24-5"><a href="#cb24-5"></a></span>
+<span id="cb24-6"><a href="#cb24-6"></a><span class="co">-- 更新前のレコードを確認</span></span>
+<span id="cb24-7"><a href="#cb24-7"></a><span class="kw">SELECT</span></span>
+<span id="cb24-8"><a href="#cb24-8"></a>  <span class="kw">id</span>,</span>
+<span id="cb24-9"><a href="#cb24-9"></a>  name,</span>
+<span id="cb24-10"><a href="#cb24-10"></a>  job</span>
+<span id="cb24-11"><a href="#cb24-11"></a><span class="kw">FROM</span></span>
+<span id="cb24-12"><a href="#cb24-12"></a>  characters</span>
+<span id="cb24-13"><a href="#cb24-13"></a><span class="kw">WHERE</span></span>
+<span id="cb24-14"><a href="#cb24-14"></a>  job <span class="kw">IN</span> (<span class="st">&#39;Wizard&#39;</span>, <span class="st">&#39;Priest&#39;</span>)</span>
+<span id="cb24-15"><a href="#cb24-15"></a><span class="kw">ORDER</span> <span class="kw">BY</span></span>
+<span id="cb24-16"><a href="#cb24-16"></a>  <span class="kw">id</span>;</span>
+<span id="cb24-17"><a href="#cb24-17"></a></span>
+<span id="cb24-18"><a href="#cb24-18"></a><span class="co">-- 更新処理 👉 Priest ならば Wizard に変更</span></span>
+<span id="cb24-19"><a href="#cb24-19"></a><span class="kw">UPDATE</span> characters</span>
+<span id="cb24-20"><a href="#cb24-20"></a><span class="kw">SET</span></span>
+<span id="cb24-21"><a href="#cb24-21"></a>  job <span class="op">=</span> <span class="st">&#39;Wizard&#39;</span></span>
+<span id="cb24-22"><a href="#cb24-22"></a><span class="kw">WHERE</span></span>
+<span id="cb24-23"><a href="#cb24-23"></a>  job <span class="op">=</span> <span class="st">&#39;Priest&#39;</span>;</span>
+<span id="cb24-24"><a href="#cb24-24"></a></span>
+<span id="cb24-25"><a href="#cb24-25"></a><span class="co">-- 更新処理 👉 Wizard ならば Priest に変更</span></span>
+<span id="cb24-26"><a href="#cb24-26"></a><span class="kw">UPDATE</span> characters</span>
+<span id="cb24-27"><a href="#cb24-27"></a><span class="kw">SET</span></span>
+<span id="cb24-28"><a href="#cb24-28"></a>  job <span class="op">=</span> <span class="st">&#39;Priest&#39;</span></span>
+<span id="cb24-29"><a href="#cb24-29"></a><span class="kw">WHERE</span></span>
+<span id="cb24-30"><a href="#cb24-30"></a>  job <span class="op">=</span> <span class="st">&#39;Wizard&#39;</span>;</span>
+<span id="cb24-31"><a href="#cb24-31"></a></span>
+<span id="cb24-32"><a href="#cb24-32"></a><span class="co">-- 更新後のレコードを確認</span></span>
+<span id="cb24-33"><a href="#cb24-33"></a><span class="kw">SELECT</span></span>
+<span id="cb24-34"><a href="#cb24-34"></a>  <span class="kw">id</span>,</span>
+<span id="cb24-35"><a href="#cb24-35"></a>  name,</span>
+<span id="cb24-36"><a href="#cb24-36"></a>  job</span>
+<span id="cb24-37"><a href="#cb24-37"></a><span class="kw">FROM</span></span>
+<span id="cb24-38"><a href="#cb24-38"></a>  characters</span>
+<span id="cb24-39"><a href="#cb24-39"></a><span class="kw">WHERE</span></span>
+<span id="cb24-40"><a href="#cb24-40"></a>  job <span class="kw">IN</span> (<span class="st">&#39;Wizard&#39;</span>, <span class="st">&#39;Priest&#39;</span>)</span>
+<span id="cb24-41"><a href="#cb24-41"></a><span class="kw">ORDER</span> <span class="kw">BY</span></span>
+<span id="cb24-42"><a href="#cb24-42"></a>  <span class="kw">id</span>;</span>
+<span id="cb24-43"><a href="#cb24-43"></a></span>
+<span id="cb24-44"><a href="#cb24-44"></a><span class="kw">ROLLBACK</span>;</span></code></pre></div>
+      <p>実行結果は、次のようになります。期待したジョブの入れ替えとはならず、<span
+      class="masked">Wizard 全員が Priest</span> になってしまっています。</p>
+      <pre><code>START TRANSACTION
+ id |  name   |  job
+----+---------+--------
+  1 | Marvin  | Priest
+  3 | Charlie | Wizard
+  6 | Alice   | Priest
+ 11 | Ellen   | Wizard
+ 13 | Mallet  | Wizard
+ 15 | Trent   | Priest
+ 18 | Carol   | Priest
+ 19 | Jack    | Wizard
+(8 行)
+
+UPDATE 4
+UPDATE 8
+ id |  name   |  job
+----+---------+--------
+  1 | Marvin  | Priest
+  3 | Charlie | Priest
+  6 | Alice   | Priest
+ 11 | Ellen   | Priest
+ 13 | Mallet  | Priest
+ 15 | Trent   | Priest
+ 18 | Carol   | Priest
+ 19 | Jack    | Priest
+(8 行)
+
+ROLLBACK</code></pre>
+      <p>このような場合、いったん別の値に退避してから入れ替える方法でも対応できますが、次のように
+      <strong>CASE式</strong> を使用することで、より簡潔に SQL を記述することができます。</p>
+      <div class="sourceCode" id="cb26" data-caption="CASE式による同時置換処理"><pre
+      class="sourceCode numberSource sql numberLines"><code class="sourceCode sql"><span id="cb26-1"><a href="#cb26-1"></a><span class="kw">SET</span></span>
+<span id="cb26-2"><a href="#cb26-2"></a>  search_path <span class="kw">TO</span> w03;</span>
+<span id="cb26-3"><a href="#cb26-3"></a></span>
+<span id="cb26-4"><a href="#cb26-4"></a><span class="kw">START</span> <span class="kw">TRANSACTION</span>;</span>
+<span id="cb26-5"><a href="#cb26-5"></a></span>
+<span id="cb26-6"><a href="#cb26-6"></a><span class="co">-- 更新前のレコードを確認 (省略)</span></span>
+<span id="cb26-7"><a href="#cb26-7"></a></span>
+<span id="cb26-8"><a href="#cb26-8"></a><span class="co">-- 更新処理 👉 Priest と Wizard を入れ替え</span></span>
+<span id="cb26-9"><a href="#cb26-9"></a><span class="kw">UPDATE</span> characters</span>
+<span id="cb26-10"><a href="#cb26-10"></a><span class="kw">SET</span></span>
+<span id="cb26-11"><a href="#cb26-11"></a>  job <span class="op">=</span> <span class="cf">CASE</span></span>
+<span id="cb26-12"><a href="#cb26-12"></a>    <span class="cf">WHEN</span> job <span class="op">=</span> <span class="st">&#39;Priest&#39;</span> <span class="cf">THEN</span> <span class="st">&#39;Wizard&#39;</span></span>
+<span id="cb26-13"><a href="#cb26-13"></a>    <span class="cf">ELSE</span> <span class="st">&#39;Priest&#39;</span></span>
+<span id="cb26-14"><a href="#cb26-14"></a>  <span class="cf">END</span></span>
+<span id="cb26-15"><a href="#cb26-15"></a><span class="kw">WHERE</span></span>
+<span id="cb26-16"><a href="#cb26-16"></a>  job <span class="kw">IN</span> (<span class="st">&#39;Wizard&#39;</span>, <span class="st">&#39;Priest&#39;</span>);</span>
+<span id="cb26-17"><a href="#cb26-17"></a></span>
+<span id="cb26-18"><a href="#cb26-18"></a><span class="co">-- 更新後のレコードを確認 (省略)</span></span>
+<span id="cb26-19"><a href="#cb26-19"></a></span>
+<span id="cb26-20"><a href="#cb26-20"></a><span class="kw">ROLLBACK</span>;</span></code></pre></div>
+      <div class="balloon char-01 face-05 tone-blue">
+      <p><code>CASE</code> 式では、各レコードの更新前の <strong>job</strong>
+      をもとに、更新後の値を決めます。</p>
+      <p>また、<code>WHERE</code> 句で対象を Priest と Wizard
+      に限定しているため、<code>ELSE 'Priest'</code> は Wizard の場合にだけ適用されます。</p>
+      </div>
+      <p>トランザクション内の「更新後のレコードを確認」の箇所に、先ほどの例と同じ
+      <code>SELECT</code>
+      文を記述すると、以下のように意図したジョブの入れ替えができていることを確認できます。</p>
+      <pre><code> id |  name   |  job
+----+---------+--------
+  1 | Marvin  | Wizard
+  3 | Charlie | Priest
+  6 | Alice   | Wizard
+ 11 | Ellen   | Priest
+ 13 | Mallet  | Priest
+ 15 | Trent   | Wizard
+ 18 | Carol   | Wizard
+ 19 | Jack    | Priest</code></pre>
+      <h3 data-number="6.4.1" id="sqlドリル-4"><span class="header-section-number">6.4.1</span>
+      SQLドリル💻</h3>
+      <ul>
+      <li><code>ex-02_5.sql</code> 👉 <strong>w03.characters</strong>
+      テーブルについて、前衛職のジョブを次のように入れ替えるための SQL を記述せよ。
+      <ul>
+      <li>Fighter を Monk に変更</li>
+      <li>Monk を Samurai に変更</li>
+      <li>Samurai を Ninja に変更</li>
+      <li>Ninja を Fighter に変更</li>
+      <li>それ以外のジョブは変更しないこと。更新前後の <strong>job</strong> を確認すること。</li>
+      </ul></li>
+      </ul>
+      <h2 data-number="6.5" id="補足-returning-句"><span class="header-section-number">6.5</span>
+      補足: RETURNING 句</h2>
+      <p>PostgreSQL では、<code>UPDATE</code> 文や <code>DELETE</code> 文を実行した際、変更後
+      (または削除した) レコードの内容を即座に取得できる <code>RETURNING</code>
+      句という構文があります。通常の <code>UPDATE</code> 文は、<code>UPDATE 2</code>
+      のように<strong>件数だけ</strong>を返しますが、<code>RETURNING</code> を使うと <span
+      class="masked">変更後のレコードを受け取り、任意のカラムを出力すること</span> ができます。</p>
+      <div class="sourceCode" id="cb28" data-caption="RETURNING句の利用"><pre
+      class="sourceCode numberSource sql numberLines"><code class="sourceCode sql"><span id="cb28-1"><a href="#cb28-1"></a><span class="kw">SET</span></span>
+<span id="cb28-2"><a href="#cb28-2"></a>  search_path <span class="kw">TO</span> w03;</span>
+<span id="cb28-3"><a href="#cb28-3"></a></span>
+<span id="cb28-4"><a href="#cb28-4"></a><span class="kw">START</span> <span class="kw">TRANSACTION</span>;</span>
+<span id="cb28-5"><a href="#cb28-5"></a></span>
+<span id="cb28-6"><a href="#cb28-6"></a><span class="kw">UPDATE</span> characters</span>
+<span id="cb28-7"><a href="#cb28-7"></a><span class="kw">SET</span></span>
+<span id="cb28-8"><a href="#cb28-8"></a>  buff <span class="op">=</span> <span class="fl">0.3</span></span>
+<span id="cb28-9"><a href="#cb28-9"></a><span class="kw">WHERE</span></span>
+<span id="cb28-10"><a href="#cb28-10"></a>  <span class="kw">level</span> <span class="op">&lt;</span> <span class="dv">40</span></span>
+<span id="cb28-11"><a href="#cb28-11"></a><span class="kw">RETURNING</span> <span class="co">-- ◀ ここに注目</span></span>
+<span id="cb28-12"><a href="#cb28-12"></a>  <span class="kw">id</span>,</span>
+<span id="cb28-13"><a href="#cb28-13"></a>  name,</span>
+<span id="cb28-14"><a href="#cb28-14"></a>  <span class="kw">level</span>,</span>
+<span id="cb28-15"><a href="#cb28-15"></a>  buff;</span>
+<span id="cb28-16"><a href="#cb28-16"></a></span>
+<span id="cb28-17"><a href="#cb28-17"></a><span class="kw">ROLLBACK</span>;</span></code></pre></div>
+      <p>実行結果は次のようになります。</p>
+      <pre><code>START TRANSACTION
+ id |  name  | level | buff
+----+--------+-------+------
+  1 | Marvin |    35 | 0.30
+  4 | Tom    |     1 | 0.30
+  5 | Ivan   |    39 | 0.30
+  8 | Bob    |    33 | 0.30
+ 18 | Carol  |    28 | 0.30
+(5 行)
+
+UPDATE 5
+ROLLBACK</code></pre>
+      <div class="note type-senior">
+      <p><strong>中級者向け: 更新前後の値をまとめて取得する</strong></p>
+      <p>PostgreSQL 18 では、<code>RETURNING</code> 句に <code>old.カラム名</code> と
+      <code>new.カラム名</code> を指定すると、更新前後の値をまとめて取得できます。先ほどの SQL の
+      <code>RETURNING</code> 句を、次のように置き換えて実行してみてください。</p>
+      <div class="sourceCode" id="cb30" data-caption="更新前後のbuffを取得するRETURNING句"
+      data-startFrom="11"><pre class="sourceCode numberSource sql numberLines"><code class="sourceCode sql" style="counter-reset: source-line 10;"><span id="cb30-11"><a href="#cb30-11"></a><span class="kw">RETURNING</span></span>
+<span id="cb30-12"><a href="#cb30-12"></a>  <span class="kw">id</span>,</span>
+<span id="cb30-13"><a href="#cb30-13"></a>  <span class="kw">old</span>.buff <span class="kw">AS</span> before_buff,</span>
+<span id="cb30-14"><a href="#cb30-14"></a>  <span class="kw">new</span>.buff <span class="kw">AS</span> after_buff;</span></code></pre></div>
+      <p><strong>before_buff</strong> に更新前の値、<strong>after_buff</strong>
+      に更新後の値が表示されるので、どのように変更されたのかを見比べることができます。</p>
+      </div>
+      <h3 data-number="6.5.1" id="定着確認-4"><span class="header-section-number">6.5.1</span>
+      定着確認</h3>
+      <ul>
+      <li><strong>characters</strong> テーブルのあるレコードの <strong>buff</strong>
+      はNUMERIC型で、値は <code>-0.15</code> である。<code>SET buff = 0.25</code> と
+      <code>SET buff = buff + 0.25</code> をそれぞれ元の値に対して適用した場合、更新後の値を答えよ。
+      <ul>
+      <li><strong>答え</strong>: <span class="masked">前者は0.25、後者は0.10。</span></li>
+      </ul></li>
+      <li><strong>w03.characters</strong> には 19 件のレコードがあり、うち3件の
+      <strong>buff</strong> は既に 0.0 である。<code>UPDATE w03.characters SET buff = 0.0;</code>
+      を実行したとき、<code>UPDATE</code> の応答に表示される件数は 16 と 19 のどちらか答えよ。
+      <ul>
+      <li><strong>答え</strong>: <span
+      class="masked">19。WHERE句がなく全レコードが対象となり、既に同じ値の行も更新件数に含まれる。</span></li>
+      </ul></li>
+      <li><strong>w03.characters</strong> の <strong>job</strong> は VARCHAR 型である。Wizard
+      のレコードだけを Mage に変更する <code>UPDATE</code> 文を記述せよ。
+      <ul>
+      <li><strong>答え</strong>: <span
+      class="masked"><code>UPDATE w03.characters SET job = 'Mage' WHERE job = 'Wizard';</code></span></li>
+      </ul></li>
+      <li><strong>characters</strong> テーブルには、<strong>job</strong> が Priest の Alice
+      と、Wizard の Bob
+      だけが登録されている。<code>UPDATE characters SET job = 'Wizard' WHERE job = 'Priest';</code>
+      の後に、<code>UPDATE characters SET job = 'Priest' WHERE job = 'Wizard';</code>
+      を実行した。最後の2人の job を答えよ。
+      <ul>
+      <li><strong>答え</strong>: <span
+      class="masked">AliceもBobもPriestとなる。最初のUPDATEでWizardになったAliceも、2つ目のUPDATEの対象になるため。</span></li>
+      </ul></li>
+      <li>PostgreSQL で <code>UPDATE</code> 文を実行し、更新した行の <strong>id</strong>
+      と、更新後の <strong>buff</strong> を同じSQL 文で取得したい。文末に追加する句を答えよ。
+      <ul>
+      <li><strong>答え</strong>: <span class="masked"><code>RETURNING id, buff</code></span></li>
+      </ul></li>
+      <li><strong>w03.characters</strong> テーブルの <strong>buff</strong> を、現在の値にかかわらず
+      <code>0.0</code> に上書きするための <code>SET</code> 句を記述せよ。
+      <ul>
+      <li><strong>答え</strong>: <span class="masked"><code>SET buff = 0.0</code></span></li>
+      </ul></li>
+      <li><strong>w03.characters</strong> テーブルの <strong>guild</strong> を NULL にし、同時に
+      <strong>job</strong> を文字列 <code>Exile</code> に更新するための <code>SET</code>
+      句を記述せよ。
+      <ul>
+      <li><strong>答え</strong>: <span
+      class="masked"><code>SET guild = NULL, job = 'Exile'</code></span></li>
+      </ul></li>
+      <li><strong>w03.characters</strong> テーブルの <strong>level</strong> は INTEGER
+      型である。<strong>level</strong> の現在値に <code>2</code> を加算するための <code>SET</code>
+      句を記述せよ。
+      <ul>
+      <li><strong>答え</strong>: <span class="masked"><code>SET level = level + 2</code></span></li>
+      </ul></li>
+      <li><strong>w03.characters</strong> テーブルの <strong>buff</strong> は NULL を許さない
+      NUMERIC 型である。<strong>buff</strong> の現在値に <code>0.25</code> を加算するための
+      <code>SET</code> 句を記述せよ。
+      <ul>
+      <li><strong>答え</strong>: <span
+      class="masked"><code>SET buff = buff + 0.25</code></span></li>
+      </ul></li>
+      <li><strong>w03.characters</strong> テーブルで、<strong>guild</strong> が NULL であり、かつ
+      <strong>job</strong> が Fighter、Monk、Samurai、Ninja
+      のいずれかであるレコードだけを更新対象とする <code>WHERE</code> 句を、<code>IN</code>
+      を使用して記述せよ。
+      <ul>
+      <li><strong>答え</strong>: <span
+      class="masked"><code>WHERE guild IS NULL AND job IN ('Fighter', 'Monk', 'Samurai', 'Ninja')</code></span></li>
+      </ul></li>
+      <li><strong>w03.characters</strong> テーブルの <strong>job</strong> について、Priest を Wizard
+      に、Wizard を Priest に入れ替える。<code>WHERE</code> 句で対象を Priest と Wizard
+      に限定しているものとして、<code>CASE</code> 式を使用した <code>SET</code> 句を記述せよ。
+      <ul>
+      <li><strong>答え</strong>: <span
+      class="masked"><code>SET job = CASE WHEN job = 'Priest' THEN 'Wizard' ELSE 'Priest' END</code></span></li>
+      </ul></li>
+      </ul>
+      <h1 data-number="7" id="集約関数-aggregate-function"><span
+      class="header-section-number">7</span> 集約関数 (Aggregate Function)</h1>
+      <p>SQL
+      には、<code>COUNT</code>、<code>SUM</code>、<code>MIN</code>、<code>MAX</code>、<code>AVG</code>
+      などの
+      <strong>集約処理</strong>（<strong>集計処理</strong>）を実行する関数が用意されています。これらは一般に
+      <strong>集約関数</strong> (<strong>Aggregate Function</strong>、集計関数とも呼ばれる)
+      と呼ばれ、主に <code>SELECT</code> 句や、後で解説する <code>HAVING</code>
+      句で使用します。また、<code>ORDER BY</code> 句にも指定できます。</p>
+      <ul>
+      <li>📖 教科書 pp.81-90 の「<strong>3-1
+      テーブルを集約して検索する</strong>」も参照してください。</li>
+      </ul>
+      <h2 data-number="7.1" id="count関数"><span class="header-section-number">7.1</span>
+      COUNT関数</h2>
+      <p><code>COUNT</code> 関数は、引数として指定したカラムの値が <code>NULL</code>
+      <strong>ではないレコード数</strong>を求める関数となります。</p>
+      <p>ただし、引数にアスタリスク <code>*</code>
+      を指定した場合は、<strong>集計対象となるすべてのレコードを数えます</strong>
+      (仮にすべてのカラムが <code>NULL</code>
+      のレコードがあっても、それを「1」とカウントします)。なお、<code>WHERE</code>
+      句がある場合は、その条件に一致したレコードだけを数えます。</p>
+      <p>次の SQL の実行結果を予想し、その後、実際に実行して結果を確認してください。</p>
+      <div class="sourceCode" id="cb31" data-caption="COUNT関数の利用例"><pre
+      class="sourceCode numberSource sql numberLines"><code class="sourceCode sql"><span id="cb31-1"><a href="#cb31-1"></a><span class="kw">SET</span></span>
+<span id="cb31-2"><a href="#cb31-2"></a>  search_path <span class="kw">TO</span> w03;</span>
+<span id="cb31-3"><a href="#cb31-3"></a></span>
+<span id="cb31-4"><a href="#cb31-4"></a><span class="kw">SELECT</span></span>
+<span id="cb31-5"><a href="#cb31-5"></a>  <span class="fu">COUNT</span>(<span class="op">*</span>) <span class="kw">AS</span> <span class="ot">&quot;num_record&quot;</span>,</span>
+<span id="cb31-6"><a href="#cb31-6"></a>  <span class="fu">COUNT</span>(name) <span class="kw">AS</span> <span class="ot">&quot;num_name&quot;</span>, </span>
+<span id="cb31-7"><a href="#cb31-7"></a>  <span class="fu">COUNT</span>(guild) <span class="kw">AS</span> <span class="ot">&quot;num_guild&quot;</span>,</span>
+<span id="cb31-8"><a href="#cb31-8"></a>  <span class="fu">COUNT</span>(last_login_at) <span class="kw">AS</span> <span class="ot">&quot;num_last_login_at&quot;</span></span>
+<span id="cb31-9"><a href="#cb31-9"></a><span class="kw">FROM</span></span>
+<span id="cb31-10"><a href="#cb31-10"></a>  characters;</span></code></pre></div>
+      <p>実際の実行結果は次のようになります。</p>
+      <pre><code> num_record | num_name | num_guild | num_last_login_at
+------------+----------+-----------+-------------------
+         19 |       19 |        14 |                18</code></pre>
+      <p><strong>w03.characters</strong> には 19件 のレコードが存在するので、<code>COUNT(*)</code>
+      は「19」となります。また、<strong>name</strong> カラムは <code>NULL</code> が許可されないので
+      (＝<code>NULL</code> のフィールドを含まないので)、<code>COUNT(name)</code> は
+      <code>COUNT(*)</code> と同じく「19」となります。</p>
+      <p>一方で、<strong>guild</strong> カラムは <code>NULL</code>
+      を許可しており、5名がギルド無所属のため <code>COUNT(guild)</code>
+      は「14」となります。また、<strong>last_login_at</strong> には、1件の <code>NULL</code>
+      を含むので <code>COUNT(last_login_at)</code> は「18」となります。</p>
+      <div class="balloon char-01 face-05 tone-blue">
+      <p>ここまでの例のような集計では、条件に一致するレコードが1件もなくても、<code>COUNT</code> は
+      <code>NULL</code> ではなく <code>0</code> を返します。</p>
+      </div>
+      <h3 data-number="7.1.1" id="重複を無視する"><span class="header-section-number">7.1.1</span>
+      重複を無視する</h3>
+      <p><code>COUNT</code> 関数では、引数に指定するカラム名の前に <code>DISTINCT</code>
+      キーワードをつけることができます。<code>DISTINCT</code> は、<a
+      href="lecture03.html#レコードの重複を省く">第03回講義</a> で学んだように <span
+      class="masked">重複を省く</span> ためのキーワードであり、<code>COUNT</code>
+      関数のなかで使用することで、<strong>重複を除いた値の件数</strong> を数えることができます。</p>
+      <p>次の SQL の実行結果を予想し、その後、実際に実行して結果を確認してください。</p>
+      <div class="sourceCode" id="cb33" data-caption="COUNT関数の利用例(DISTINCT付き)"><pre
+      class="sourceCode numberSource sql numberLines"><code class="sourceCode sql"><span id="cb33-1"><a href="#cb33-1"></a><span class="kw">SET</span></span>
+<span id="cb33-2"><a href="#cb33-2"></a>  search_path <span class="kw">TO</span> w03;</span>
+<span id="cb33-3"><a href="#cb33-3"></a></span>
+<span id="cb33-4"><a href="#cb33-4"></a><span class="kw">SELECT</span></span>
+<span id="cb33-5"><a href="#cb33-5"></a>  <span class="fu">COUNT</span>(<span class="op">*</span>) <span class="kw">AS</span> <span class="ot">&quot;num_record&quot;</span>,</span>
+<span id="cb33-6"><a href="#cb33-6"></a>  <span class="fu">COUNT</span>(<span class="kw">DISTINCT</span> job) <span class="kw">AS</span> <span class="ot">&quot;num_job_distinct&quot;</span>,</span>
+<span id="cb33-7"><a href="#cb33-7"></a>  <span class="fu">COUNT</span>(<span class="kw">DISTINCT</span> guild) <span class="kw">AS</span> <span class="ot">&quot;num_guild_distinct&quot;</span></span>
+<span id="cb33-8"><a href="#cb33-8"></a><span class="kw">FROM</span></span>
+<span id="cb33-9"><a href="#cb33-9"></a>  characters;</span></code></pre></div>
+      <p>実際の実行結果は次のようになります。</p>
+      <pre><code> num_record | num_job_distinct | num_guild_distinct
+------------+------------------+--------------------
+         19 |                6 |                  3</code></pre>
+      <p>いま <strong>job</strong>
+      カラムには「Fighter」「Monk」「Samurai」「Ninja」「Wizard」「Priest」の6種類が存在するため
+      <code>COUNT(DISTINCT job)</code> は「<strong>6</strong>」となります。</p>
+      <p>また、<strong>guild</strong>
+      カラムには「Yamato」「D.D.D」「hameln」「NULL」の4種類が存在しますが <span
+      class="masked"><code>NULL</code> はカウントされない</span> ため
+      <code>COUNT(DISTINCT guild)</code> は「<strong>3</strong>」となります。</p>
+      <ul>
+      <li>参考 <i class="fa-brands fa-github"></i><a
+      href="https://github.com/TakeshiWada1980/DB-2026-PostgreSQL/blob/main/from-teacher/03/init-characters.sql">from-teacher/03/init-characters.sql</a></li>
+      </ul>
+      <h3 data-number="7.1.2" id="定着確認-5"><span class="header-section-number">7.1.2</span>
+      定着確認</h3>
+      <ul>
+      <li>あるテーブルの <strong>guild</strong>
+      カラムには、<code>A</code>、<code>A</code>、<code>B</code>、<code>NULL</code>、<code>NULL</code>
+      の5件が格納されている。WHERE句を指定せずに
+      <code>COUNT(*)</code>、<code>COUNT(guild)</code>、<code>COUNT(DISTINCT guild)</code>
+      を求めた結果を、それぞれ答えよ。
+      <ul>
+      <li><strong>答え</strong>: <span class="masked">順に5、3、2。</span></li>
+      </ul></li>
+      <li><strong>w03.characters</strong> の <strong>guild</strong>
+      がNULLであるレコードは5件存在する。<code>SELECT COUNT(*) FROM w03.characters WHERE guild IS NULL;</code>
+      の結果は19と5のどちらか答えよ。
+      <ul>
+      <li><strong>答え</strong>: <span class="masked">5。WHERE
+      句によって絞り込まれたレコードを数える。</span></li>
+      </ul></li>
+      <li>あるテーブルの <strong>age</strong>
+      カラムには、<code>18</code>、<code>20</code>、<code>NULL</code>
+      の3件がある。<code>SELECT COUNT(age) FROM テーブル名;</code>
+      は、値の合計38、平均19、NULL以外の件数2のどれを返すか答えよ。
+      <ul>
+      <li><strong>答え</strong>: <span class="masked">NULL 以外の件数 2 を返す。</span></li>
+      </ul></li>
+      <li>あるテーブルの <strong>guild</strong>
+      カラムには、<code>A</code>、<code>A</code>、<code>B</code>、<code>NULL</code>
+      の4件がある。ギルド名の種類を、NULLを除いて数える集約式を記述せよ。
+      <ul>
+      <li><strong>答え</strong>: <span class="masked"><code>COUNT(DISTINCT guild)</code></span></li>
+      </ul></li>
+      </ul>
+      <h3 data-number="7.1.3" id="sqlドリル-5"><span class="header-section-number">7.1.3</span>
+      SQLドリル💻</h3>
+      <ul>
+      <li><code>ex-03_1.sql</code> 👉 <strong>w03.characters</strong>
+      テーブルから次のような結果セットを得る SQL を記述せよ。</li>
+      </ul>
+      <pre><code> ジョブ種 
+----------
+ 6種類</code></pre>
+      <ul>
+      <li><code>ex-03_2.sql</code> 👉 <strong>w03.characters</strong>
+      テーブルから次のような結果セットを得る SQL を記述せよ。</li>
+      </ul>
+      <pre><code> ギルド所属 | 無所属 
+------------+--------
+ 14人       | 5人</code></pre>
+      <h2 data-number="7.2" id="sum-関数とavg-関数"><span class="header-section-number">7.2</span>
+      SUM 関数とAVG 関数</h2>
+      <p><code>SUM</code>
+      関数は引数として指定したカラムの「<strong>合計</strong>」を求める関数、<code>AVG</code>
+      関数は引数として指定したカラムの「<strong>平均</strong>」を求める関数となります。いずれも、<span
+      class="masked">数値型のカラム</span> に対して使用できます。</p>
+      <ul>
+      <li>いずれの関数も <code>COUNT</code> 関数のように、アスタリスク <code>*</code>
+      を引数にとることはできません。</li>
+      <li>いずれの関数も <code>NULL</code> は除外されます。例えば、<strong>num</strong>
+      というカラムがあったとして、その値が <code>3</code>、<code>5</code>、<code>NULL</code> のとき
+      <code>AVG(num)</code> は <span class="math inline">\((3+5)/2\)</span> で <code>4</code>
+      となります。</li>
+      </ul>
+      <p>次の SQL の実行結果を予想し、その後、実際に実行して結果を確認してください。</p>
+      <div class="sourceCode" id="cb37" data-caption="SUM関数とAVG関数の利用例"><pre
+      class="sourceCode numberSource sql numberLines"><code class="sourceCode sql"><span id="cb37-1"><a href="#cb37-1"></a><span class="kw">SET</span></span>
+<span id="cb37-2"><a href="#cb37-2"></a>  search_path <span class="kw">TO</span> w03;</span>
+<span id="cb37-3"><a href="#cb37-3"></a></span>
+<span id="cb37-4"><a href="#cb37-4"></a><span class="kw">SELECT</span></span>
+<span id="cb37-5"><a href="#cb37-5"></a>  <span class="fu">ROUND</span>(<span class="fu">AVG</span>(<span class="kw">level</span>),<span class="dv">1</span>) <span class="kw">AS</span> <span class="ot">&quot;avg_level&quot;</span>,</span>
+<span id="cb37-6"><a href="#cb37-6"></a>  <span class="fu">SUM</span>(<span class="kw">level</span>) <span class="kw">AS</span> <span class="ot">&quot;sum_level&quot;</span></span>
+<span id="cb37-7"><a href="#cb37-7"></a><span class="kw">FROM</span></span>
+<span id="cb37-8"><a href="#cb37-8"></a>  characters;</span></code></pre></div>
+      <p>実際の実行結果は次のようになります。なお、上記の <strong>第05行目</strong> の
+      <code>ROUND</code> は <a
+      href="lecture03.html#カラム値に文字列演算と算術演算を適用する">第03回講義</a>
+      で紹介したように四捨五入を適用する関数になります。</p>
+      <pre><code> avg_level | sum_level
+-----------+-----------
+      48.8 |       928</code></pre>
+      <h3 data-number="7.2.1" id="null値を特定値に置き換えて合計や平均を求めたい場合"><span
+      class="header-section-number">7.2.1</span>
+      NULL値を特定値に置き換えて合計や平均を求めたい場合</h3>
+      <p><code>NULL</code> を特定の数値に置き換えて <code>SUM</code> 関数や <code>AVG</code>
+      関数を適用したい場合、<code>COALESCE</code> 関数を組み合わせます。</p>
+      <p>次の SQL は、<strong>age</strong> カラムが <code>NULL</code> のとき、それを <code>16</code>
+      に置き換えて合計と平均を求めるものです。実行結果を予想し、その後、実際に実行して結果を確認してください。</p>
+      <p>この例も <strong>w03.users</strong> が Alice と Bob
+      の2件であることを前提とします。別のレコードを残している場合は、<strong>既存データが初期状態に戻ることを確認したうえで</strong>、次のコマンドで初期化してください。</p>
+      <div class="sourceCode" id="cb39"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a><span class="ex">npm</span> run sql from-teacher/03/init-users.sql</span></code></pre></div>
+      <div class="sourceCode" id="cb40" data-caption="SUM関数とAVG関数の利用例"><pre
+      class="sourceCode numberSource sql numberLines"><code class="sourceCode sql"><span id="cb40-1"><a href="#cb40-1"></a><span class="kw">SET</span></span>
+<span id="cb40-2"><a href="#cb40-2"></a>  search_path <span class="kw">TO</span> w03;</span>
+<span id="cb40-3"><a href="#cb40-3"></a></span>
+<span id="cb40-4"><a href="#cb40-4"></a><span class="kw">START</span> <span class="kw">TRANSACTION</span>;</span>
+<span id="cb40-5"><a href="#cb40-5"></a></span>
+<span id="cb40-6"><a href="#cb40-6"></a><span class="kw">INSERT</span> <span class="kw">INTO</span></span>
+<span id="cb40-7"><a href="#cb40-7"></a>  users (<span class="kw">id</span>, name, age)</span>
+<span id="cb40-8"><a href="#cb40-8"></a><span class="kw">VALUES</span></span>
+<span id="cb40-9"><a href="#cb40-9"></a>  (<span class="dv">3</span>, <span class="st">&#39;Carol&#39;</span>, <span class="dv">18</span>),</span>
+<span id="cb40-10"><a href="#cb40-10"></a>  (<span class="dv">4</span>, <span class="st">&#39;Dave&#39;</span>, <span class="kw">NULL</span>),</span>
+<span id="cb40-11"><a href="#cb40-11"></a>  (<span class="dv">5</span>, <span class="st">&#39;Ellen&#39;</span>, <span class="dv">17</span>);</span>
+<span id="cb40-12"><a href="#cb40-12"></a></span>
+<span id="cb40-13"><a href="#cb40-13"></a><span class="kw">SELECT</span> <span class="op">*</span> <span class="kw">FROM</span> users <span class="kw">ORDER</span> <span class="kw">BY</span> <span class="kw">id</span>;</span>
+<span id="cb40-14"><a href="#cb40-14"></a></span>
+<span id="cb40-15"><a href="#cb40-15"></a><span class="kw">SELECT</span></span>
+<span id="cb40-16"><a href="#cb40-16"></a>  <span class="fu">SUM</span>(age) <span class="kw">AS</span> <span class="ot">&quot;sum&quot;</span>,</span>
+<span id="cb40-17"><a href="#cb40-17"></a>  <span class="fu">SUM</span>(<span class="fu">COALESCE</span>(age, <span class="dv">16</span>)) <span class="kw">AS</span> <span class="ot">&quot;sum_with_default&quot;</span>,</span>
+<span id="cb40-18"><a href="#cb40-18"></a>  <span class="fu">ROUND</span>(<span class="fu">AVG</span>(age), <span class="dv">1</span>) <span class="kw">AS</span> <span class="ot">&quot;avg&quot;</span>,</span>
+<span id="cb40-19"><a href="#cb40-19"></a>  <span class="fu">ROUND</span>(<span class="fu">AVG</span>(<span class="fu">COALESCE</span>(age, <span class="dv">16</span>)), <span class="dv">1</span>) <span class="kw">AS</span> <span class="ot">&quot;avg_with_default&quot;</span></span>
+<span id="cb40-20"><a href="#cb40-20"></a><span class="kw">FROM</span></span>
+<span id="cb40-21"><a href="#cb40-21"></a>  users;</span>
+<span id="cb40-22"><a href="#cb40-22"></a></span>
+<span id="cb40-23"><a href="#cb40-23"></a><span class="kw">ROLLBACK</span>;</span></code></pre></div>
+      <p>実際の実行結果は次のようになります。</p>
+      <pre><code>START TRANSACTION
+INSERT 0 3
+ id | name  | age
+----+-------+-----
+  1 | Alice |  20
+  2 | Bob   |  25
+  3 | Carol |  18
+  4 | Dave  |
+  5 | Ellen |  17
+(5 行)
+
+ sum | sum_with_default | avg  | avg_with_default
+-----+------------------+------+------------------
+  80 |               96 | 20.0 |             19.2
+(1 行)
+
+ROLLBACK</code></pre>
+      <div class="balloon char-01 face-02 tone-yellow">
+      <p><code>SUM</code> と <code>AVG</code> は、集計対象が0件の場合や、対象の値がすべて
+      <code>NULL</code> の場合、<code>NULL</code> を返します。結果を <code>0</code>
+      にしたい場合は、<code>COALESCE(SUM(age), 0)</code> のように、<strong>集約関数の外側</strong>
+      に <code>COALESCE</code> を適用します。これにより、集計結果が <code>NULL</code> の場合だけ
+      <code>0</code> に置き換えられます。</p>
+      <ul>
+      <li><code>AVG(COALESCE(age, 0))</code> と <code>COALESCE(AVG(age), 0)</code>
+      では意味が大きく変わるので注意してください。</li>
+      </ul>
+      </div>
+      <h3 data-number="7.2.2" id="定着確認-6"><span class="header-section-number">7.2.2</span>
+      定着確認</h3>
+      <ul>
+      <li>あるテーブルの <strong>num</strong>
+      はINTEGER型で、<code>3</code>、<code>5</code>、<code>NULL</code>
+      の3件がある。<code>SUM(num)</code> と <code>AVG(num)</code> の結果を答えよ。
+      <ul>
+      <li><strong>答え</strong>: <span
+      class="masked">SUMは8、AVGは4。NULLは計算の対象から除外される。</span></li>
+      </ul></li>
+      <li>あるテーブルの <strong>age</strong>
+      はINTEGER型で、<code>18</code>、<code>20</code>、<code>NULL</code>
+      の3件がある。NULLを16に置き換えて平均する <code>AVG(COALESCE(age, 16))</code> の結果を答えよ。
+      <ul>
+      <li><strong>答え</strong>: <span
+      class="masked">18。NULLを含む3件を対象に、(18+20+16)/3を計算する。</span></li>
+      </ul></li>
+      <li><strong>w03.characters</strong> の <strong>level</strong>
+      はINTEGER型、<strong>guild</strong>
+      はVARCHAR型で、無所属の場合はNULLとなる。無所属のレコードだけを対象に、平均レベルの小数第3位を四捨五入して、小数第2位まで表示するSELECT文を記述せよ。
+      <ul>
+      <li><strong>答え</strong>: <span
+      class="masked"><code>SELECT ROUND(AVG(level), 2) FROM w03.characters WHERE guild IS NULL;</code></span></li>
+      </ul></li>
+      </ul>
+      <h3 data-number="7.2.3" id="sqlドリル-6"><span class="header-section-number">7.2.3</span>
+      SQLドリル💻</h3>
+      <ul>
+      <li><code>ex-03_3.sql</code> 👉 <strong>w03.characters</strong>
+      テーブルから、次のようにギルド無所属 (＝<strong>guild</strong> が <code>NULL</code>)
+      のキャラクタについて、レベルの平均と合計を求める SQL
+      を記述せよ。ただし、レベルの平均は小数第3位を四捨五入して、小数第2位まで表示すること。
+      <ul>
+      <li><strong>ヒント</strong> : <span
+      class="masked">ギルド無所属のキャラクタだけを対象にするには <code>WHERE</code>
+      句を利用する</span></li>
+      </ul></li>
+      </ul>
+      <pre><code> 無所属平均Lv | 無所属合計Lv 
+--------------+--------------
+        39.60 |          198</code></pre>
+      <ul>
+      <li><code>ex-03_4.sql</code> 👉 <strong>w03.characters</strong> テーブルから、前衛職
+      (Fighter、Monk、Samurai、Ninja) の人数と平均レベル、後衛職 (Wizard、Priest)
+      の人数と平均レベルを求める SQL を記述せよ (ここでは、<code>WHERE</code>
+      句で対象の職を絞り込む2つの <code>SELECT</code>
+      文を記述すること)。ただし、レベルの平均は小数第2位を四捨五入して、小数第1位まで表示すること。</li>
+      </ul>
+      <pre><code> 前衛職人数 | 前衛職平均Lv 
+------------+--------------
+         11 |         49.1
+
+ 後衛職人数 | 後衛職平均Lv
+------------+--------------
+          8 |         48.5</code></pre>
+      <h2 data-number="7.3" id="max-関数とmin-関数"><span class="header-section-number">7.3</span>
+      MAX 関数とMIN 関数</h2>
+      <p><code>MAX</code> 関数と <code>MIN</code>
+      関数は、引数として指定したカラムの「<strong>最大値</strong>」と「<strong>最小値</strong>」を求める関数となります。いずれの関数も、数値型の他、<strong>日時型</strong>
+      ( <code>DATE</code> や <code>TIMESTAMP</code>
+      )、<strong>文字列型</strong>などのカラムに適用することができます。</p>
+      <ul>
+      <li>いずれの関数も <code>COUNT</code> 関数のように、アスタリスク <code>*</code>
+      を引数にとることはできません。</li>
+      <li>いずれの関数も <code>NULL</code> は除外されます。</li>
+      <li>日時型に適用した場合、<code>MAX</code> は最も未来の値 ( NULL を除いて降順に整列した先頭)
+      、<code>MIN</code> は最も過去の値 ( NULL を除いて昇順に整列した先頭) を返します。</li>
+      <li>文字列に適用した場合、<code>MAX</code> は辞書順の最後 (＝昇順に並べたときの末尾)
+      の値を、<code>MIN</code> は辞書順の最初 (＝昇順に並べたときの先頭)
+      の値を返します。なお、実際の順序はデータベースに設定された <strong>照合順序</strong>
+      に従います。</li>
+      </ul>
+      <p>次の SQL の実行結果を予想し、その後、実際に実行して結果を確認してください。</p>
+      <div class="sourceCode" id="cb44" data-caption="MAX関数とMIN関数の利用例"><pre
+      class="sourceCode numberSource sql numberLines"><code class="sourceCode sql"><span id="cb44-1"><a href="#cb44-1"></a><span class="kw">SET</span></span>
+<span id="cb44-2"><a href="#cb44-2"></a>  search_path <span class="kw">TO</span> w03;</span>
+<span id="cb44-3"><a href="#cb44-3"></a></span>
+<span id="cb44-4"><a href="#cb44-4"></a><span class="kw">SELECT</span></span>
+<span id="cb44-5"><a href="#cb44-5"></a>  <span class="fu">MIN</span>(<span class="kw">level</span>) <span class="kw">AS</span> <span class="ot">&quot;min_lv&quot;</span>,</span>
+<span id="cb44-6"><a href="#cb44-6"></a>  <span class="fu">MAX</span>(<span class="kw">level</span>) <span class="kw">AS</span> <span class="ot">&quot;max_lv&quot;</span>,</span>
+<span id="cb44-7"><a href="#cb44-7"></a>  <span class="fu">MIN</span>(name) <span class="kw">AS</span> <span class="ot">&quot;min_name&quot;</span>,</span>
+<span id="cb44-8"><a href="#cb44-8"></a>  <span class="fu">MAX</span>(name) <span class="kw">AS</span> <span class="ot">&quot;max_name&quot;</span></span>
+<span id="cb44-9"><a href="#cb44-9"></a><span class="kw">FROM</span></span>
+<span id="cb44-10"><a href="#cb44-10"></a>  characters;</span>
+<span id="cb44-11"><a href="#cb44-11"></a></span>
+<span id="cb44-12"><a href="#cb44-12"></a><span class="kw">SELECT</span></span>
+<span id="cb44-13"><a href="#cb44-13"></a>  <span class="fu">MIN</span>(created_on) <span class="kw">AS</span> <span class="ot">&quot;min_created_on&quot;</span>,</span>
+<span id="cb44-14"><a href="#cb44-14"></a>  <span class="fu">MAX</span>(created_on) <span class="kw">AS</span> <span class="ot">&quot;max_created_on&quot;</span></span>
+<span id="cb44-15"><a href="#cb44-15"></a><span class="kw">FROM</span></span>
+<span id="cb44-16"><a href="#cb44-16"></a>  characters;</span></code></pre></div>
+      <p>実際の実行結果は次のようになります。</p>
+      <pre><code> min_lv | max_lv | min_name | max_name
+--------+--------+----------+----------
+      1 |     73 | Alice    | Zach
+(1 行)
+
+ min_created_on | max_created_on
+----------------+----------------
+ 2020-09-23     | 2024-07-12
+(1 行)</code></pre>
+      <h3 data-number="7.3.1" id="文字数のカウント"><span class="header-section-number">7.3.1</span>
+      文字数のカウント</h3>
+      <p>文字列型に対して、<strong>文字数をカウントしたい場合</strong> は <code>LENGTH</code>
+      関数を使用します。次の SQL
+      の実行結果を予想し、その後、実際に実行して結果を確認してください。</p>
+      <div class="sourceCode" id="cb46" data-caption="最小文字数と最大文字数を求める例"><pre
+      class="sourceCode numberSource sql numberLines"><code class="sourceCode sql"><span id="cb46-1"><a href="#cb46-1"></a><span class="kw">SET</span></span>
+<span id="cb46-2"><a href="#cb46-2"></a>  search_path <span class="kw">TO</span> w03;</span>
+<span id="cb46-3"><a href="#cb46-3"></a></span>
+<span id="cb46-4"><a href="#cb46-4"></a><span class="kw">SELECT</span></span>
+<span id="cb46-5"><a href="#cb46-5"></a>  <span class="fu">MIN</span>(<span class="fu">LENGTH</span>(name)) <span class="kw">AS</span> <span class="ot">&quot;min_len_name&quot;</span>,</span>
+<span id="cb46-6"><a href="#cb46-6"></a>  <span class="fu">MAX</span>(<span class="fu">LENGTH</span>(name)) <span class="kw">AS</span> <span class="ot">&quot;max_len_name&quot;</span></span>
+<span id="cb46-7"><a href="#cb46-7"></a><span class="kw">FROM</span></span>
+<span id="cb46-8"><a href="#cb46-8"></a>  characters;</span></code></pre></div>
+      <p>実際の実行結果は次のようになります。</p>
+      <pre><code> min_len_name | max_len_name
+--------------+--------------
+            3 |            7</code></pre>
+      <div class="balloon char-01 face-05 tone-blue">
+      <p><code>LENGTH</code> が数えるのは文字数です。</p>
+      <p>例えば、UTF-8 環境では <code>LENGTH('ねこ')</code> は <code>2</code>
+      ですが、バイト数を数える <code>OCTET_LENGTH('ねこ')</code> では <code>6</code>
+      になります。</p>
+      </div>
+      <div class="note type-senior">
+      <p><strong>EX: 最も短い名前と最も長い名前を取得する</strong></p>
+      <p>今後の講義で学ぶ「<strong>サブクエリ</strong>」というものを利用すると、テーブルのなかから「最も短い名前」や「最も長い名前」を抽出することができます。</p>
+      <div class="sourceCode" id="cb48"
+      data-caption="「最も短い名前」と「最も長い名前」を取得する"><pre
+      class="sourceCode numberSource sql numberLines"><code class="sourceCode sql"><span id="cb48-1"><a href="#cb48-1"></a><span class="kw">SET</span></span>
+<span id="cb48-2"><a href="#cb48-2"></a>  search_path <span class="kw">TO</span> w03;</span>
+<span id="cb48-3"><a href="#cb48-3"></a></span>
+<span id="cb48-4"><a href="#cb48-4"></a><span class="kw">SELECT</span></span>
+<span id="cb48-5"><a href="#cb48-5"></a>  name <span class="kw">AS</span> <span class="ot">&quot;最も短い名前&quot;</span></span>
+<span id="cb48-6"><a href="#cb48-6"></a><span class="kw">FROM</span></span>
+<span id="cb48-7"><a href="#cb48-7"></a>  characters</span>
+<span id="cb48-8"><a href="#cb48-8"></a><span class="kw">WHERE</span></span>
+<span id="cb48-9"><a href="#cb48-9"></a>  <span class="fu">LENGTH</span>(name) <span class="op">=</span> (</span>
+<span id="cb48-10"><a href="#cb48-10"></a>    <span class="kw">SELECT</span></span>
+<span id="cb48-11"><a href="#cb48-11"></a>      <span class="fu">MIN</span>(<span class="fu">LENGTH</span>(name))</span>
+<span id="cb48-12"><a href="#cb48-12"></a>    <span class="kw">FROM</span></span>
+<span id="cb48-13"><a href="#cb48-13"></a>      characters</span>
+<span id="cb48-14"><a href="#cb48-14"></a>  );</span>
+<span id="cb48-15"><a href="#cb48-15"></a></span>
+<span id="cb48-16"><a href="#cb48-16"></a><span class="kw">SELECT</span></span>
+<span id="cb48-17"><a href="#cb48-17"></a>  name <span class="kw">AS</span> <span class="ot">&quot;最も長い名前&quot;</span></span>
+<span id="cb48-18"><a href="#cb48-18"></a><span class="kw">FROM</span></span>
+<span id="cb48-19"><a href="#cb48-19"></a>  characters</span>
+<span id="cb48-20"><a href="#cb48-20"></a><span class="kw">WHERE</span></span>
+<span id="cb48-21"><a href="#cb48-21"></a>  <span class="fu">LENGTH</span>(name) <span class="op">=</span> (</span>
+<span id="cb48-22"><a href="#cb48-22"></a>    <span class="kw">SELECT</span></span>
+<span id="cb48-23"><a href="#cb48-23"></a>      <span class="fu">MAX</span>(<span class="fu">LENGTH</span>(name))</span>
+<span id="cb48-24"><a href="#cb48-24"></a>    <span class="kw">FROM</span></span>
+<span id="cb48-25"><a href="#cb48-25"></a>      characters</span>
+<span id="cb48-26"><a href="#cb48-26"></a>  );</span></code></pre></div>
+      <p>実行結果は次のようになります。</p>
+      <pre><code> 最も短い名前
+--------------
+ Tom
+ Bob
+ Eve
+(3 行)
+
+ 最も長い名前
+--------------
+ Charlie
+(1 行)</code></pre>
+      </div>
+      <h3 data-number="7.3.2" id="定着確認-7"><span class="header-section-number">7.3.2</span>
+      定着確認</h3>
+      <ul>
+      <li>あるテーブルの <strong>name</strong> は VARCHAR 型で、Tom、Charlie、Bob
+      の3件がある。<code>MIN(LENGTH(name))</code> と <code>MAX(LENGTH(name))</code> の結果を答えよ。
+      <ul>
+      <li><strong>答え</strong>: <span
+      class="masked">順に3と7。文字列自体ではなく、文字数の最小値と最大値を返す。</span></li>
+      </ul></li>
+      <li>あるテーブルの <strong>last_login_at</strong> は TIMESTAMP
+      型で、<code>2025-07-01 10:00:00</code>、<code>2025-08-01 09:00:00</code>、<code>NULL</code>
+      の3件がある。<code>MIN(last_login_at)</code> と <code>MAX(last_login_at)</code>
+      の結果を答えよ。
+      <ul>
+      <li><strong>答え</strong>: <span class="masked">MINは2025-07-01 10:00:00、MAXは2025-08-01
+      09:00:00。NULLは除外される。</span></li>
+      </ul></li>
+      <li><strong>w03.characters</strong> の <strong>buff</strong> は NUMERIC
+      型である。最大値と最小値の差を求める集約式を記述せよ。
+      <ul>
+      <li><strong>答え</strong>: <span class="masked"><code>MAX(buff) - MIN(buff)</code></span></li>
+      </ul></li>
+      </ul>
+      <h3 data-number="7.3.3" id="sqlドリル-7"><span class="header-section-number">7.3.3</span>
+      SQLドリル💻</h3>
+      <ul>
+      <li><code>ex-03_5.sql</code> 👉 <strong>w03.characters</strong> テーブルから、次に示すように
+      <strong>buff</strong> カラムの「最小値」「最大値」「最大値と最小値の差」を求める SQL
+      を記述せよ。</li>
+      </ul>
+      <pre><code> min_buff | max_buff | max-min 
+----------+----------+---------
+    -0.20 |     0.10 |    0.30</code></pre>
+      <ul>
+      <li><code>ex-03_6.sql</code> 👉 <strong>w03.characters</strong>
+      テーブルにおいて、最も長いギルド名が何文字かを求める SQL
+      を記述せよ。ただし、<strong>guild</strong> カラムの <code>NULL</code> 値は
+      <code>Freelancer</code> という文字列に置き換えて評価すること。</li>
+      </ul>
+      <h1 data-number="8" id="group-by-句"><span class="header-section-number">8</span> GROUP BY
+      句</h1>
+      <p><code>SELECT</code> 文に <code>GROUP BY</code>
+      句を使用すると、<strong>指定したカラムや式の値に基づいてレコードをグループ化し</strong>、グループごとに集約関数を適用できます。</p>
+      <ul>
+      <li>📖 教科書 pp.91-100 の「<strong>3-2
+      テーブルをグループに切り分ける</strong>」も参照してください。</li>
+      </ul>
+      <p>例えば、<strong>job</strong> (＝Fighter、Monk、Ninja … )
+      が同じレコードをひとつのグループにまとめ、それぞれのグループについて「人数」「最大レベル」「平均レベル」を求める
+      SQL は次のようになります。なお、このようにグループ化の基準として <code>GROUP BY</code>
+      句に指定するカラムのことを <span class="masked">集約キー</span> と言います。</p>
+      <div class="sourceCode" id="cb51" data-caption="GROUP BY句の利用"><pre
+      class="sourceCode numberSource sql numberLines"><code class="sourceCode sql"><span id="cb51-1"><a href="#cb51-1"></a><span class="kw">SET</span></span>
+<span id="cb51-2"><a href="#cb51-2"></a>  search_path <span class="kw">TO</span> w03;</span>
+<span id="cb51-3"><a href="#cb51-3"></a></span>
+<span id="cb51-4"><a href="#cb51-4"></a><span class="kw">SELECT</span></span>
+<span id="cb51-5"><a href="#cb51-5"></a>  job,</span>
+<span id="cb51-6"><a href="#cb51-6"></a>  <span class="fu">COUNT</span>(<span class="op">*</span>) <span class="kw">AS</span> <span class="ot">&quot;num&quot;</span>,</span>
+<span id="cb51-7"><a href="#cb51-7"></a>  <span class="fu">MAX</span>(<span class="kw">level</span>) <span class="kw">AS</span> <span class="ot">&quot;max_lv&quot;</span>,</span>
+<span id="cb51-8"><a href="#cb51-8"></a>  <span class="fu">ROUND</span>(<span class="fu">AVG</span>(<span class="kw">level</span>),<span class="dv">1</span>) <span class="kw">AS</span> <span class="ot">&quot;avg_lv&quot;</span></span>
+<span id="cb51-9"><a href="#cb51-9"></a><span class="kw">FROM</span></span>
+<span id="cb51-10"><a href="#cb51-10"></a>  characters</span>
+<span id="cb51-11"><a href="#cb51-11"></a><span class="kw">GROUP</span> <span class="kw">BY</span></span>
+<span id="cb51-12"><a href="#cb51-12"></a>  job <span class="co">-- ◀ job でグループ化処理</span></span>
+<span id="cb51-13"><a href="#cb51-13"></a><span class="kw">ORDER</span> <span class="kw">BY</span></span>
+<span id="cb51-14"><a href="#cb51-14"></a>  job;</span></code></pre></div>
+      <p>実行すると、次のような結果セットが得られます。</p>
+      <pre><code>   job   | num | max_lv | avg_lv
+---------+-----+--------+--------
+ Fighter |   4 |     56 |   37.3
+ Monk    |   2 |     39 |   36.0
+ Ninja   |   2 |     62 |   54.0
+ Priest  |   4 |     50 |   38.8
+ Samurai |   3 |     73 |   70.3
+ Wizard  |   4 |     64 |   58.3</code></pre>
+      <p><code>SELECT</code> 文では、各句を <strong><code>SELECT</code> 👉 <code>FROM</code> 👉
+      <code>WHERE</code> 👉 <code>GROUP BY</code> 👉 <code>HAVING</code> 👉 <code>ORDER BY</code> 👉
+      <code>LIMIT</code> / <code>OFFSET</code></strong> の順番で記述する必要があります。</p>
+      <div class="balloon char-01 face-01 tone-pink">
+      <p>基本的に、この順序を守らないと <strong>構文エラー</strong>
+      になるので注意してください。ただし、各句は必要に応じて省略でき、<code>LIMIT</code> と
+      <code>OFFSET</code> の順序は入れ替えることもできます。</p>
+      <p>なお、<code>HAVING</code> 句については <a
+      href="lecture05.html#having-句">次のセクション</a> で詳しく学んでいきます。</p>
+      </div>
+      <h3 data-number="8.0.1" id="集約キーに-null-が含まれる場合の挙動"><span
+      class="header-section-number">8.0.1</span> 集約キーに NULL が含まれる場合の挙動</h3>
+      <p>集約キー ( <code>GROUP BY</code> 句で指定するカラム) に <code>NULL</code>
+      が含まれる場合、「 <code>NULL</code>
+      もひとつのグループ」として扱われます。これも、実際の実行結果をみたほうが分かりやすいと思います。</p>
+      <p>次の SQL 文では、値に <code>NULL</code> を含む <strong>guild</strong>
+      カラムを「集約キー」に使用しています。</p>
+      <div class="sourceCode" id="cb53" data-caption="GROUP BY句の集約キーにNULLが含まれる場合"><pre
+      class="sourceCode numberSource sql numberLines"><code class="sourceCode sql"><span id="cb53-1"><a href="#cb53-1"></a><span class="kw">SET</span></span>
+<span id="cb53-2"><a href="#cb53-2"></a>  search_path <span class="kw">TO</span> w03;</span>
+<span id="cb53-3"><a href="#cb53-3"></a></span>
+<span id="cb53-4"><a href="#cb53-4"></a><span class="kw">SELECT</span></span>
+<span id="cb53-5"><a href="#cb53-5"></a>  guild,</span>
+<span id="cb53-6"><a href="#cb53-6"></a>  <span class="fu">COUNT</span>(<span class="op">*</span>) <span class="kw">AS</span> <span class="ot">&quot;num&quot;</span>,</span>
+<span id="cb53-7"><a href="#cb53-7"></a>  <span class="fu">MAX</span>(<span class="kw">level</span>) <span class="kw">AS</span> <span class="ot">&quot;max_lv&quot;</span>,</span>
+<span id="cb53-8"><a href="#cb53-8"></a>  <span class="fu">ROUND</span>(<span class="fu">AVG</span>(<span class="kw">level</span>),<span class="dv">1</span>) <span class="kw">AS</span> <span class="ot">&quot;avg_lv&quot;</span></span>
+<span id="cb53-9"><a href="#cb53-9"></a><span class="kw">FROM</span></span>
+<span id="cb53-10"><a href="#cb53-10"></a>  characters</span>
+<span id="cb53-11"><a href="#cb53-11"></a><span class="kw">GROUP</span> <span class="kw">BY</span></span>
+<span id="cb53-12"><a href="#cb53-12"></a>  guild <span class="co">-- ◀ guild を集約キーに指定</span></span>
+<span id="cb53-13"><a href="#cb53-13"></a><span class="kw">ORDER</span> <span class="kw">BY</span></span>
+<span id="cb53-14"><a href="#cb53-14"></a>  <span class="fu">LOWER</span>(guild); <span class="co">-- ◀ 大文字と小文字を区別せずに整列</span></span></code></pre></div>
+      <p>実行すると、次のような結果セットが得られます。</p>
+      <pre><code> guild  | num | max_lv | avg_lv
+--------+-----+--------+--------
+ D.D.D  |   5 |     64 |   55.8
+ hameln |   4 |     70 |   52.0
+ Yamato |   5 |     68 |   48.6
+        |   5 |     73 |   39.6</code></pre>
+      <p>最終行に <strong>guild</strong> が <code>NULL</code> のキャラクタ
+      (ギルド無所属のキャラクタ) に対する集計が出力されています。</p>
+      <p>なお、psqlでは、標準の設定で <code>NULL</code>
+      が空欄として表示されるので、任意の文字列に置き換えたいときは <code>COALESCE</code>
+      を使用します。例えば、<code>SELECT</code> 句の <strong>第05行目</strong>、<code>guild</code>
+      を <code>COALESCE(guild,'Freelancer') AS "guild"</code>
+      に書き換えると以下のような結果セットを得ることができます。</p>
+      <pre><code>   guild    | num | max_lv | avg_lv 
+------------+-----+--------+--------
+ D.D.D      |   5 |     64 |   55.8
+ hameln     |   4 |     70 |   52.0
+ Yamato     |   5 |     68 |   48.6
+ Freelancer |   5 |     73 |   39.6</code></pre>
+      <h3 data-number="8.0.2" id="sqlドリル-8"><span class="header-section-number">8.0.2</span>
+      SQLドリル💻</h3>
+      <ul>
+      <li><code>ex-04_1.sql</code> 👉 <strong>w03.characters</strong>
+      テーブルから、次のような結果セットを得る SQL を記述せよ。
+      <ul>
+      <li><strong>guild</strong> が <code>NULL</code> のグループを先頭に配置し、その
+      <strong>guild</strong> を「無所属」という文字列に置き換えて表示すること。</li>
+      <li><strong>guild</strong> が <code>Yamato</code> のグループを結果セットに含めないこと。</li>
+      </ul></li>
+      </ul>
+      <pre><code> guild  | num | max_lv | min_lv | max_buff | min_buff
+--------+-----+--------+--------+----------+----------
+ 無所属 |   5 |     73 |      1 |     0.00 |    -0.20
+ D.D.D  |   5 |     64 |     46 |     0.10 |     0.10
+ hameln |   4 |     70 |     33 |     0.05 |     0.05</code></pre>
+      <ul>
+      <li><code>ex-04_2.sql</code> 👉 <strong>w03.characters</strong>
+      テーブルから、次のような結果セットを得る SQL を記述せよ。
+      <ul>
+      <li>平均レベルは小数第2位を四捨五入して、小数第1位まで表示すること。</li>
+      <li>平均レベルの降順に整列 (ソート) すること。</li>
+      </ul></li>
+      </ul>
+      <pre><code>   job   | num | avg_lv 
+---------+-----+--------
+ Samurai |   3 |   70.3
+ Wizard  |   4 |   58.3
+ Ninja   |   2 |   54.0
+ Priest  |   4 |   38.8
+ Fighter |   4 |   37.3
+ Monk    |   2 |   36.0</code></pre>
+      <h2 data-number="8.1" id="group-by-句の使用時に-select-句で指定可能な値-重要"><span
+      class="header-section-number">8.1</span> GROUP BY 句の使用時に SELECT 句で指定可能な値
+      (重要🚨)</h2>
+      <p><code>GROUP BY</code> 句を使用した場合、原則として、<code>SELECT</code> 句に
+      <font color="deeppink"><b>集約関数を使わずに記述できるカラムは、GROUP BY 句で指定したカラム
+      (＝集約キー) に限られます</b></font>。</p>
+      <p>例えば、<code>GROUP BY job</code> とした場合、<code>SELECT</code> 句に
+      <u>そのまま記述できるカラム</u> は <span class="masked">job</span>
+      だけであり、<strong>id</strong> や
+      <strong>level</strong>、<strong>name</strong>、<strong>guild</strong>
+      などを直接指定することはできません。これらのカラムを利用するには、<code>MAX(id)</code> や
+      <code>AVG(level)</code> のように <strong>集約関数を適用する必要</strong> があります。</p>
+      <div class="balloon char-01 face-02 tone-yellow">
+      <p>集約キー以外のカラムには、グループ内で複数の異なる値が存在する可能性があります。<strong>どの値を取り出すべきか一意に決まらないため</strong>、原則として、それらのカラムを
+      <code>SELECT</code> 句にそのまま記述することはできません。</p>
+      <p>例えば、<strong>job</strong> が <code>Fighter</code> のキャラは 4 名いて、それぞれの
+      <strong>level</strong> は 1、48、44、56 となっています。<code>GROUP BY job</code>
+      によってこれらをひとつのグループにまとめた場合、<code>SELECT level</code>
+      だけでは、<strong>どの値を出力すればよいのか決まりません</strong>。そのため、<code>MAX(level)</code>
+      や <code>AVG(level)</code> のように集約関数を適用する必要があります。</p>
+      </div>
+      <p>実際に、次の SQL が「<strong>エラーになってしまうこと</strong>」を確認してください。</p>
+      <div class="sourceCode" id="cb58" data-caption="集約キー以外のカラムをSELECT句に指定"><pre
+      class="sourceCode numberSource sql numberLines"><code class="sourceCode sql"><span id="cb58-1"><a href="#cb58-1"></a><span class="kw">SET</span></span>
+<span id="cb58-2"><a href="#cb58-2"></a>  search_path <span class="kw">TO</span> w03;</span>
+<span id="cb58-3"><a href="#cb58-3"></a></span>
+<span id="cb58-4"><a href="#cb58-4"></a><span class="kw">SELECT</span></span>
+<span id="cb58-5"><a href="#cb58-5"></a>  job,</span>
+<span id="cb58-6"><a href="#cb58-6"></a>  <span class="kw">level</span> <span class="co">-- 集約キー以外のカラムを指定</span></span>
+<span id="cb58-7"><a href="#cb58-7"></a><span class="kw">FROM</span></span>
+<span id="cb58-8"><a href="#cb58-8"></a>  characters</span>
+<span id="cb58-9"><a href="#cb58-9"></a><span class="kw">GROUP</span> <span class="kw">BY</span></span>
+<span id="cb58-10"><a href="#cb58-10"></a>  job; <span class="co">-- 集約キーは job</span></span></code></pre></div>
+      <p>実行結果は、次のようになります。</p>
+      <pre><code>psql:&lt;stdin&gt;:10: ERROR:  列&quot;characters.level&quot;はGROUP BY句で指定するか、集約関数内で使用しなければなりません</code></pre>
+      <p>英語環境では次のようになります。</p>
+      <pre><code>psql:&lt;stdin&gt;:10: ERROR:  column &quot;characters.level&quot; must appear in the GROUP BY clause or be used in an aggregate function</code></pre>
+      <p><strong>第06行目</strong> の <code>level</code> を、集約関数を適用した形 (たとえば
+      <code>MAX(level)</code> や <code>AVG(level)</code> )
+      にすると問題なく実行できることを確認してください。</p>
+      <div class="prompts">
+      <ul>
+      <li>SQLにおいて、<code>GROUP BY</code> 句に指定したカラム以外を、<code>SELECT</code>
+      句に指定するとエラーになるのはなぜですか。たとえば、<code>SELECT job, level FROM w03.characters GROUP BY job;</code>
+      がエラーになるのはなぜですか。</li>
+      </ul>
+      </div>
+      <h2 data-number="8.2" id="group-by-句に複数の集約キーを指定"><span
+      class="header-section-number">8.2</span> GROUP BY 句に複数の集約キーを指定</h2>
+      <p><code>GROUP BY</code> 句には、以下のように <strong>複数のカラム</strong>
+      を指定することもできます。</p>
+      <div class="sourceCode" id="cb61" data-caption="GROUP BY句に複数の集約キーを指定"><pre
+      class="sourceCode numberSource sql numberLines"><code class="sourceCode sql"><span id="cb61-1"><a href="#cb61-1"></a><span class="kw">SET</span></span>
+<span id="cb61-2"><a href="#cb61-2"></a>  search_path <span class="kw">TO</span> w03;</span>
+<span id="cb61-3"><a href="#cb61-3"></a></span>
+<span id="cb61-4"><a href="#cb61-4"></a><span class="kw">SELECT</span></span>
+<span id="cb61-5"><a href="#cb61-5"></a>  <span class="fu">COALESCE</span>(guild, <span class="st">&#39;(Freelancer)&#39;</span>) <span class="kw">AS</span> <span class="ot">&quot;guild&quot;</span>,</span>
+<span id="cb61-6"><a href="#cb61-6"></a>  job,</span>
+<span id="cb61-7"><a href="#cb61-7"></a>  <span class="fu">COUNT</span>(<span class="op">*</span>)</span>
+<span id="cb61-8"><a href="#cb61-8"></a><span class="kw">FROM</span></span>
+<span id="cb61-9"><a href="#cb61-9"></a>  characters</span>
+<span id="cb61-10"><a href="#cb61-10"></a><span class="kw">GROUP</span> <span class="kw">BY</span></span>
+<span id="cb61-11"><a href="#cb61-11"></a>  guild,</span>
+<span id="cb61-12"><a href="#cb61-12"></a>  job</span>
+<span id="cb61-13"><a href="#cb61-13"></a><span class="kw">ORDER</span> <span class="kw">BY</span></span>
+<span id="cb61-14"><a href="#cb61-14"></a>  guild,</span>
+<span id="cb61-15"><a href="#cb61-15"></a>  job;</span></code></pre></div>
+      <p>実行すると、次のような結果セットが得られます。</p>
+      <p>この結果から、<strong>guild と job の組み合わせが同じレコード</strong>
+      がひとつのグループにまとめられ、「ギルド×ジョブ」単位で件数を集計できていることが確認できます。</p>
+      <pre><code>    guild     |   job   | count
+--------------+---------+-------
+ (Freelancer) | Fighter |     1
+ (Freelancer) | Monk    |     1
+ (Freelancer) | Priest  |     1
+ (Freelancer) | Samurai |     1
+ (Freelancer) | Wizard  |     1
+ D.D.D        | Fighter |     1
+ D.D.D        | Ninja   |     2
+ D.D.D        | Wizard  |     2
+ Yamato       | Fighter |     1
+ Yamato       | Priest  |     3
+ Yamato       | Samurai |     1
+ hameln       | Fighter |     1
+ hameln       | Monk    |     1
+ hameln       | Samurai |     1
+ hameln       | Wizard  |     1</code></pre>
+      <ul>
+      <li><code>GROUP BY</code> の集約キーの順序を変えても (すなわち
+      <code>GROUP BY guild, job</code> を <code>GROUP BY job, guild</code>
+      に変更しても)、同じ結果セットが得られることを確認してください。
+      <ul>
+      <li>ただし <code>ORDER BY</code>
+      句を指定しない場合、<u>整列順は変わる可能性があります</u>。</li>
+      </ul></li>
+      </ul>
+      <div class="prompts">
+      <ul>
+      <li>SQLにおいて、<code>GROUP BY guild, job</code> を <code>GROUP BY job, guild</code>
+      に書き換えても ( <code>ORDER BY</code>
+      句が指定されている限りは)、結果セットが変わらないのはなぜですか。集約キーの順番は関係ないのですか。</li>
+      </ul>
+      </div>
+      <h3 data-number="8.2.1" id="sqlドリル-9"><span class="header-section-number">8.2.1</span>
+      SQLドリル</h3>
+      <ul>
+      <li><code>ex-04_3.sql</code> 👉 <strong>w03.characters</strong>
+      テーブルから、次のような結果セットを得るような SQL を記述せよ。
+      <ul>
+      <li>平均レベルは小数第2位を四捨五入して、小数第1位まで表示すること。</li>
+      <li>後衛職 (Priest、Wizard) のみを対象とすること。</li>
+      </ul></li>
+      </ul>
+      <pre><code>  job   | guild  | count | avg_lv 
+--------+--------+-------+--------
+ Priest | Yamato |     3 |   42.3
+ Priest |        |     1 |   28.0
+ Wizard | D.D.D  |     2 |   57.5
+ Wizard | hameln |     1 |   61.0
+ Wizard |        |     1 |   57.0</code></pre>
+      <h2 data-number="8.3" id="rollup-による全体集計"><span
+      class="header-section-number">8.3</span> ROLLUP による全体集計</h2>
+      <p><code>GROUP BY</code> 句の拡張構文である <code>ROLLUP</code>
+      を使用すると、<strong>グループごとの集計結果に、全体の集計結果を追加する</strong>ことができます。</p>
+      <p>たとえば、次の SQL では、<code>guild</code>
+      ごとの集計結果に加えて、すべてのレコードを対象とした集計結果も取得できます。</p>
+      <div class="sourceCode" id="cb64" data-caption="ROLLUPの利用"><pre
+      class="sourceCode numberSource sql numberLines"><code class="sourceCode sql"><span id="cb64-1"><a href="#cb64-1"></a><span class="kw">SET</span></span>
+<span id="cb64-2"><a href="#cb64-2"></a>  search_path <span class="kw">TO</span> w03;</span>
+<span id="cb64-3"><a href="#cb64-3"></a></span>
+<span id="cb64-4"><a href="#cb64-4"></a><span class="kw">SELECT</span></span>
+<span id="cb64-5"><a href="#cb64-5"></a>  guild,</span>
+<span id="cb64-6"><a href="#cb64-6"></a>  <span class="fu">ROUND</span>(<span class="fu">AVG</span>(<span class="kw">level</span>), <span class="dv">1</span>) <span class="kw">AS</span> <span class="ot">&quot;avg_lv&quot;</span>,</span>
+<span id="cb64-7"><a href="#cb64-7"></a>  <span class="fu">COUNT</span>(<span class="op">*</span>) <span class="kw">AS</span> <span class="ot">&quot;num&quot;</span></span>
+<span id="cb64-8"><a href="#cb64-8"></a><span class="kw">FROM</span></span>
+<span id="cb64-9"><a href="#cb64-9"></a>  characters</span>
+<span id="cb64-10"><a href="#cb64-10"></a><span class="kw">GROUP</span> <span class="kw">BY</span></span>
+<span id="cb64-11"><a href="#cb64-11"></a>  <span class="kw">ROLLUP</span> (guild) <span class="co">-- ◀ ここに注目</span></span>
+<span id="cb64-12"><a href="#cb64-12"></a><span class="kw">ORDER</span> <span class="kw">BY</span></span>
+<span id="cb64-13"><a href="#cb64-13"></a>  guild,</span>
+<span id="cb64-14"><a href="#cb64-14"></a>  <span class="fu">GROUPING</span>(guild) <span class="kw">ASC</span>; <span class="co">-- NULLの2行は「無所属」「全体集計」の順</span></span></code></pre></div>
+      <p>実行結果は、次のようになります。</p>
+      <pre><code> guild  | avg_lv | num
+--------+--------+-----
+ D.D.D  |   55.8 |   5
+ Yamato |   48.6 |   5
+ hameln |   52.0 |   4
+        |   39.6 |   5
+        |   48.8 |  19</code></pre>
+      <div class="balloon char-01 face-05 tone-blue">
+      <p><strong>guild</strong> が空欄の2行のうち、<strong>num が「5」の行</strong>
+      がギルド無所属のキャラクタの集計、<strong>num が「19」の行</strong>
+      がテーブル全体の集計となります。ここでは、<strong>第14行目</strong> において、後述する
+      <code>GROUPING</code> 関数により、無所属の行を先に表示しています。</p>
+      <ul>
+      <li><strong>第14行目</strong> を <code>GROUPING(guild) DESC;</code>
+      に書き換えて、その実行結果を確認してみてください。</li>
+      </ul>
+      </div>
+      <p>このように、<code>ROLLUP</code> による全体集計と、もともと <strong>guild</strong> が NULL
+      のレコードの集計は、<strong>どちらも <code>guild</code>
+      が空欄で表示されるため、見た目だけでは区別できません</strong>。そこで、<code>GROUPING</code>
+      関数と <code>CASE</code> 式 を組み合わせて、それぞれに異なる文字列を表示するようにします。</p>
+      <div class="sourceCode" id="cb66" data-caption="GROUPING関数の利用"><pre
+      class="sourceCode numberSource sql numberLines"><code class="sourceCode sql"><span id="cb66-1"><a href="#cb66-1"></a><span class="kw">SET</span></span>
+<span id="cb66-2"><a href="#cb66-2"></a>  search_path <span class="kw">TO</span> w03;</span>
+<span id="cb66-3"><a href="#cb66-3"></a></span>
+<span id="cb66-4"><a href="#cb66-4"></a><span class="kw">SELECT</span></span>
+<span id="cb66-5"><a href="#cb66-5"></a>  <span class="cf">CASE</span></span>
+<span id="cb66-6"><a href="#cb66-6"></a>    <span class="cf">WHEN</span> <span class="fu">GROUPING</span>(guild) <span class="op">=</span> <span class="dv">1</span> <span class="cf">THEN</span> <span class="st">&#39;(Total)&#39;</span></span>
+<span id="cb66-7"><a href="#cb66-7"></a>    <span class="cf">WHEN</span> guild <span class="kw">IS</span> <span class="kw">NULL</span> <span class="cf">THEN</span> <span class="st">&#39;(Freelancer)&#39;</span></span>
+<span id="cb66-8"><a href="#cb66-8"></a>    <span class="cf">ELSE</span> guild</span>
+<span id="cb66-9"><a href="#cb66-9"></a>  <span class="cf">END</span> <span class="kw">AS</span> <span class="ot">&quot;guild&quot;</span>,</span>
+<span id="cb66-10"><a href="#cb66-10"></a>  <span class="fu">ROUND</span>(<span class="fu">AVG</span>(<span class="kw">level</span>), <span class="dv">1</span>) <span class="kw">AS</span> <span class="ot">&quot;avg_lv&quot;</span>,</span>
+<span id="cb66-11"><a href="#cb66-11"></a>  <span class="fu">COUNT</span>(<span class="op">*</span>) <span class="kw">AS</span> <span class="ot">&quot;num&quot;</span></span>
+<span id="cb66-12"><a href="#cb66-12"></a><span class="kw">FROM</span></span>
+<span id="cb66-13"><a href="#cb66-13"></a>  characters</span>
+<span id="cb66-14"><a href="#cb66-14"></a><span class="kw">GROUP</span> <span class="kw">BY</span></span>
+<span id="cb66-15"><a href="#cb66-15"></a>  <span class="kw">ROLLUP</span> (guild)</span>
+<span id="cb66-16"><a href="#cb66-16"></a><span class="kw">ORDER</span> <span class="kw">BY</span></span>
+<span id="cb66-17"><a href="#cb66-17"></a>  guild;</span></code></pre></div>
+      <div class="balloon char-01 face-05 tone-blue">
+      <p><strong>第06行目</strong> の <code>GROUPING(guild)</code> は、<code>ROLLUP</code>
+      によって生成された全体集計の行で「1」、通常のグループ別集計の行では「0」を返す特殊な関数です。<strong>guild</strong>
+      がもともと <code>NULL</code> である場合も、通常のグループ別集計なので「0」を返します。</p>
+      </div>
+      <p>実行結果は次のようになります。</p>
+      <pre><code>    guild     | avg_lv | num
+--------------+--------+-----
+ (Freelancer) |   39.6 |   5
+ (Total)      |   48.8 |  19
+ D.D.D        |   55.8 |   5
+ Yamato       |   48.6 |   5
+ hameln       |   52.0 |   4</code></pre>
+      <div class="note type-senior">
+      <p><strong>中級者向け: 並び順も厳密に制御したいときは…</strong></p>
+      <p>次のように <code>ORDER BY</code> 句のなかで、<code>GROUPING</code> 関数と
+      <strong>CASE式</strong> を組み合わせて利用します。</p>
+      <div class="sourceCode" id="cb68" data-caption="GROUPING関数の利用"><pre
+      class="sourceCode numberSource sql numberLines"><code class="sourceCode sql"><span id="cb68-1"><a href="#cb68-1"></a><span class="kw">SET</span></span>
+<span id="cb68-2"><a href="#cb68-2"></a>  search_path <span class="kw">TO</span> w03;</span>
+<span id="cb68-3"><a href="#cb68-3"></a></span>
+<span id="cb68-4"><a href="#cb68-4"></a><span class="kw">SELECT</span></span>
+<span id="cb68-5"><a href="#cb68-5"></a>  <span class="cf">CASE</span></span>
+<span id="cb68-6"><a href="#cb68-6"></a>    <span class="cf">WHEN</span> <span class="fu">GROUPING</span>(guild) <span class="op">=</span> <span class="dv">1</span> <span class="cf">THEN</span> <span class="st">&#39;(Total)&#39;</span></span>
+<span id="cb68-7"><a href="#cb68-7"></a>    <span class="cf">WHEN</span> guild <span class="kw">IS</span> <span class="kw">NULL</span> <span class="cf">THEN</span> <span class="st">&#39;(Freelancer)&#39;</span></span>
+<span id="cb68-8"><a href="#cb68-8"></a>    <span class="cf">ELSE</span> guild</span>
+<span id="cb68-9"><a href="#cb68-9"></a>  <span class="cf">END</span> <span class="kw">AS</span> <span class="ot">&quot;guild&quot;</span>,</span>
+<span id="cb68-10"><a href="#cb68-10"></a>  <span class="fu">ROUND</span>(<span class="fu">AVG</span>(<span class="kw">level</span>), <span class="dv">1</span>) <span class="kw">AS</span> <span class="ot">&quot;avg_lv&quot;</span>,</span>
+<span id="cb68-11"><a href="#cb68-11"></a>  <span class="fu">COUNT</span>(<span class="op">*</span>) <span class="kw">AS</span> <span class="ot">&quot;num&quot;</span></span>
+<span id="cb68-12"><a href="#cb68-12"></a><span class="kw">FROM</span></span>
+<span id="cb68-13"><a href="#cb68-13"></a>  characters</span>
+<span id="cb68-14"><a href="#cb68-14"></a><span class="kw">GROUP</span> <span class="kw">BY</span></span>
+<span id="cb68-15"><a href="#cb68-15"></a>  <span class="kw">ROLLUP</span> (guild)</span>
+<span id="cb68-16"><a href="#cb68-16"></a><span class="kw">ORDER</span> <span class="kw">BY</span></span>
+<span id="cb68-17"><a href="#cb68-17"></a>  <span class="cf">CASE</span> <span class="co">-- ◀ ここからに注目</span></span>
+<span id="cb68-18"><a href="#cb68-18"></a>    <span class="cf">WHEN</span> <span class="fu">GROUPING</span>(guild) <span class="op">=</span> <span class="dv">1</span> <span class="cf">THEN</span> <span class="dv">3</span> <span class="co">-- 整列順第3位</span></span>
+<span id="cb68-19"><a href="#cb68-19"></a>    <span class="cf">WHEN</span> guild <span class="kw">IS</span> <span class="kw">NULL</span> <span class="cf">THEN</span> <span class="dv">2</span> <span class="co">-- 整列順第2位</span></span>
+<span id="cb68-20"><a href="#cb68-20"></a>    <span class="cf">ELSE</span> <span class="dv">1</span> <span class="co">-- 整列順第1位</span></span>
+<span id="cb68-21"><a href="#cb68-21"></a>  <span class="cf">END</span>,</span>
+<span id="cb68-22"><a href="#cb68-22"></a>  <span class="fu">LOWER</span>(guild); <span class="co">-- 整列順第1位のなかで大文字と小文字を区別せず昇順</span></span></code></pre></div>
+      <p>実行結果は次のようになります。</p>
+      <pre><code>    guild     | avg_lv | num
+--------------+--------+-----
+ D.D.D        |   55.8 |   5
+ hameln       |   52.0 |   4
+ Yamato       |   48.6 |   5
+ (Freelancer) |   39.6 |   5
+ (Total)      |   48.8 |  19</code></pre>
+      <p>なお、<code>ROLLUP</code>
+      の結果を含めた並び順や表示体裁の細かい制御は、SQLでも実現は可能ですが、<strong>複雑になりやすい処理</strong>です。可読性や保守性を考えると、最終的な表示順や体裁はアプリケーション側で調整するほうが実用的なケースも多いことを覚えておいてください。</p>
+      </div>
+      <h3 data-number="8.3.1" id="sqlドリル-10"><span class="header-section-number">8.3.1</span>
+      SQLドリル💻</h3>
+      <ul>
+      <li><code>ex-04_4.sql</code> 👉 <strong>w03.characters</strong> テーブルから、次のように
+      <strong>job</strong> ごとに最大レベル、平均レベル、人数を得るような SQL を記述せよ。
+      <ul>
+      <li>平均レベルは小数第2位を四捨五入して、小数第1位まで表示すること。</li>
+      <li>全体についても、同様の集計処理を実施して <code>-TOTAL-</code>
+      というラベルをつけること。</li>
+      </ul></li>
+      </ul>
+      <pre><code>   job   | max_lv | avg_lv | num 
+---------+--------+--------+-----
+ -TOTAL- |     73 |   48.8 |  19
+ Fighter |     56 |   37.3 |   4
+ Monk    |     39 |   36.0 |   2
+ Ninja   |     62 |   54.0 |   2
+ Priest  |     50 |   38.8 |   4
+ Samurai |     73 |   70.3 |   3
+ Wizard  |     64 |   58.3 |   4</code></pre>
+      <h2 data-number="8.4" id="group-by-句に-case-式を利用"><span
+      class="header-section-number">8.4</span> GROUP BY 句に CASE 式を利用</h2>
+      <p><code>GROUP BY</code> 句に <code>CASE</code>
+      式を利用することで、<strong>条件に応じて柔軟にグループを分け、集計することができます</strong>。例えば、「ギルド所属者」と「無所属者」の2つのグループに分けて集計する場合は、次のように
+      SQL を記述します。</p>
+      <div class="sourceCode" id="cb71" data-caption="GROUP BY句 に CASE式 を利用"><pre
+      class="sourceCode numberSource sql numberLines"><code class="sourceCode sql"><span id="cb71-1"><a href="#cb71-1"></a><span class="kw">SET</span></span>
+<span id="cb71-2"><a href="#cb71-2"></a>  search_path <span class="kw">TO</span> w03;</span>
+<span id="cb71-3"><a href="#cb71-3"></a></span>
+<span id="cb71-4"><a href="#cb71-4"></a><span class="kw">SELECT</span></span>
+<span id="cb71-5"><a href="#cb71-5"></a>  <span class="cf">CASE</span></span>
+<span id="cb71-6"><a href="#cb71-6"></a>    <span class="cf">WHEN</span> guild <span class="kw">IS</span> <span class="kw">NULL</span> <span class="cf">THEN</span> <span class="st">&#39;無所属&#39;</span></span>
+<span id="cb71-7"><a href="#cb71-7"></a>    <span class="cf">ELSE</span> <span class="st">&#39;ギルド所属&#39;</span></span>
+<span id="cb71-8"><a href="#cb71-8"></a>  <span class="cf">END</span> <span class="kw">AS</span> <span class="ot">&quot;カテゴリ&quot;</span>,</span>
+<span id="cb71-9"><a href="#cb71-9"></a>  <span class="fu">ROUND</span>(<span class="fu">AVG</span>(<span class="kw">level</span>), <span class="dv">1</span>) <span class="kw">AS</span> <span class="ot">&quot;avg_lv&quot;</span>,</span>
+<span id="cb71-10"><a href="#cb71-10"></a>  <span class="fu">COUNT</span>(<span class="op">*</span>) <span class="kw">AS</span> <span class="ot">&quot;num&quot;</span></span>
+<span id="cb71-11"><a href="#cb71-11"></a><span class="kw">FROM</span></span>
+<span id="cb71-12"><a href="#cb71-12"></a>  characters</span>
+<span id="cb71-13"><a href="#cb71-13"></a><span class="kw">GROUP</span> <span class="kw">BY</span></span>
+<span id="cb71-14"><a href="#cb71-14"></a>  <span class="cf">CASE</span></span>
+<span id="cb71-15"><a href="#cb71-15"></a>    <span class="cf">WHEN</span> guild <span class="kw">IS</span> <span class="kw">NULL</span> <span class="cf">THEN</span> <span class="st">&#39;無所属&#39;</span></span>
+<span id="cb71-16"><a href="#cb71-16"></a>    <span class="cf">ELSE</span> <span class="st">&#39;ギルド所属&#39;</span></span>
+<span id="cb71-17"><a href="#cb71-17"></a>  <span class="cf">END</span></span>
+<span id="cb71-18"><a href="#cb71-18"></a><span class="kw">ORDER</span> <span class="kw">BY</span></span>
+<span id="cb71-19"><a href="#cb71-19"></a>  <span class="ot">&quot;カテゴリ&quot;</span>;</span></code></pre></div>
+      <p>ここでは、グループ分けに使用した <code>CASE</code> 式を <code>SELECT</code>
+      句にも記述し、その評価結果をカテゴリ名として表示しています。</p>
+      <ul>
+      <li>この例では、<code>SELECT</code> 句に <code>guild</code>
+      をそのまま追加するとエラーになります。「ギルド所属」のグループには複数のギルドが含まれ、どのギルド名を表示すればよいか決まらないためです。</li>
+      </ul>
+      <p>実行結果は次のようになります。</p>
+      <pre><code>  カテゴリ  | avg_lv | num
+------------+--------+-----
+ ギルド所属 |   52.1 |  14
+ 無所属     |   39.6 |   5</code></pre>
+      <div class="note type-senior">
+      <p><strong>中級者向け: 整列順も厳密に制御したい場合は…</strong></p>
+      <p><code>GROUP BY</code> 句に <strong>CASE式</strong>
+      を使用したとき、整列順も厳密に制御したい場合は、次のようにします。</p>
+      <div class="sourceCode" id="cb73" data-caption="整列順を制御する例"><pre
+      class="sourceCode numberSource sql numberLines"><code class="sourceCode sql"><span id="cb73-1"><a href="#cb73-1"></a><span class="kw">SET</span></span>
+<span id="cb73-2"><a href="#cb73-2"></a>  search_path <span class="kw">TO</span> w03;</span>
+<span id="cb73-3"><a href="#cb73-3"></a></span>
+<span id="cb73-4"><a href="#cb73-4"></a><span class="kw">SELECT</span></span>
+<span id="cb73-5"><a href="#cb73-5"></a>  <span class="cf">CASE</span></span>
+<span id="cb73-6"><a href="#cb73-6"></a>    <span class="cf">WHEN</span> guild <span class="kw">IS</span> <span class="kw">NULL</span> <span class="cf">THEN</span> <span class="dv">2</span></span>
+<span id="cb73-7"><a href="#cb73-7"></a>    <span class="cf">ELSE</span> <span class="dv">1</span></span>
+<span id="cb73-8"><a href="#cb73-8"></a>  <span class="cf">END</span> <span class="kw">AS</span> <span class="ot">&quot;ID&quot;</span>, </span>
+<span id="cb73-9"><a href="#cb73-9"></a>  <span class="cf">CASE</span></span>
+<span id="cb73-10"><a href="#cb73-10"></a>    <span class="cf">WHEN</span> guild <span class="kw">IS</span> <span class="kw">NULL</span> <span class="cf">THEN</span> <span class="st">&#39;無所属&#39;</span></span>
+<span id="cb73-11"><a href="#cb73-11"></a>    <span class="cf">ELSE</span> <span class="st">&#39;ギルド所属&#39;</span></span>
+<span id="cb73-12"><a href="#cb73-12"></a>  <span class="cf">END</span> <span class="kw">AS</span> <span class="ot">&quot;カテゴリ&quot;</span>,</span>
+<span id="cb73-13"><a href="#cb73-13"></a>  <span class="fu">ROUND</span>(<span class="fu">AVG</span>(<span class="kw">level</span>), <span class="dv">1</span>) <span class="kw">AS</span> <span class="ot">&quot;avg_lv&quot;</span>,</span>
+<span id="cb73-14"><a href="#cb73-14"></a>  <span class="fu">COUNT</span>(<span class="op">*</span>) <span class="kw">AS</span> <span class="ot">&quot;num&quot;</span></span>
+<span id="cb73-15"><a href="#cb73-15"></a><span class="kw">FROM</span></span>
+<span id="cb73-16"><a href="#cb73-16"></a>  characters</span>
+<span id="cb73-17"><a href="#cb73-17"></a><span class="kw">GROUP</span> <span class="kw">BY</span></span>
+<span id="cb73-18"><a href="#cb73-18"></a>  <span class="cf">CASE</span></span>
+<span id="cb73-19"><a href="#cb73-19"></a>    <span class="cf">WHEN</span> guild <span class="kw">IS</span> <span class="kw">NULL</span> <span class="cf">THEN</span> <span class="st">&#39;無所属&#39;</span></span>
+<span id="cb73-20"><a href="#cb73-20"></a>    <span class="cf">ELSE</span> <span class="st">&#39;ギルド所属&#39;</span></span>
+<span id="cb73-21"><a href="#cb73-21"></a>  <span class="cf">END</span>,</span>
+<span id="cb73-22"><a href="#cb73-22"></a>  <span class="cf">CASE</span></span>
+<span id="cb73-23"><a href="#cb73-23"></a>    <span class="cf">WHEN</span> guild <span class="kw">IS</span> <span class="kw">NULL</span> <span class="cf">THEN</span> <span class="dv">2</span></span>
+<span id="cb73-24"><a href="#cb73-24"></a>    <span class="cf">ELSE</span> <span class="dv">1</span></span>
+<span id="cb73-25"><a href="#cb73-25"></a>  <span class="cf">END</span></span>
+<span id="cb73-26"><a href="#cb73-26"></a><span class="kw">ORDER</span> <span class="kw">BY</span></span>
+<span id="cb73-27"><a href="#cb73-27"></a>  <span class="cf">CASE</span></span>
+<span id="cb73-28"><a href="#cb73-28"></a>    <span class="cf">WHEN</span> guild <span class="kw">IS</span> <span class="kw">NULL</span> <span class="cf">THEN</span> <span class="dv">2</span></span>
+<span id="cb73-29"><a href="#cb73-29"></a>    <span class="cf">ELSE</span> <span class="dv">1</span></span>
+<span id="cb73-30"><a href="#cb73-30"></a>  <span class="cf">END</span>;</span></code></pre></div>
+      <p>実行結果は次のようになります。</p>
+      <pre><code> ID |  カテゴリ  | avg_lv | num
+----+------------+--------+-----
+  1 | ギルド所属 |   52.1 |  14
+  2 | 無所属     |   39.6 |   5</code></pre>
+      </div>
+      <h3 data-number="8.4.1" id="sqlドリル-11"><span class="header-section-number">8.4.1</span>
+      SQLドリル💻</h3>
+      <ul>
+      <li><code>ex-04_5.sql</code> 👉 <strong>w03.characters</strong>
+      テーブルから、次のように前衛職と後衛職でグループをわけて最大レベル、平均レベル、人数を得る SQL
+      を記述せよ。前衛職は Fighter、Monk、Samurai、Ninja、後衛職は Priest、Wizard とする。
+      <ul>
+      <li>平均レベルは小数第2位を四捨五入して、小数第1位まで表示すること。</li>
+      </ul></li>
+      </ul>
+      <pre><code> battle_position | max_lv | avg_lv | num 
+-----------------+--------+--------+-----
+ backline        |     64 |   48.5 |   8
+ frontline       |     73 |   49.1 |  11</code></pre>
+      <h2 data-number="8.5" id="date_trunc関数を利用した時間軸に沿った集計処理"><span
+      class="header-section-number">8.5</span> DATE_TRUNC関数を利用した時間軸に沿った集計処理</h2>
+      <p><code>GROUP BY</code>
+      句は、<strong>日時を一定の単位（時間・日・月・年など）でグループ化して集計するような場面</strong>でも使用されます。このような時間軸に沿った集計処理では、PostgreSQL
+      の <code>DATE_TRUNC</code> 関数を利用することで SQL 文を簡潔に記述することができます。</p>
+      <p>PostgreSQL の <code>DATE_TRUNC</code> 関数は <span
+      class="masked">指定した単位で日時を切り捨てる関数</span> で、次のように動作します (
+      <code>DATE_TRUNC</code> は標準 SQL
+      では規定されていない関数なので互換性に注意してください)。</p>
+      <ul>
+      <li><code>DATE_TRUNC('hour', TIMESTAMP '2025-10-30 15:30:58')</code> 👉 <strong>2025-10-30
+      15:00:00</strong> (TIMESTAMP型)</li>
+      <li><code>DATE_TRUNC('month', TIMESTAMP '2025-10-30 15:30:58')</code> 👉 <strong>2025-10-01
+      00:00:00</strong> ( 〃 )</li>
+      <li><code>DATE_TRUNC('year', TIMESTAMP '2025-10-30 15:30:58')</code> 👉 <strong>2025-01-01
+      00:00:00</strong> ( 〃 )
+      <ul>
+      <li>第1引数に指定できる値 ( <code>'hour'</code> や <code>'year'</code> などの文字列リテラル)
+      は <a
+      href="https://www.postgresql.org/docs/current/functions-datetime.html#FUNCTIONS-DATETIME-TRUNC">公式ドキュメント</a>
+      を参照してください。</li>
+      <li>第2引数には <code>DATE</code> 型や <code>INTERVAL</code> 型の値も指定できます。</li>
+      </ul></li>
+      </ul>
+      <p>たとえば、キャラクタの <strong>最終ログイン日時</strong> (<code>last_login_at</code>)
+      を、月単位でグループ化し、各月の件数を求める場合は、<code>DATE_TRUNC</code>
+      を使用して次のように SQL 文を記述します。</p>
+      <div class="sourceCode" id="cb76" data-caption="最終ログイン日時の月別集計(1)"><pre
+      class="sourceCode numberSource sql numberLines"><code class="sourceCode sql"><span id="cb76-1"><a href="#cb76-1"></a><span class="kw">SET</span></span>
+<span id="cb76-2"><a href="#cb76-2"></a>  search_path <span class="kw">TO</span> w03;</span>
+<span id="cb76-3"><a href="#cb76-3"></a></span>
+<span id="cb76-4"><a href="#cb76-4"></a><span class="kw">SELECT</span></span>
+<span id="cb76-5"><a href="#cb76-5"></a>  DATE_TRUNC(<span class="st">&#39;month&#39;</span>, last_login_at) <span class="kw">AS</span> <span class="ot">&quot;date&quot;</span>, <span class="co">-- ◀ ここに注目</span></span>
+<span id="cb76-6"><a href="#cb76-6"></a>  <span class="fu">COUNT</span>(<span class="op">*</span>) <span class="kw">AS</span> <span class="ot">&quot;num&quot;</span></span>
+<span id="cb76-7"><a href="#cb76-7"></a><span class="kw">FROM</span></span>
+<span id="cb76-8"><a href="#cb76-8"></a>  characters</span>
+<span id="cb76-9"><a href="#cb76-9"></a><span class="kw">WHERE</span></span>
+<span id="cb76-10"><a href="#cb76-10"></a>  last_login_at <span class="kw">IS</span> <span class="kw">NOT</span> <span class="kw">NULL</span></span>
+<span id="cb76-11"><a href="#cb76-11"></a><span class="kw">GROUP</span> <span class="kw">BY</span></span>
+<span id="cb76-12"><a href="#cb76-12"></a>  DATE_TRUNC(<span class="st">&#39;month&#39;</span>, last_login_at) <span class="co">-- ◀ ここに注目</span></span>
+<span id="cb76-13"><a href="#cb76-13"></a><span class="kw">ORDER</span> <span class="kw">BY</span></span>
+<span id="cb76-14"><a href="#cb76-14"></a>  <span class="ot">&quot;date&quot;</span>;</span></code></pre></div>
+      <p>実行結果は、次のようになります。</p>
+      <pre><code>        date         | num
+---------------------+-----
+ 2025-07-01 00:00:00 |   4
+ 2025-08-01 00:00:00 |   4
+ 2025-09-01 00:00:00 |   6
+ 2025-10-01 00:00:00 |   4</code></pre>
+      <p>体裁を整えたバージョンは以下のようになります。以下の SQL の <strong>第05行目</strong> の
+      <code>TO_CHAR</code> 関数は、<a href="lecture03.html#日付時刻関数を利用する">第03回講義</a>
+      で紹介したように日時などを整形出力する関数です。</p>
+      <div class="sourceCode" id="cb78" data-caption="最終ログイン日時の月別集計(2)"><pre
+      class="sourceCode numberSource sql numberLines"><code class="sourceCode sql"><span id="cb78-1"><a href="#cb78-1"></a><span class="kw">SET</span></span>
+<span id="cb78-2"><a href="#cb78-2"></a>  search_path <span class="kw">TO</span> w03;</span>
+<span id="cb78-3"><a href="#cb78-3"></a></span>
+<span id="cb78-4"><a href="#cb78-4"></a><span class="kw">SELECT</span></span>
+<span id="cb78-5"><a href="#cb78-5"></a>  <span class="fu">TO_CHAR</span>(DATE_TRUNC(<span class="st">&#39;month&#39;</span>, last_login_at), <span class="st">&#39;YYYY/MM&#39;</span>) <span class="kw">AS</span> <span class="ot">&quot;date&quot;</span>,</span>
+<span id="cb78-6"><a href="#cb78-6"></a>  <span class="fu">COUNT</span>(<span class="op">*</span>) <span class="kw">AS</span> <span class="ot">&quot;num&quot;</span></span>
+<span id="cb78-7"><a href="#cb78-7"></a><span class="kw">FROM</span></span>
+<span id="cb78-8"><a href="#cb78-8"></a>  characters</span>
+<span id="cb78-9"><a href="#cb78-9"></a><span class="kw">WHERE</span></span>
+<span id="cb78-10"><a href="#cb78-10"></a>  last_login_at <span class="kw">IS</span> <span class="kw">NOT</span> <span class="kw">NULL</span></span>
+<span id="cb78-11"><a href="#cb78-11"></a><span class="kw">GROUP</span> <span class="kw">BY</span></span>
+<span id="cb78-12"><a href="#cb78-12"></a>  DATE_TRUNC(<span class="st">&#39;month&#39;</span>, last_login_at)</span>
+<span id="cb78-13"><a href="#cb78-13"></a><span class="kw">ORDER</span> <span class="kw">BY</span></span>
+<span id="cb78-14"><a href="#cb78-14"></a>  <span class="ot">&quot;date&quot;</span>;</span></code></pre></div>
+      <p>実行結果は、次のようになります。</p>
+      <pre><code>  date   | num
+---------+-----
+ 2025/07 |   4
+ 2025/08 |   4
+ 2025/09 |   6
+ 2025/10 |   4</code></pre>
+      <h3 data-number="8.5.1" id="参考-date_trunc関数を使用せずに同様の集計をする"><span
+      class="header-section-number">8.5.1</span> 参考:
+      DATE_TRUNC関数を使用せずに同様の集計をする</h3>
+      <p><code>DATE_TRUNC</code>
+      関数を使用せずに、標準SQLで同様の処理をしたい場合には、<code>CASE</code>
+      式で月ごとの区分を表現することができます。</p>
+      <div class="sourceCode" id="cb80"
+      data-caption="最終ログイン日時の月別集計(DATE_TRUNC関数を不使用)"><pre
+      class="sourceCode numberSource sql numberLines"><code class="sourceCode sql"><span id="cb80-1"><a href="#cb80-1"></a><span class="kw">SET</span></span>
+<span id="cb80-2"><a href="#cb80-2"></a>  search_path <span class="kw">TO</span> w03;</span>
+<span id="cb80-3"><a href="#cb80-3"></a></span>
+<span id="cb80-4"><a href="#cb80-4"></a><span class="kw">SELECT</span></span>
+<span id="cb80-5"><a href="#cb80-5"></a>  <span class="cf">CASE</span></span>
+<span id="cb80-6"><a href="#cb80-6"></a>    <span class="cf">WHEN</span> last_login_at <span class="op">&gt;=</span> <span class="dt">DATE</span> <span class="st">&#39;2025-07-01&#39;</span> <span class="kw">AND</span></span>
+<span id="cb80-7"><a href="#cb80-7"></a>    last_login_at <span class="op">&lt;</span> <span class="dt">DATE</span> <span class="st">&#39;2025-08-01&#39;</span> <span class="cf">THEN</span> <span class="st">&#39;2025/07&#39;</span></span>
+<span id="cb80-8"><a href="#cb80-8"></a>    <span class="cf">WHEN</span> last_login_at <span class="op">&gt;=</span> <span class="dt">DATE</span> <span class="st">&#39;2025-08-01&#39;</span> <span class="kw">AND</span></span>
+<span id="cb80-9"><a href="#cb80-9"></a>    last_login_at <span class="op">&lt;</span> <span class="dt">DATE</span> <span class="st">&#39;2025-09-01&#39;</span> <span class="cf">THEN</span> <span class="st">&#39;2025/08&#39;</span></span>
+<span id="cb80-10"><a href="#cb80-10"></a>    <span class="cf">WHEN</span> last_login_at <span class="op">&gt;=</span> <span class="dt">DATE</span> <span class="st">&#39;2025-09-01&#39;</span> <span class="kw">AND</span></span>
+<span id="cb80-11"><a href="#cb80-11"></a>    last_login_at <span class="op">&lt;</span> <span class="dt">DATE</span> <span class="st">&#39;2025-10-01&#39;</span> <span class="cf">THEN</span> <span class="st">&#39;2025/09&#39;</span></span>
+<span id="cb80-12"><a href="#cb80-12"></a>    <span class="cf">WHEN</span> last_login_at <span class="op">&gt;=</span> <span class="dt">DATE</span> <span class="st">&#39;2025-10-01&#39;</span> <span class="kw">AND</span></span>
+<span id="cb80-13"><a href="#cb80-13"></a>    last_login_at <span class="op">&lt;</span> <span class="dt">DATE</span> <span class="st">&#39;2025-11-01&#39;</span> <span class="cf">THEN</span> <span class="st">&#39;2025/10&#39;</span></span>
+<span id="cb80-14"><a href="#cb80-14"></a>    <span class="cf">ELSE</span> <span class="st">&#39;(その他)&#39;</span></span>
+<span id="cb80-15"><a href="#cb80-15"></a>  <span class="cf">END</span> <span class="kw">AS</span> <span class="ot">&quot;date&quot;</span>,</span>
+<span id="cb80-16"><a href="#cb80-16"></a>  <span class="fu">COUNT</span>(<span class="op">*</span>) <span class="kw">AS</span> <span class="ot">&quot;num&quot;</span></span>
+<span id="cb80-17"><a href="#cb80-17"></a><span class="kw">FROM</span></span>
+<span id="cb80-18"><a href="#cb80-18"></a>  characters</span>
+<span id="cb80-19"><a href="#cb80-19"></a><span class="kw">WHERE</span></span>
+<span id="cb80-20"><a href="#cb80-20"></a>  last_login_at <span class="kw">IS</span> <span class="kw">NOT</span> <span class="kw">NULL</span></span>
+<span id="cb80-21"><a href="#cb80-21"></a><span class="kw">GROUP</span> <span class="kw">BY</span></span>
+<span id="cb80-22"><a href="#cb80-22"></a>  <span class="cf">CASE</span></span>
+<span id="cb80-23"><a href="#cb80-23"></a>    <span class="cf">WHEN</span> last_login_at <span class="op">&gt;=</span> <span class="dt">DATE</span> <span class="st">&#39;2025-07-01&#39;</span> <span class="kw">AND</span></span>
+<span id="cb80-24"><a href="#cb80-24"></a>    last_login_at <span class="op">&lt;</span> <span class="dt">DATE</span> <span class="st">&#39;2025-08-01&#39;</span> <span class="cf">THEN</span> <span class="st">&#39;2025/07&#39;</span></span>
+<span id="cb80-25"><a href="#cb80-25"></a>    <span class="cf">WHEN</span> last_login_at <span class="op">&gt;=</span> <span class="dt">DATE</span> <span class="st">&#39;2025-08-01&#39;</span> <span class="kw">AND</span></span>
+<span id="cb80-26"><a href="#cb80-26"></a>    last_login_at <span class="op">&lt;</span> <span class="dt">DATE</span> <span class="st">&#39;2025-09-01&#39;</span> <span class="cf">THEN</span> <span class="st">&#39;2025/08&#39;</span></span>
+<span id="cb80-27"><a href="#cb80-27"></a>    <span class="cf">WHEN</span> last_login_at <span class="op">&gt;=</span> <span class="dt">DATE</span> <span class="st">&#39;2025-09-01&#39;</span> <span class="kw">AND</span></span>
+<span id="cb80-28"><a href="#cb80-28"></a>    last_login_at <span class="op">&lt;</span> <span class="dt">DATE</span> <span class="st">&#39;2025-10-01&#39;</span> <span class="cf">THEN</span> <span class="st">&#39;2025/09&#39;</span></span>
+<span id="cb80-29"><a href="#cb80-29"></a>    <span class="cf">WHEN</span> last_login_at <span class="op">&gt;=</span> <span class="dt">DATE</span> <span class="st">&#39;2025-10-01&#39;</span> <span class="kw">AND</span></span>
+<span id="cb80-30"><a href="#cb80-30"></a>    last_login_at <span class="op">&lt;</span> <span class="dt">DATE</span> <span class="st">&#39;2025-11-01&#39;</span> <span class="cf">THEN</span> <span class="st">&#39;2025/10&#39;</span></span>
+<span id="cb80-31"><a href="#cb80-31"></a>    <span class="cf">ELSE</span> <span class="st">&#39;(その他)&#39;</span></span>
+<span id="cb80-32"><a href="#cb80-32"></a>  <span class="cf">END</span></span>
+<span id="cb80-33"><a href="#cb80-33"></a><span class="kw">ORDER</span> <span class="kw">BY</span></span>
+<span id="cb80-34"><a href="#cb80-34"></a>  <span class="ot">&quot;date&quot;</span>;</span></code></pre></div>
+      <div class="note type-caution">
+      <p><strong>日時の取り扱いに関する注意</strong></p>
+      <p><strong>last_login_at</strong>
+      がTIMESTAMP型のとき、<code>last_login_at BETWEEN DATE '2025-07-01' AND DATE '2025-07-31'</code>
+      のような条件を記述すると、2025年07月31日の <strong>00時00分00秒ちょうど</strong>
+      までしか含まれなくなるので注意してください。これは <span
+      class="masked"><code>DATE '2025-07-31'</code> が <code>2025-07-31 00:00:00</code></span>
+      に変換されるためです。</p>
+      <p>そのため、<strong>last_login_at</strong> が <span
+      class="masked"><code>2025-07-31 01:00:00</code></span> のときは、その条件は
+      <strong>真にはならない</strong> ので注意してください。</p>
+      </div>
+      <h3 data-number="8.5.2" id="sqlドリル-12"><span class="header-section-number">8.5.2</span>
+      SQLドリル💻</h3>
+      <ul>
+      <li><code>ex-04_6.sql</code> 👉 <strong>w03.characters</strong> テーブルについて、次のように
+      <strong>created_on</strong> で年別に「人数」と「平均レベル」を集計した結果セットを得るような
+      SQL を記述せよ。
+      <ul>
+      <li>平均レベルは小数第2位を四捨五入して、小数第1位まで表示すること。</li>
+      </ul></li>
+      </ul>
+      <pre><code> year | num | avg_lv 
+------+-----+--------
+ 2020 |   4 |   38.8
+ 2021 |   3 |   43.0
+ 2022 |   4 |   50.3
+ 2023 |   4 |   57.0
+ 2024 |   4 |   53.8</code></pre>
+      <h3 data-number="8.5.3" id="定着確認-8"><span class="header-section-number">8.5.3</span>
+      定着確認</h3>
+      <ul>
+      <li><p>あるテーブルの <strong>guild</strong>
+      には、<code>A</code>、<code>A</code>、<code>B</code>、<code>NULL</code>、<code>NULL</code>
+      の5件がある。<code>SELECT guild, COUNT(*) FROM テーブル名 GROUP BY guild;</code>
+      の結果は何行になり、各グループの件数はいくつになるか答えよ。</p>
+      <ul>
+      <li><strong>答え</strong>: <span
+      class="masked">3行。Aは2件、Bは1件、NULLは2件。NULLも1つのグループになる。</span></li>
+      </ul></li>
+      <li><p>あるテーブルに、(guild, job) が (A, Fighter)、(A, Fighter)、(A, Wizard)、(NULL,
+      Fighter) の4件がある。<code>GROUP BY guild, job</code>
+      によってグループ化すると、グループ数はいくつになるか答えよ。</p>
+      <ul>
+      <li><strong>答え</strong>: <span
+      class="masked">3グループ。AとFighterの組は2件、他の2組はそれぞれ1件。</span></li>
+      </ul></li>
+      <li><p><strong>characters</strong> テーブルには、<strong>job</strong> がFighterで
+      <strong>level</strong>
+      が10と20の2件がある。<code>SELECT job, level FROM characters GROUP BY job;</code>
+      がエラーになる理由を答えよ。</p>
+      <ul>
+      <li><strong>答え</strong>: <span
+      class="masked">1つのjobグループにlevelが10と20の複数の値があり、どのlevelを返すか決まらないため。levelにはMAXやAVGなどの集約関数を適用する。</span></li>
+      </ul></li>
+      <li><p>PostgreSQL で <code>GROUP BY ROLLUP(guild)</code>
+      を使用し、ギルド別集計と全体集計を得る。元データのguildがNULLのグループと、全体集計の行を区別するために
+      <code>GROUPING(guild)</code> を取得した場合、それぞれの値を答えよ。</p>
+      <ul>
+      <li><strong>答え</strong>: <span
+      class="masked">元データのguildがNULLのグループは0、全体集計の行は1。</span></li>
+      </ul></li>
+      <li><p>PostgreSQL で <code>DATE_TRUNC('month', TIMESTAMP '2025-10-23 14:25:30')</code>
+      を実行した結果を答えよ。</p>
+      <ul>
+      <li><strong>答え</strong>: <span class="masked">2025-10-01
+      00:00:00。月の先頭まで切り捨てられる。</span></li>
+      </ul></li>
+      <li><p>🏅 データベーススペシャリスト試験 平成 25 年度春期 午前Ⅱ <a
+      href="https://www.db-siken.com/kakomon/25_haru/am2_6.html">問6</a></p></li>
+      <li><p>🏅 データベーススペシャリスト試験 平成 29 年度春期 午前Ⅱ <a
+      href="https://www.db-siken.com/kakomon/29_haru/am2_8.html">問8</a></p></li>
+      </ul>
+      <h1 data-number="9" id="having-句"><span class="header-section-number">9</span> HAVING 句</h1>
+      <p><code>GROUP BY</code>
+      句でグループ化した結果に対して、<strong>集約関数の計算結果などを条件として絞り込みたいとき</strong>
+      は、<code>HAVING</code> 句を使用します。</p>
+      <ul>
+      <li><code>WHERE</code> 句は <strong>グループ化する前のレコードを絞り込む</strong>
+      のに対し、<code>HAVING</code> 句は <strong>グループ化した後の結果を絞り込む</strong>
+      ために使用します。</li>
+      </ul>
+      <p>例えば、<code>GROUP BY guild</code>
+      によって所属ギルドごとにグループ化し、<strong>各グループの平均レベルが「50以上」のものだけを抽出する</strong>には、<code>HAVING</code>
+      句に <code>AVG(level) &gt;= 50</code> という条件を指定します。</p>
+      <div class="sourceCode" id="cb82" data-caption="HAVING句の使用例"><pre
+      class="sourceCode numberSource sql numberLines"><code class="sourceCode sql"><span id="cb82-1"><a href="#cb82-1"></a><span class="kw">SET</span></span>
+<span id="cb82-2"><a href="#cb82-2"></a>  search_path <span class="kw">TO</span> w03;</span>
+<span id="cb82-3"><a href="#cb82-3"></a></span>
+<span id="cb82-4"><a href="#cb82-4"></a><span class="kw">SELECT</span></span>
+<span id="cb82-5"><a href="#cb82-5"></a>  <span class="fu">COALESCE</span>(guild,<span class="st">&#39;Freelancer&#39;</span>) <span class="kw">AS</span> <span class="ot">&quot;guild&quot;</span>,</span>
+<span id="cb82-6"><a href="#cb82-6"></a>  <span class="fu">COUNT</span>(<span class="op">*</span>) <span class="kw">AS</span> <span class="ot">&quot;num&quot;</span>,</span>
+<span id="cb82-7"><a href="#cb82-7"></a>  <span class="fu">ROUND</span>(<span class="fu">AVG</span>(<span class="kw">level</span>), <span class="dv">1</span>) <span class="kw">AS</span> <span class="ot">&quot;avg_lv&quot;</span></span>
+<span id="cb82-8"><a href="#cb82-8"></a><span class="kw">FROM</span></span>
+<span id="cb82-9"><a href="#cb82-9"></a>  characters</span>
+<span id="cb82-10"><a href="#cb82-10"></a><span class="kw">GROUP</span> <span class="kw">BY</span></span>
+<span id="cb82-11"><a href="#cb82-11"></a>  guild</span>
+<span id="cb82-12"><a href="#cb82-12"></a><span class="kw">HAVING</span></span>
+<span id="cb82-13"><a href="#cb82-13"></a>  <span class="fu">AVG</span>(<span class="kw">level</span>) <span class="op">&gt;=</span> <span class="dv">50</span></span>
+<span id="cb82-14"><a href="#cb82-14"></a><span class="kw">ORDER</span> <span class="kw">BY</span></span>
+<span id="cb82-15"><a href="#cb82-15"></a>  <span class="fu">AVG</span>(<span class="kw">level</span>) <span class="kw">DESC</span>;</span></code></pre></div>
+      <div class="balloon char-01 face-01 tone-pink">
+      <p><code>HAVING</code> 句では、原則として、集約キー以外のカラムを <span
+      class="masked">集約関数なしで直接参照すること</span>
+      はできません。例えば、<code>buff &gt; 0.0</code>
+      のような<u><strong>個々のレコードに対する条件</strong></u>は、<code>WHERE</code>
+      句で指定するようにしてください。</p>
+      </div>
+      <p>実行結果は、次のようになります。</p>
+      <pre><code> guild  | num | avg_lv
+--------+-----+--------
+ D.D.D  |   5 |   55.8
+ hameln |   4 |   52.0</code></pre>
+      <p><code>SELECT</code>
+      文では、各句を以下の順番で記述しないと構文エラーになるので注意してください。</p>
+      <ol type="1">
+      <li><code>SELECT</code> 句</li>
+      <li><code>FROM</code> 句</li>
+      <li><code>WHERE</code> 句</li>
+      <li><code>GROUP BY</code> 句</li>
+      <li><code>HAVING</code> 句</li>
+      <li><code>ORDER BY</code> 句</li>
+      <li><code>LIMIT</code> / <code>OFFSET</code> 句</li>
+      </ol>
+      <ul>
+      <li>📖 教科書 pp.101-106 の「<strong>3-3
+      集約した結果に条件を指定する</strong>」も参照してください。</li>
+      </ul>
+      <h3 data-number="9.0.1" id="sqlドリル-13"><span class="header-section-number">9.0.1</span>
+      SQLドリル💻</h3>
+      <ul>
+      <li><code>ex-05_1.sql</code> 👉 <strong>w03.characters</strong>
+      テーブルについて、次のようにジョブごとの「平均レベル」と「人数」を集計した結果セットを得る SQL
+      を記述せよ。
+      <ul>
+      <li>平均レベルは小数第2位を四捨五入して、小数第1位まで表示すること。</li>
+      <li>人数が2名以下のジョブは結果セットに含めないこと。</li>
+      <li>平均レベルの降順で表示すること。</li>
+      </ul></li>
+      </ul>
+      <pre><code>   job   | avg_lv | num 
+---------+--------+-----
+ Samurai |   70.3 |   3
+ Wizard  |   58.3 |   4
+ Priest  |   38.8 |   4
+ Fighter |   37.3 |   4</code></pre>
+      <h2 data-number="9.1" id="where句とhaving句の使い分けについて"><span
+      class="header-section-number">9.1</span> WHERE句とHAVING句の使い分けについて</h2>
+      <p><code>HAVING</code> 句は、<code>GROUP BY</code> による <span
+      class="masked">集約結果に対して条件を使った絞り込みをするため</span> に使用します。</p>
+      <p>また、<code>HAVING</code> 句では、集約キー以外のカラムは <code>COUNT</code> や
+      <code>MAX</code>
+      などの<strong>集約関数を適用したうえで参照する必要</strong>があります。例えば、<code>GROUP BY guild</code>
+      のとき、<code>HAVING level &gt;= 30</code>
+      は指定できませんが、<code>HAVING MIN(level) &gt;= 30</code> を指定することは可能です。</p>
+      <ul>
+      <li>逆に言えば <code>WHERE</code> 句において、<code>COUNT</code> や <code>MAX</code>
+      のような<strong>「集約関数」を使用することはできません</strong>。</li>
+      </ul>
+      <h3 data-number="9.1.1" id="定着確認-9"><span class="header-section-number">9.1.1</span>
+      定着確認</h3>
+      <ul>
+      <li><p>SQL において、次に示す各句を記述する適切な順序を記号で答えよ。</p>
+      <ul>
+      <li>➊ WHERE、❷ HAVING、❸ GROUP BY、❹ ORDER BY、❺ SELECT、❻ FROM</li>
+      <li><strong>答え</strong> : <span class="masked">❺❻➊❸❷❹</span></li>
+      </ul></li>
+      <li><p><strong>w03.characters</strong>
+      をjobごとに集計し、人数が3人以上のグループだけを残したい。GROUP
+      BY句の後に記述するHAVING句を答えよ。</p>
+      <ul>
+      <li><strong>答え</strong>: <span
+      class="masked"><code>HAVING COUNT(*) &gt;= 3</code></span></li>
+      </ul></li>
+      <li><p><strong>w03.characters</strong> の <strong>level</strong>
+      はINTEGER型である。レベルが30以上のレコードだけを集計対象にしたい場合と、jobごとの平均レベルが50以上のグループだけを残したい場合に、それぞれ使用する句を答えよ。</p>
+      <ul>
+      <li><strong>答え</strong>: <span class="masked">前者はWHERE句（WHERE level &gt;=
+      30）、後者はHAVING句（HAVING AVG(level) &gt;= 50）。</span></li>
+      </ul></li>
+      <li><p><strong>characters</strong>
+      テーブルには、Fighterがレベル20と60、Wizardがレベル40と60で各2件ずつ登録されている。<code>GROUP BY job HAVING AVG(level) &gt;= 50</code>
+      で残るjobと、その平均レベルを答えよ。</p>
+      <ul>
+      <li><strong>答え</strong>: <span
+      class="masked">Wizardだけが残り、平均レベルは50。Fighterの平均は40なので残らない。</span></li>
+      </ul></li>
+      <li><p><strong>characters</strong> テーブルには、<strong>guild</strong> と
+      <strong>level</strong>
+      が存在する。<code>SELECT guild, COUNT(*) FROM characters WHERE COUNT(*) &gt;= 3 GROUP BY guild;</code>
+      の誤りを説明し、修正せよ。</p>
+      <ul>
+      <li><strong>答え</strong>:
+      <span class="masked">WHERE句ではそのグループのCOUNT(*)を条件にできない。<code>SELECT guild, COUNT(*) FROM characters GROUP BY guild HAVING COUNT(*) &gt;= 3;</code>
+      とする。</span></li>
+      </ul></li>
+      <li><p>🏅 データベーススペシャリスト試験 平成 23 年度特別 午前Ⅱ <a
+      href="https://www.db-siken.com/kakomon/23_toku/am2_6.html">問6</a></p></li>
+      <li><p>🏅 データベーススペシャリスト試験 平成 25 年度春期 午前Ⅱ <a
+      href="https://www.db-siken.com/kakomon/25_haru/am2_5.html">問5</a></p></li>
+      <li><p>🏅 データベーススペシャリスト試験 平成 27 年度春期 午前Ⅱ <a
+      href="https://www.db-siken.com/kakomon/27_haru/am2_7.html">問7</a></p></li>
+      </ul>
+      <h1 data-number="10" id="授業時間外学習の指示-宿題"><span
+      class="header-section-number">10</span> 授業時間外学習の指示 (宿題)</h1>
+      <p>🚨<strong>本科目は「学修単位科目」であり、1回の講義あたり「4時間相当」の授業時間外学習が求められる科目です</strong>🏃</p>
+      <ul>
+      <li>次回の講義で「<strong>小テスト❺</strong>」を実施します。
+      <ul>
+      <li><strong>定着確認</strong> および <strong>SQLドリル</strong> から主に出題します。</li>
+      </ul></li>
+      <li>ここまでの第03回講義～第05回講義では、実践的な SQL
+      について学んできました。次回講義では、データベースの<strong>概念設計</strong>
+      (概念データモデルの設計) および<strong>論理設計</strong> (データモデルの設計)
+      などの理論に寄せた内容を学んでいきます。</li>
+      </ul>
+      <hr />
+      <ul>
+      <li>この講義資料を再読・熟読し「不明な用語」や「理解が不十分な用語」があればインターネットや、ChatGPTなどの生成AIを利用して解決してください。また、興味関心を持ったトピックについて、ウェブ、生成AI、YouTube動画などを利用して知識を広げ、理解を深めてください。
+      <ul>
+      <li>特に <strong>プロンプト例</strong>
+      を示しているものについては、実際に生成AIにプロンプトを投げ、さらに対話を重ねることで、知識の幅を広げるだけでなく、理解をより深く確かなものにしてください。</li>
+      </ul></li>
+      <li>講義資料内の「<strong>演習</strong>」や「<strong>SQLドリル</strong>」に再度取り組んでください。特に、<strong>SQLドリル</strong>💻
+      は、授業時間中に1回取り組むだけでは定着しないので注意してください。</li>
+      </ul>
+      <!-- ---------------------------------------- -->
+    </main>
+
+    <footer class="markdown-body">
+      <p><a href="https://takeshiwada1980.github.io/DB-2026/">講義資料の Index に移動</a></p>
+    </footer>
+  </body>
+</html>

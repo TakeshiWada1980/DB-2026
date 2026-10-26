@@ -14,6 +14,10 @@ var:
 - 第04回講義 10月21日(水) [資料](lecture04.html)&ensp; **_小テスト❸_**&ensp; <font size="-1">`ORDER BY`、`LIMIT`、`WHERE`、`INSERT`</font>
 - 第05回講義 10月28日(水) [資料](lecture05.html)&ensp; **_小テスト❹_**&ensp; <font size="-1">`UPDATE`、`DELETE`、集約関数、`GROUP BY`、`HAVING`</font>
 - 第06回講義 11月04日(水) 資料&ensp; **_小テスト❺_** **_課題1_** <font size="-1">概念設計 (概念ER図)、論理設計 (論理ER図)</font> 
+- 第07回講義 11月18日(水) 資料&ensp; **_小テスト❻_** <font size="-1">正規化、物理設計の基礎、`CREATE`</font> 
+- 第08回講義 11月🎃日(👻) 資料&ensp; **_後期中間試験_** <font size="-1"></font> 
+
+
 
 ## 参考資料
 
