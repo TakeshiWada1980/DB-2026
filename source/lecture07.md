@@ -756,7 +756,7 @@ RDB において、**テーブルの主キーが複数のカラムから構成�
 
 さらに、実際のシステムでは、ストレージやメモリなどのハードウェア構成、RAID による冗長化、バックアップ、レプリケーション、負荷分散なども検討する必要があります。ただし、これらはインフラ設計や運用設計とも密接に関係する領域となります。
 
-本講義では、<u>**テーブル設計・制約設定・インデックス設計を中心とした、RDBMS 上での基礎的な物理設計**</u>を扱います。対象とする RDBMS は **PostgreSQL 18** です。
+ここからは、論理設計で整理したテーブルを  **PostgreSQL 18** を使って、実際に定義していきます。特に、<u>**カラムのデータ型と、主キー、非NULL制約の指定**</u> について詳しくみていきます。
 
 ::: prompts
 - データベースの「レプリケーション」は、どのような目的で利用される仕組みですか。「バックアップ」との違いも含めて説明してください。
@@ -764,10 +764,10 @@ RDB において、**テーブルの主キーが複数のカラムから構成�
 
 #### 定着確認
 
-- データベースの「概念設計」「論理設計」「物理設計」のうち、ハードウェア構成や RAID、レプリケーションなどを扱う段階はどれか。
+- 論理設計で決めたテーブルを PostgreSQL に実装するために、各カラムのデータ型や制約を具体的に決めるのは、「概念設計」「論理設計」「物理設計」のうちどれか答えよ。
   - **答え**：<span class="masked">物理設計</span>
-- データベースの物理設計には、障害復旧の仕組みやパフォーマンスチューニングのような運用面の検討は含まれない。この説明は「適切である」か「適切ではない」か答えよ。
-  - **答え**：<span class="masked">適切ではない</span>
+- データベースの物理設計では、検索性能を考慮してインデックスを設計することもある。この説明は「適切である」か「適切ではない」か答えよ。
+  - **答え**：<span class="masked">適切である</span>
 - データベース (RDB) の物理設計に含まれる作業として適切なものを <u>すべて選択して</u> 記号で答えよ。
   - ① テーブルごとのデータ型・制約の設計
   - ② ユースケース図の作成
@@ -778,9 +778,38 @@ RDB において、**テーブルの主キーが複数のカラムから構成�
   - **答え**：<span class="masked">①、⑤、⑥</span>
 
 
+### 第07回の演習用スキーマ
+
+今回の演習では、これまでと同じデータベース `playground` の中に、第07回用のスキーマ **`w07`** を作成します。たとえば、第07回の `w07.characters` と第03回の `w03.characters` は、名前が同じでも別のテーブルです。
+
+SQL演習用プロジェクトに `sql/07` フォルダを作成してください。スキーマの準備には、配布教材の `from-teacher/07/setup.sql` を実行します。このファイルには、次のSQLが記述されています。
+
+```sql{.numberLines caption="第07回のスキーマの準備"}
+CREATE SCHEMA IF NOT EXISTS w07;
+SET search_path TO w07;
+SHOW search_path;
+```
+
+```bash
+npm run sql from-teacher/07/setup.sql
+```
+
+`SHOW search_path;` の結果が `w07` になっていることを確認してください。`IF NOT EXISTS` を指定しているので、すでに `w07` があっても同じ準備用ファイルを実行できます。
+
+SQLランナーは、ファイルを実行するたびに新しく接続します。`SET search_path TO w07;` は実行した接続にだけ適用されるため、以降も**実行するSQLファイルの先頭**に記述してください。これにより、そのファイル内では `w07.characters` を `characters` と記述できます。
+
+:::prompts
+- PostgreSQL で、同じデータベース内に `w03.characters` と `w07.characters` の両方があります。`search_path` は、テーブル名だけを書いたときの参照先と、新しいテーブルの作成先にどのように影響しますか。
+:::
+
+#### 定着確認
+
+- SQLランナーで準備用ファイルを実行した後、別のSQLファイルで `w07.characters` を `characters` と書いて参照したい。別のSQLファイルの先頭で実行すべきSQL文を、理由とあわせて答えよ。
+  - **答え**: <span class="masked">`SET search_path TO w07;` です。SQLランナーはファイルごとに新しく接続し、準備用ファイルの `SET` はその接続にだけ適用されるためです。</span>
+
 ### テーブルの定義
 
-RDBMS に「テーブル」を作成するためには、SQL の `CREATE TABLE` 文を使用します。最小構成の `CREATE TABLE` には ❶**テーブル名** (慣例として複数形の名詞もしくは集合名詞)、❷**カラム名**、❸**データ型**、❹**主キーの指定**といった基本要素を記述します。
+RDBMS に「テーブル」を作成するためには、SQL の `CREATE TABLE` 文を使用します。次の例では、❶**テーブル名** (慣例として複数形の名詞もしくは集合名詞)、❷**カラム名**、❸**データ型**、❹**主キーの指定**などの制約を記述します。
 
 たとえば、次のような「論理ER図」で示されたエンティティは...
 
@@ -789,23 +818,25 @@ RDBMS に「テーブル」を作成するためには、SQL の `CREATE TABLE` 
 次のような SQL でテーブルを定義/作成できます。
 
 ```sql{.numberLines caption="CREATEによるテーブルの作成"}
+SET search_path TO w07;
+
 -- 既に存在するなら削除
-DROP TABLE IF EXISTS p_characters;
+DROP TABLE IF EXISTS w07.characters;
 
 -- テーブルの作成
-CREATE TABLE p_characters (
+CREATE TABLE characters (
   character_id INTEGER PRIMARY KEY, -- 整数型、PK
   name VARCHAR(16) NOT NULL,        -- 可変長文字列(最大16文字)
   buff DECIMAL(3, 2) NOT NULL,      -- 固定小数点数型 (-9.99〜9.99)
   is_online BOOLEAN NOT NULL,       -- 真偽値
-  notes TEXT,                       -- 可変長文字列(実質無制限)
+  notes TEXT,                       -- 可変長文字列
   created_on DATE NOT NULL,         -- 日付型
   last_login_at TIMESTAMP           -- 日時型(タイムゾーンなし)
 );
 
 -- レコードの挿入
 INSERT INTO
-  p_characters (character_id, name, buff, is_online, notes, created_on, last_login_at)
+  characters (character_id, name, buff, is_online, notes, created_on, last_login_at)
 VALUES
   (
     6,
@@ -830,52 +861,56 @@ VALUES
 SELECT
   *
 FROM
-  p_characters;
+  characters
+ORDER BY
+  character_id;
 ```
 
-SQL演習用のプロジェクトに `sql/07/tmp.sql` などの適当なファイルを作成して、この SQL を貼り付けて、実際に実行してみてください。
+SQL演習用プロジェクトの `sql/07/tmp.sql` にこのSQLを保存し、実行してください。ファイルを再実行するたびに `w07.characters` を作成し直します。
 
-次のような実行結果が得られると思います (以下では、notes カラムの表示を省略しています)。
+実行結果は次のようになります (表示例では、Bob の `notes` を `Admin...` と省略しています)。最初の `SET` はスキーマの検索パスの設定、`INSERT 0 2` は2件のレコードを挿入できたことを示しています。
 
 ```
+SET
 DROP TABLE
 CREATE TABLE
 INSERT 0 2
- character_id | name  | buff | is_online | notes       | created_on |    last_login_at
---------------+-------+------+-----------+-------------+------------+---------------------
-            6 | Alice | 0.00 | t         |             | 2021-06-14 | 2025-09-18 14:22:00
-            8 | Bob   | 9.99 | f         | Admin no... | 2022-03-22 | 2025-08-03 09:11:00
+character_id | name  | buff | is_online | notes    | created_on | last_login_at
+-------------+-------+------+-----------+----------+------------+--------------------
+           6 | Alice | 0.00 | t         |          | 2021-06-14 | 2025-09-18 14:22:00
+           8 | Bob   | 9.99 | f         | Admin... | 2022-03-22 | 2025-08-03 09:11:00
+(2 行)
 ```
 
-**第02行目** は「**既に** `p_characters` **テーブルが存在していれば削除する**」という意味の文になります。存在しないテーブルを削除 (`DROP`) しようとするとエラーになるため、`IF EXISTS` キーワードを追加しています。
+**第04行目** は、`w07` に `characters` があれば削除する文です。`IF EXISTS` を指定すると、最初の実行でテーブルがまだ存在しなくても先に進めます。このとき、SQLランナーの `stderr` 欄に、テーブルが存在しないため削除をスキップしたことを知らせる通知が出る場合があります。
 
-**第05行目** から **第13行目** の `CREATE TABLE p_characters (...)` がテーブルを新規に作成するための文になります。基本的に `カラム名 (Column Name) ` 👉 `データ型 (Data Type)` 👉 `制約 (Constraint)` という順で記述します。
+**第07行目** から **第15行目** の `CREATE TABLE characters (...)` がテーブルを新規に作成するための文になります。基本的に `カラム名 (Column Name) ` 👉 `データ型 (Data Type)` 👉 `制約 (Constraint)` という順で記述します。
 
 - 「データ型」と「制約」の詳細については、あとのセクションで詳しく説明します。
 
-**第16行目** から **第36行目** では、作成したテーブルにレコードを挿入しています。**第25行目**では、`DATE '2021-06-14'` のように <span class="masked">型付きリテラル</span> によって値を設定していますが、単に `'2021-06-14'` としても (暗黙に変換されるので) 問題ありません。
+**第18行目** から **第38行目** では、作成したテーブルにレコードを挿入しています。**第27行目**では、`DATE '2021-06-14'` のように <span class="masked">型付きリテラル</span> によって値を設定していますが、単に `'2021-06-14'` としても (暗黙に変換されるので) 問題ありません。
 
 - `INSERT` については[第04回講義](lecture04.html#insert文-超基礎編)で学習済みです。
 
 #### 演習
 
-- 上記のSQLの **第25・26行目**、**第34・35行目** において「型付きリテラル」を使用せずとも、問題なくレコードが挿入できること確認してください。
-- 上記のSQLの **第10行目** を `notes TEXT NOT NULL,` に書き換えて実行すると、どのようになるか確認してください。確認後は、元に戻しておいてください。
-- 上記のSQLの **第10行目** を `notes VARCHAR(16),` に書き換えて実行すると、どのようになるか確認してください。確認後は、元に戻しておいてください。
-- 上記のSQLの **第12行目** を `last_login_at TIMESTAMP,` (＝末尾にカンマを付ける) に書き換えて実行すると、どのようになるか確認してください。確認後は、元に戻しておいてください。
-- 上記のSQLの **第31行目** を `9.999,` に書き換えて実行すると、どのようになるか確認してください。確認後は、元に戻しておいてください。
-- 上記のSQLの **第22行目** を `0.000,` に書き換えて実行すると、どのようになるか確認してください。確認後は、元に戻しておいてください。
-- 上記のSQLの **第23行目** を `1,` に書き換えて実行すると、どのようになるか確認してください。確認後は、元に戻しておいてください。
-- 上記のSQLの **第23行目** を `'TRUE',` に書き換えて実行すると、どのようになるか確認してください。確認後は、元に戻しておいてください。
+変更を1つずつ試し、SQLランナーの出力を確認してください。エラーが出た場合は `stderr` 欄を読み、どの文が失敗したかを確認してください。各確認が終わったら、SQLを元に戻してから次を試してください。
+
+- **第27・28行目**、**第36・37行目** の `DATE`、`TIMESTAMP` を外し、引用符付きの値だけでレコードを挿入できることを確認してください。
+- **第12行目** を `notes TEXT NOT NULL,` に書き換えて、どのようになるか確認してください。
+- **第12行目** を `notes VARCHAR(16),` に書き換えて、どのようになるか確認してください。
+- **第14行目** を `last_login_at TIMESTAMP,` (末尾にカンマを付ける) に書き換えて、どのようになるか確認してください。
+- **第33行目** を `9.999,` に書き換えて、どのようになるか確認してください。
+- **第24行目** を `0.000,` に書き換えて、実行結果の `buff` がどう表示されるか確認してください。
+- **第25行目** の `TRUE` を `1` に書き換えて、どのようになるか確認してください。
+- **第25行目** の `TRUE` を `'TRUE'` に書き換えて、直前の実行結果と比較してください。
 
 #### 定着確認
 
 - PostgreSQL において、`DATE '2025-01-31'` や `TIMESTAMP '2025-08-03 09:11:00'` のようにリテラル値に型を直接指定して記述する書き方を何というか答えよ。
   - **答え**: <span class="masked">型付きリテラル (Typed Literal)</span>
-- PostgreSQL において、次の指示を満たす SQL 文を 1 行で記述せよ。
-  - **答え**: <span class="masked">`DROP TABLE IF EXISTS users`</span>
-
-> テーブル users が存在する場合にのみ、そのテーブルを削除し、存在しない場合はエラーにならないようにすること。
+- `w07` スキーマに `characters` テーブルが存在する場合に限り、そのテーブルを削除する SQL 文を1行で記述せよ。接続時の `search_path` に依存しないように記述すること。
+  - **答え**: <span class="masked">`DROP TABLE IF EXISTS w07.characters;`</span>
 
 ### データ型
 
@@ -883,31 +918,31 @@ PostgreSQL で利用可能な **代表的なデータ型** としては、次の
 
 - `INTEGER`: -2,147,483,648 から +2,147,483,647 までの範囲の整数値を格納可能な型です。PostgreSQL では `INT` という省略形の表記も可能です。
   - より小さな範囲の整数を格納可能な `SMALLINT`、より大きな範囲の整数を格納可能な `BIGINT` もあります。
-- `TEXT`: (最大 1GB まで格納可能な) **可変長文字列型**です。空文字 (長さ0の文字列) と `NULL` は「等価ではない」ので注意してください。
+- `TEXT`: **長さの上限を指定せずに使用する可変長文字列型**です。PostgreSQL で1つの文字列に格納できる大きさは、最大で約1 GBです。空文字 (長さ0の文字列) と `NULL` は区別されます。
 - `VARCHAR(n)`: **最大n文字までを格納可能な可変長文字列型**です。`TEXT` 型と同様、空文字と `NULL` は異なる値として扱われます。
-  - 書き込みの際に文字数の確認が行われるため、`VARCHAR` のほうが `TEXT` よりごくわずかに処理コストが高くなります。ただし、この差は通常のアプリでは誤差レベルとなります。
-- `DECIMAL(n, m)`: **正確な精度を保持する数値型** (**固定小数点数型**) で、全体の桁数を `n`、そのうち小数点以下の桁数を `m` で指定します。
-  - たとえば、`DECIMAL(6, 2)` は -9,999.99 から +9,999.99 までの範囲を扱い、**桁落ちや丸め誤差なし**で、小数点以下2桁を保持できます。金額などの精度が重要な値に向いています。
+  - `n` の単位は <span class="masked">バイト数ではなく、文字数</span> です。たとえば、`VARCHAR(16)` には日本語でも16文字まで格納できます。
+- `DECIMAL(n, m)`: **数値を正確に保持する型**です。今回の例のように `m` を0以上にする場合、全体の桁数を `n`、小数点以下の桁数を `m` で指定します。
+  - たとえば、`DECIMAL(6, 2)` は -9,999.99 から +9,999.99 までの値を小数点以下2桁で正確に保持できます。小数部が2桁を超える入力値は丸められ、丸めた結果が範囲を超えるとエラーになります。
   - PostgreSQL では、`NUMERIC(n, m)` と `DECIMAL(n, m)` は同義語で内部実装も同じとなります。
-  - 単に `DECIMAL` だけを指定した場合、桁数や小数点以下の桁数が固定されない任意精度型として扱われます。ただし、小数点以下を含む桁数に制限がないため便利ですが、演算処理が重くなりやすく、パフォーマンス面で不利になることがあります。
-- `BOOLEAN`: 真偽値を扱うブール型です。`TRUE` もしくは `FALSE` を保持します。
+  - 単に `DECIMAL` だけを指定すると、型として桁数や小数点以下の桁数を固定せず、PostgreSQL が扱える範囲で数値を格納できます。
+- `BOOLEAN`: 真偽値を扱うブール型です。`TRUE` または `FALSE` を格納します。`NULL` を許すカラムでは、値が不明な状態も表せます。
 - `DATE`: 日付型です。年、月、日の情報だけを保持し、時刻やタイムゾーンの情報は含みません。
 - `TIMESTAMP`: 日付と時刻を <span class="masked">タイムゾーンなし</span> で扱う型になります。時刻は、100万分の1秒 (マイクロ秒) までの精度で保持されます。
-  - タイムゾーン情報を持たせる場合は `TIMESTAMPTZ` を使用します。
+  - タイムゾーンを考慮して特定の時点を扱う場合は `TIMESTAMPTZ` を使用します。入力された日時は UTC に換算して保存され、表示時は接続のタイムゾーンに変換されます。入力時のタイムゾーン名やオフセットは保持されません。
 
 <div class="note type-tips">
 **PostgreSQLで利用可能なデータ型**
 
-PostgreSQL は、リレーショナルモデルではあるものの、オブジェクト指向データベース的な機能も有しており、「可変長配列型」や「JSON型」といった構造化データをそのまま扱うカラムを定義することができます。これらの値は文字列としてシリアライズされて保存されるわけではなく、**検索や更新を高速化するための構造化された形式**で内部的に保持されています。
+PostgreSQL では、配列や JSON の値を格納するカラムも定義できます。JSON を扱う型には `JSON` と `JSONB` があり、`JSON` は入力されたテキストをそのまま保持し、`JSONB` は解析したデータをバイナリ形式で保持します。
 
-ただし、本科目ではこれらの機能は扱わず、純粋な RDB としての「**基本的なデータ型のみ**」を対象とします。
+今回のテーブル作成では、整数・文字列・日付など、上で示した**基本的なデータ型**を使用します。
 </div>
 
-**(プロンプト例)**
-
-> PostgreSQL に関する質問です。データ型の VARCHAR(n) と TEXT は、どのように使い分けたら良いかを実務的な観点から語ってください。
-
-> PostgreSQL に関する質問です。データ型として DECIMAL(n, m) ではなく、単に DECIMAL を指定すると、桁数や小数点以下の桁数が固定されない任意精度型になると聞きました。この任意精度型とは、どのようなものか、浮動小数点数型と比較しながら分かりやすく丁寧に解説してください。
+:::prompts
+- PostgreSQL に関する質問です。データ型の `VARCHAR(n)` と `TEXT` は、どのように使い分けたらよいですか。ユーザ名と備考欄を例に説明してください。
+- PostgreSQL に関する質問です。桁数を指定していない `DECIMAL` は、浮動小数点数型とどう違いますか。金額を扱う場合を例に説明してください。
+- PostgreSQL に関する質問です。同じ `TIMESTAMPTZ` の値を、日本と UTC の設定で表示するとどう変わりますか。実際に試せる短いSQLと、結果の読み方を示してください。
+:::
 
 #### 定着確認
 
@@ -917,34 +952,39 @@ PostgreSQL は、リレーショナルモデルではあるものの、オブジ
   - **答え**: <span class="masked"> -99.999 から 99.999 </span>
 - PostgreSQL において `VARCHAR(16)` は、日本語などのマルチバイト文字を使うと内部的なバイト数の関係で16文字を保存できないケースがある。この説明は「適切である」か「適切ではない」か答えよ。
   - **答え**: <span class="masked">適切ではない</span>
-- PostgreSQL で、タイムゾーン情報ありの日時を扱うために最も適切なデータ型を答えよ。
+- PostgreSQL で、タイムゾーンを考慮して特定の時点を扱うために最も適切なデータ型を答えよ。
   - **答え**: <span class="masked">TIMESTAMPTZ。TIMESTAMP WITH TIME ZONE でも可。</span>
+- PostgreSQL で `DECIMAL(3, 2)` のカラムに `9.994` と `9.995` をそれぞれ登録する。格納できる場合は格納される値を、格納できない場合はその理由を答えよ。
+  - **答え**: <span class="masked">`9.994` は小数点以下2桁に丸められて `9.99` になります。`9.995` は丸めると `10.00` になり、整数部が2桁になって格納できないため、エラーになります。</span>
 
 ### 非NULL制約 (NOT NULL制約)
 
-レコード内の特定のカラムに対して <span class="masked">「値が入っていない状態」</span> を許容したくない場合は、`CREATE TABLE` のなかで「**非NULL制約**」を指定します。たとえば `is_online BOOLEAN NOT NULL` のように記述すると、is_online カラムには `NULL` が格納できなくなります。逆に言えば、`NOT NULL` を明示しなければ、そのカラムには `NULL` が格納できることになります。
+特定のカラムに <span class="masked">`NULL`</span> を格納できないようにするには、`CREATE TABLE` のなかで「**非NULL制約**」を指定します。たとえば `is_online BOOLEAN NOT NULL` のように記述すると、`is_online` カラムには `TRUE` または `FALSE` を登録できます。
 
 - 「**非NULL制約**」は「**NOT NULL制約**」とも呼ばれます。
-- `character_id INTEGER PRIMARY KEY` のように、主キーに指定されたカラムには、自動的に「非NULL制約」と「UNIQUE制約」が適用されます。
+- `character_id INTEGER PRIMARY KEY` のように主キーを指定すると、`NOT NULL` を明記しなくても、そのカラムに `NULL` を登録できません。
 
 #### 定着確認
 
-- 以下のように定義される users テーブルにおいて、name カラムに「非NULL制約」を追加したい。第03行目をどのように書き換えればよいか答えよ。
+- 以下のように定義される `w07.members` テーブルにおいて、name カラムに「非NULL制約」を追加したい。第03行目をどのように書き換えればよいか答えよ。
   - **答え**: <span class="masked">`name VARCHAR(16) NOT NULL`</span>
 
 ```sql{.numberLines caption="定着確認"}
-CREATE TABLE users (
+CREATE TABLE w07.members (
   id INTEGER PRIMARY KEY,
   name VARCHAR(16)
 );
 ```
+
+- `name VARCHAR(16) NOT NULL` と定義されたカラムに、空文字 `''` と `NULL` をそれぞれ格納できるか答えよ。ほかの制約はないものとする。
+  - **答え**: <span class="masked">空文字 `''` は長さ0の文字列なので格納できます。`NULL` は非NULL制約に違反するため格納できません。</span>
 
 ### PRIMARY KEY指定
 
 `CREATE TABLE` において、主キーは `PRIMARY KEY` キーワードを使用して指定します。たとえば、次のようにすることで `character_id` を主キーに指定することができます。このような指定方法を「カラムレベルの主キー指定」といいます。
 
 ```sql{.numberLines caption="主キーの設定(1)"}
-CREATE TABLE characters (
+CREATE TABLE w07.character_profiles (
   character_id INTEGER PRIMARY KEY,
   name VARCHAR(16) NOT NULL
 );
@@ -953,7 +993,7 @@ CREATE TABLE characters (
 また、次のようにテーブル定義の末尾に主キーの指定を記述することもできます。このような形式を「**テーブルレベルの主キー指定**」といいます。
 
 ```sql{.numberLines caption="主キーの設定(2)"}
-CREATE TABLE characters (
+CREATE TABLE w07.character_profiles (
   character_id INTEGER,
   name VARCHAR(16) NOT NULL,
   PRIMARY KEY (character_id)
@@ -963,7 +1003,7 @@ CREATE TABLE characters (
 複合主キーは、テーブルレベルの主キー指定を用いて次のように記述します。
 
 ```sql{.numberLines caption="複合主キーの設定(2)"}
-CREATE TABLE character_items (
+CREATE TABLE w07.character_items (
   character_id INTEGER,
   item_id INTEGER,
   quantity INTEGER NOT NULL,
@@ -971,7 +1011,11 @@ CREATE TABLE character_items (
 );
 ```
 
-複合主キーに含まれる character_id と item_id には、それぞれ自動的に「非NULL制約」が適用されます。また、character_id と item_id の組み合わせに対して「UNIQUE制約」が自動適用されます。
+複合主キーを構成する `character_id` と `item_id` は、どちらにも `NULL` を登録できません。また、主キーの制約によって、`character_id` と `item_id` の組み合わせの重複が禁止されます。
+
+:::prompts
+- PostgreSQL に関する質問です。`PRIMARY KEY (character_id, item_id)` を指定する場合と、`character_id` と `item_id` にそれぞれ `UNIQUE` を指定する場合では、同じキャラクタが複数種類のアイテムを持つとき、登録できるレコードにどんな違いが出ますか。
+:::
 
 #### 定着確認
 
@@ -980,7 +1024,7 @@ CREATE TABLE character_items (
 
 
 ```sql{.numberLines caption="定着確認"}
-CREATE TABLE character_guilds (
+CREATE TABLE w07.character_guilds (
   character_id INTEGER,
   guild_id INTEGER,
   joined_at TIMESTAMP,
@@ -988,17 +1032,17 @@ CREATE TABLE character_guilds (
 );
 ```
 
-- 次のように定義されるテーブルがあり、`INSERT INTO character_items VALUES (1, 1, 3);` により、すでに 1 件のレコードが挿入されているものとする。このとき、次の `INSERT` 文のうち、エラーとなるものをすべて答えよ。
+- `search_path` に `w07` を指定した接続で、次のように定義されるテーブルに `INSERT INTO character_items VALUES (1, 1, 3);` により1件のレコードを挿入した。この状態から次の `INSERT` 文をそれぞれ試すとき、エラーとなるものをすべて答えよ。
   - ➀ `INSERT INTO character_items VALUES (2, 5, 3);`
   - ➁ `INSERT INTO character_items VALUES (1, 2, 5);`
   - ③ `INSERT INTO character_items VALUES (1, 1, 4);`
   - ④ `INSERT INTO character_items VALUES (1,-1, 0);`
   - ⑤ `INSERT INTO character_items VALUES (NULL, 2, 1);`
   - ➅ `INSERT INTO character_items VALUES (2, NULL, 1);`
-  - **答え**: <span class="masked">③ (＝UNIQUE制約に違反)、⑤・⑥ (＝NOT NULL制約に違反)、</span>
+  - **答え**: <span class="masked">③ (主キーの組み合わせが重複)、⑤・⑥ (主キーを構成するカラムが `NULL`)</span>
  
 ```sql{.numberLines caption="定着確認"}
-CREATE TABLE character_items (
+CREATE TABLE w07.character_items (
   character_id INTEGER,
   item_id      INTEGER,
   quantity     INTEGER NOT NULL,
@@ -1006,25 +1050,33 @@ CREATE TABLE character_items (
 );
 ```
 
+- 🏅 基本情報技術者試験 平成 21 年度秋期 午前 [問32](https://www.fe-siken.com/kakomon/21_aki/q32.html)
+
+- 🏅 基本情報技術者試験 平成 22 年度秋期 午前 [問31](https://www.fe-siken.com/kakomon/22_aki/q31.html)
+
 #### SQLドリル💻
 
-- `ex-01_1.sql` 👉 以下に示す **\[期待する実行結果\]** を得るように p_users テーブルの作成、レコードの挿入、集計処理をせよ。
+- `sql/07/ex-01_1.sql` 👉 以下に示す **\[期待する実行結果\]** を得るように、`w07.users` テーブルを作成し、レコードの挿入と集計処理をせよ。
 
 ```sql{.numberLines caption="SQLドリル ex-01_1.sql"}
+SET search_path TO w07;
+
 -- トランザクションの開始
 START TRANSACTION;
 
--- p_users テーブルの作成 (ここを記述)
+-- users テーブルの作成 (ここを記述)
 
--- p_users テーブルにレコードを挿入 (ここを記述)
+-- users テーブルにレコードを挿入 (ここを記述)
 
 -- テーブルの確認
 SELECT
   *
 FROM
-  p_users;
+  users
+ORDER BY
+  user_id;
 
--- p_users テーブルを集計 (ここを記述)
+-- users テーブルを集計 (ここを記述)
 
 -- ロールバックによる処理の取り消し
 ROLLBACK;
@@ -1033,6 +1085,7 @@ ROLLBACK;
 **\[期待する実行結果\]** 
 
 ```
+SET
 START TRANSACTION
 CREATE TABLE
 INSERT 0 5
@@ -1049,6 +1102,8 @@ INSERT 0 5
 ------------+------------+-------------
           5 |     172.30 |           2
 (1 行)
+
+ROLLBACK
 ```
 
 - user_id は、整数型で主キーとしてください。
@@ -1056,14 +1111,22 @@ INSERT 0 5
 - is_admin は、ブール型としてください。非NULL制約をつけてください。
 - height_cm は、適切に桁数を設定した固定小数点型としてください。NULLを許容してください。
 - birthday は、日付型としてください。NULLを許容してください。
-- admin_count を集計する方法 (＝<span class="masked">CASE と SUM を組み合わせた典型的な条件付き集計</span>) は、授業ではまだ触れていないので解答例 `from-teacher/07/drill/ex-01_1.sql` を参考にしてください。
+- `admin_count` の集計には、管理者の行を `1`、それ以外の行を `0` として、その合計を求める方法があります。必要に応じて、配布教材の `from-teacher/07/drill/ex-01_1.sql` を参考にしてください。
+- `ROLLBACK` により、このトランザクションで行ったテーブルの作成とレコードの挿入が取り消されます。同じファイルを再実行して確認できます。
+
+#### 定着確認
+
+- 上のSQLドリルでは、ユーザが5人いるが、身長が記録されているのは3人である。`COUNT(*)` と `AVG(height_cm)` は、それぞれ何人分のデータを対象に集計するか答えよ。
+  - **答え**: <span class="masked">`COUNT(*)` は5行すべてを数えます。`AVG(height_cm)` は `NULL` を除いた3人分の身長で平均を計算します。</span>
+
+- 🏅 基本情報技術者試験 平成 31 年度春期 午後 [問3・設問3](https://www.fe-siken.com/kakomon/31_haru/pm03.html) (発展。身長の集計を扱う問題で、外部結合も出てきます)
 
 ## 授業時間外学習の指示 (宿題)
 
 🚨**本科目は「学修単位科目」であり、1回の講義あたり「4時間相当」の授業時間外学習が求められる科目です**🏃
 
 - 第01回講義から第07回講義までの内容について総復習して、後期中間試験に挑んでください。
-- 試験明けの 第09回講義 (12月11日) では、小テストを実施しません。
+- 試験明けの第09回講義では、小テストを実施しません。
   - 後期中間試験を 第08回 としてカウントしています。
 - 次回講義では、引き続きテーブルの制約 (特に外部キー制約) について学んでいきます。
 
