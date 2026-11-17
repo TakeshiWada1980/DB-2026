@@ -17,8 +17,7 @@ var:
 - 第07回講義 11月18日(水) [資料](lecture07.html)&ensp; **_小テスト❻_** <font size="-1">正規化、物理設計の基礎、`CREATE TABLE`</font> 
 - 第08回講義 11月25日(水) &ensp;**_後期中間試験_** <font size="-1"></font> 
 - 第09回講義 12月02日(水) 資料&ensp; <font size="-1">デフォルト値、CHECK制約、FK制約</font> 
-
-
+- 第10回講義 12月09日(水) 資料&ensp; **_小テスト❼_** <font size="-1">サブクエリ、内部結合 `JOIN`</font> 
 
 
 ## 参考資料

@@ -59,9 +59,11 @@ type="text/javascript"></script>
 <li><a href="#連絡" id="toc-連絡"><span class="toc-section-number">1.1</span> 連絡</a></li>
 <li><a href="#後期中間試験について" id="toc-後期中間試験について"><span
 class="toc-section-number">1.2</span> 後期中間試験について</a></li>
+<li><a href="#高専ロボコン-全国大会" id="toc-高専ロボコン-全国大会"><span
+class="toc-section-number">1.3</span> 高専ロボコン (全国大会)</a></li>
 <li><a href="#ハンズオン学習の準備" id="toc-ハンズオン学習の準備"><span
-class="toc-section-number">1.3</span> ハンズオン学習の準備</a></li>
-<li><a href="#今回の講義内容" id="toc-今回の講義内容"><span class="toc-section-number">1.4</span>
+class="toc-section-number">1.4</span> ハンズオン学習の準備</a></li>
+<li><a href="#今回の講義内容" id="toc-今回の講義内容"><span class="toc-section-number">1.5</span>
 今回の講義内容</a></li>
 </ul></li>
 <li><a href="#正規化-概要" id="toc-正規化-概要"><span class="toc-section-number">2</span> 正規化
@@ -90,16 +92,18 @@ class="toc-section-number">5.2</span> 「部分関数従属」と「完全関数
 <li><a href="#論理設計と正規化のまとめ" id="toc-論理設計と正規化のまとめ"><span
 class="toc-section-number">6.4</span> 論理設計と正規化のまとめ</a></li>
 </ul></li>
-<li><a href="#物理設計基礎" id="toc-物理設計基礎"><span class="toc-section-number">7</span>
-物理設計（基礎）</a>
+<li><a href="#物理設計-基礎" id="toc-物理設計-基礎"><span class="toc-section-number">7</span>
+物理設計 (基礎)</a>
 <ul>
-<li><a href="#テーブルの定義" id="toc-テーブルの定義"><span class="toc-section-number">7.1</span>
+<li><a href="#第07回の演習用スキーマ" id="toc-第07回の演習用スキーマ"><span
+class="toc-section-number">7.1</span> 第07回の演習用スキーマ</a></li>
+<li><a href="#テーブルの定義" id="toc-テーブルの定義"><span class="toc-section-number">7.2</span>
 テーブルの定義</a></li>
-<li><a href="#データ型" id="toc-データ型"><span class="toc-section-number">7.2</span>
+<li><a href="#データ型" id="toc-データ型"><span class="toc-section-number">7.3</span>
 データ型</a></li>
-<li><a href="#非null制約-not-null制約" id="toc-非null制約-not-null制約"><span
-class="toc-section-number">7.3</span> 非NULL制約 (NOT NULL制約)</a></li>
-<li><a href="#primary-key指定" id="toc-primary-key指定"><span class="toc-section-number">7.4</span>
+<li><a href="#非null制約not-null制約" id="toc-非null制約not-null制約"><span
+class="toc-section-number">7.4</span> 非NULL制約（NOT NULL制約）</a></li>
+<li><a href="#primary-key指定" id="toc-primary-key指定"><span class="toc-section-number">7.5</span>
 PRIMARY KEY指定</a></li>
 </ul></li>
 <li><a href="#授業時間外学習の指示-宿題" id="toc-授業時間外学習の指示-宿題"><span
@@ -130,7 +134,7 @@ class="toc-section-number">8</span> 授業時間外学習の指示 (宿題)</a><
       href="lecture01.html#成績評価法と履修上の注意">第01回講義で案内した手続き</a>
       をしてください。</li>
       </ul></li>
-      <li><a href="#課題1">課題1</a> ( <strong>11月19日 (木) 23時 〆切</strong> )
+      <li><a href="lecture06.html#課題1">課題1</a> ( <strong>11月19日 (木) 23時 〆切</strong> )
       について、再度、状況を確認してください。
       <ul>
       <li>シラバス記載のように「課題」は最終評価の <span class="masked">20%</span>
@@ -172,11 +176,11 @@ class="toc-section-number">8</span> 授業時間外学習の指示 (宿題)</a><
       を<strong>持ち込み可</strong>とします。持ち込んだメモは、答案とともに提出してもらいます
       (採点後に答案とともに返却します)。
       <ul>
-      <li><u><strong>「A4」よりも大きさなサイズ、小さなサイズは、持ち込みは不可</strong></u>
+      <li><u><strong>A4よりも大きいサイズ、小さいサイズは持ち込み不可</strong></u>
       なので注意してください。</li>
       <li>片面の <strong>右上部に横10cm、縦1.5cmの四角枠</strong> を作成して、そのなかに
-      <code>XX番 高専 太郎</code>
-      の形式で出席番号とフルネーム氏名を記入してください。四角枠内には、それ以外の情報を記入しないでください。</li>
+      <code>XX番 高専 太郎</code> の形式で出席番号と氏名 (フルネーム)
+      を記入してください。四角枠内には、それ以外の情報を記入しないでください。</li>
       <li>出席番号と氏名の枠がないメモ、<strong>手書き以外で作成したメモ (プリントアウトやコピー)
       の持ち込みは</strong> <strong><em>不正行為</em></strong> として扱います。</li>
       <li>ルーズリーフなども、<strong>A4サイズのものであれば使用可能</strong>です。</li>
@@ -196,8 +200,8 @@ class="toc-section-number">8</span> 授業時間外学習の指示 (宿題)</a><
       <ul>
       <li>第01回講義 から 第07回講義 (今回) の内容を出題範囲としています。</li>
       <li>本科目は、学修単位科目であり、それ (＝<span
-      class="masked">講義1回あたり6時間の学習をしていること</span>) を前提
-      とした「難易度」で試験問題を作成しています。</li>
+      class="masked">講義1回あたり6時間の学習をしていること</span>)
+      を前提とした「難易度」で試験問題を作成しています。</li>
       <li><u>主として</u>「<strong>定着確認</strong>」と「<strong>SQLドリル</strong>」から出題します。
       <ul>
       <li>そのままの出題ではなく類題や解答形式を変更した問題となることも想定してください。</li>
@@ -227,24 +231,38 @@ class="toc-section-number">8</span> 授業時間外学習の指示 (宿題)</a><
       <ul>
       <li><code>INSERT</code>、<code>INTO</code>、<code>VALUES</code>、<code>DELETE</code>、<code>SELECT</code>、<code>FROM</code>、<code>ORDER BY</code>、<code>LIMIT</code>、<code>OFFSET</code>、<code>WHERE</code>、<code>GROUP BY</code>、<code>HAVING</code>、<code>AND</code>、<code>OR</code>、<code>BETWEEN</code>、<code>NOT</code>、<code>AS</code>、<code>CASE</code>、<code>WHEN</code>、<code>THEN</code>、<code>ELSE</code>、<code>END</code>、<code>DISTINCT</code>、<code>ASC</code>、<code>DESC</code>
       など</li>
-      <li><code>START TRANSACTION</code>、<code>ROLLBACK</code>、<code>COMMIT</code>、<code>ASC</code>、<code>DESC</code>
-      など</li>
+      <li><code>START TRANSACTION</code>、<code>ROLLBACK</code>、<code>COMMIT</code> など</li>
       <li><code>TRUE</code>、<code>FALSE</code> など</li>
       <li><code>LOWER</code>、<code>UPPER</code>、<code>COALESCE</code>、<code>CAST</code>、<code>TO_CHAR</code>、<code>LOCALTIMESTAMP</code>、<code>LOCALTIME</code>、<code>CURRENT_DATE</code>
       など</li>
       </ul></li>
-      <li>テーブル名やカラム名は、<strong>問題文に示されたもの同じ表記 (大文字・小文字)</strong>
+      <li>テーブル名やカラム名は、<strong>問題文に示されたものと同じ表記 (大文字・小文字)</strong>
       で記述してください。</li>
       </ul>
-      <h2 data-number="1.3" id="ハンズオン学習の準備"><span class="header-section-number">1.3</span>
+      <h2 data-number="1.3" id="高専ロボコン-全国大会"><span
+      class="header-section-number">1.3</span> 高専ロボコン (全国大会)</h2>
+      <p>優勝おめでとうございます🎉</p>
+      <ul>
+      <li>1回戦 <a href="https://www.youtube.com/watch?v=J0I6bx4I2IE&amp;t=9990s">v.s.
+      呉高専</a></li>
+      <li>2回戦 <a href="https://www.youtube.com/watch?v=J0I6bx4I2IE&amp;t=14058s">v.s.
+      釧路高専</a></li>
+      <li>準々決勝 <a href="https://www.youtube.com/watch?v=J0I6bx4I2IE&amp;t=19167s">v.s.
+      岐阜高専</a></li>
+      <li>準決勝 <a href="https://www.youtube.com/watch?v=J0I6bx4I2IE&amp;t=21138s">v.s.
+      鹿児島高専</a></li>
+      <li>決勝 <a href="https://www.youtube.com/watch?v=J0I6bx4I2IE&amp;t=23572s">v.s.
+      鈴鹿高専</a></li>
+      </ul>
+      <h2 data-number="1.4" id="ハンズオン学習の準備"><span class="header-section-number">1.4</span>
       ハンズオン学習の準備</h2>
-      <p>次の手順でSQL演習環境の立ち上げと、教材の更新を取得してください。</p>
+      <p>次の手順で、SQL演習環境を立ち上げ、教材の更新を取得してください。</p>
       <ul>
       <li><a href="lecture04.html#sql演習環境の動作確認-前回復習">SQL演習環境の動作確認</a> @
       第04回講義</li>
       <li><a href="lecture04.html#教材の更新の取得">教材の更新の取得</a> @ 第04回講義</li>
       </ul>
-      <h2 data-number="1.4" id="今回の講義内容"><span class="header-section-number">1.4</span>
+      <h2 data-number="1.5" id="今回の講義内容"><span class="header-section-number">1.5</span>
       今回の講義内容</h2>
       <p>前回の講義では、データベース設計の「概念設計」と「論理設計」を取り上げ、<strong>IE記法</strong>
       (Crow’s Foot記法)
@@ -288,7 +306,7 @@ class="toc-section-number">8</span> 授業時間外学習の指示 (宿題)</a><
       <p>整理すると以下のようになります。以降、これらについて、具体例を示しながら詳しく理解を深めていきます。</p>
       <ul>
       <li><strong>非正規形</strong>：
-      非スカラー値を含むカラムが存在し、列方向に同種のデータが繰り返されている。</li>
+      非スカラー値を含むカラムが存在するか、列方向に同種のデータが繰り返されている。</li>
       <li><strong>第1正規形 (1NF)</strong>：
       各カラムがスカラー値のみを格納し、列方向の繰り返しが排除されている。</li>
       <li><strong>第2正規形 (2NF)</strong>： 第1正規形の要件を満たし、複合主キーの一部に対する
@@ -446,10 +464,10 @@ class="toc-section-number">8</span> 授業時間外学習の指示 (宿題)</a><
       class="masked">非スカラー値 (複合値)</span>
       を含んでいます。このようなテーブル設計では、個々のスキルを独立したデータとして扱うことが難しくなり、<strong>検索や更新が煩雑になります</strong>。</p>
       <div class="balloon char-01 face-04 tone-blue">
-      <p>たとえば「<u>スキルとして <strong>Heal
+      <p>たとえば「<u>スキルとして <strong>Heal</strong>
       を使えるキャラクタを検索したい</u>」という単純な問い合わせでも、<a
       href="lecture04.html#like述語-like条件パターンマッチ演算子">LIKE述語</a> を使用した
-      </strong>部分一致検索** (<code>WHERE skill LIKE '%Heal%'</code>)
+      <strong>部分一致検索</strong> (<code>WHERE skill LIKE '%Heal%'</code>)
       などが必要になります。しかも、この方法では <code>SuperHeal</code>
       なども検索結果に含まれる可能性があるため、検索の正確性や処理性能に注意が必要となってきます。</p>
       <ul>
@@ -485,11 +503,10 @@ class="toc-section-number">8</span> 授業時間外学習の指示 (宿題)</a><
       <p>このため、運用開始後にデータが増加するたびにカラムを追加しなければならないようなテーブル設計は、できるだけ避けることが重要となります。</p>
       </div>
       <p>また、<strong>非正規形テーブル2</strong>
-      のようなテーブル構造では、大多数のキャラクターがアイテムを1種類しか所持していない場合、<span
+      のようなテーブル構造では、大多数のキャラクタがアイテムを1種類しか所持していない場合、<span
       class="masked">多くのカラムが <code>NULL</code> となり、無駄の多いテーブル構造</span>
       になります。さらに、<code>SUM()</code> や <code>COUNT()</code>
-      を使った集計処理でも、複数のカラムを列を横断的に扱う必要があるため、<strong>SQL文
-      が複雑になり、保守性や処理性能の面でも問題が生じやすくなります</strong>。</p>
+      を使った集計処理でも、複数のカラムを横断して扱う必要があるため、<strong>SQL文が複雑になり、保守性や処理性能の面でも問題が生じやすくなります</strong>。</p>
       <div class="balloon char-01 face-04 tone-blue">
       <p>たとえば、<strong>非正規形テーブル2</strong>
       で各キャラクタが所持しているアイテムの総数を求めるには、次のような SQL
@@ -605,8 +622,8 @@ class="toc-section-number">8</span> 授業時間外学習の指示 (宿題)</a><
       class="masked">各レコードを一意に識別することができません</span>。そこで、以下に示すように
       <strong>skill_id</strong> カラムを追加し、<strong>character_id</strong> と
       <strong>skill_id</strong> を組み合わせた「<strong>複合主キー</strong>」を設定します。</p>
-      <p><strong>▼ 非正規形テーブル1
-      (スキル管理テーブル)」を第1正規形にして「複合主キー」を設定したテーブル</strong></p>
+      <p><strong>▼ 非正規形テーブル1 (スキル管理テーブル)
+      を第1正規形にして「複合主キー」を設定したテーブル</strong></p>
       <table>
       <thead>
       <tr>
@@ -1391,7 +1408,7 @@ class="toc-section-number">8</span> 授業時間外学習の指示 (宿題)</a><
       が一意に決まる構造になっています。また、<strong>character_items</strong>
       テーブルでは、<strong>qty</strong> が <strong>character_id</strong> と
       <strong>item_id</strong> の組み合わせに「完全関数従属」しています。</p>
-      <p>これにより、すべての部分関数従属が解消され、3つのテーブルはいずれも「第2正規形」の要件をが満たされている、といえます。</p>
+      <p>これにより、すべての部分関数従属が解消され、3つのテーブルはいずれも「第2正規形」の要件を満たしているといえます。</p>
       </div>
       <p>ここで注目したいのは、この分解結果が、前回講義で学んだ <a
       href="lecture06.html#多対多のリレーションの分割-中間テーブル化">多対多のリレーションの分割（中間テーブル化）</a>
@@ -1868,153 +1885,218 @@ class="toc-section-number">8</span> 授業時間外学習の指示 (宿題)</a><
       <li>第7章「<strong>論理設計のアンチパターン</strong>」pp.225-262</li>
       <li>第8章「<strong>論理設計のグレーノウハウ</strong>」pp.263-302</li>
       </ul>
-      <h1 data-number="7" id="物理設計基礎"><span class="header-section-number">7</span>
-      物理設計（基礎）</h1>
-      <p>これまでの論理設計では、<strong>「データをどのようなテーブルに分け、どのような関係を持たせるか」</strong>を設計してきました。これに対して、<strong>物理設計（Physical
-      Design）</strong> では、PostgreSQL や MySQL などの具体的な RDBMS
-      を前提に、<strong>論理設計で決めた構造を実際のデータベースとして実装できるように、具体的な設計を進めていきます</strong>。</p>
-      <p>具体的には、<strong>データ型の選択</strong>、<strong>主キー・外部キー・CHECK
-      制約などの設定</strong>、<code>CREATE TABLE</code> などの DDL による
-      <strong>テーブル定義</strong>、検索性能を高めるための <strong>インデックス設計</strong>
-      などが物理設計の内容となります。</p>
-      <p>さらに、実際のシステムでは、ストレージやメモリなどのハードウェア構成、RAID
-      による冗長化、バックアップ、レプリケーション、負荷分散なども検討する必要があります。ただし、これらはインフラ設計や運用設計とも密接に関係する領域となります。</p>
-      <p>本講義では、<u><strong>テーブル設計・制約設定・インデックス設計を中心とした、RDBMS
-      上での基礎的な物理設計</strong></u>を扱います。対象とする RDBMS は <strong>PostgreSQL
-      18</strong> です。</p>
+      <h1 data-number="7" id="物理設計-基礎"><span class="header-section-number">7</span> 物理設計
+      (基礎)</h1>
+      <p>これまでの論理設計では、<strong>テーブルの構成やテーブル間の関係</strong>
+      を設計してきました。これに対して、<strong>物理設計 (Physical Design)</strong> では、PostgreSQL
+      や MySQL などの具体的な RDBMS
+      を前提に、<strong>論理設計で決めた構造を実装するための具体的な仕様</strong>
+      について決定していきます。</p>
+      <div class="balloon char-01 face-05 tone-blue">
+      <p>具体的には、<strong>データ型の選定</strong>、<strong>主キー／外部キー／CHECK
+      制約などの設定</strong>、<code>CREATE TABLE</code> 文などの DDL による
+      <strong>テーブル定義</strong>、検索性能を高めるための
+      <strong>インデックス設計</strong>といったことが物理設計の内容となります。</p>
+      </div>
+      <p>さらに、データベースを安定的かつ効率的に運用するためには、ストレージやメモリなどのハードウェア構成、RAID
+      による冗長化、バックアップ、レプリケーション、負荷分散なども検討する必要があります。これらも物理設計の範疇であり、インフラ設計や運用設計とも密接に関係するものとなります。</p>
+      <p>ここからは、論理設計で決定したテーブル構造をもとに、PostgreSQL 18
+      を使って実際にテーブルを作成していきます。特に、各カラムの「データ型」「主キー」「非NULL制約」
+      の指定方法について詳しく取り上げていきます。</p>
       <div class="prompts">
       <ul>
       <li>データベースの「レプリケーション」は、どのような目的で利用される仕組みですか。「バックアップ」との違いも含めて説明してください。</li>
+      <li>コンピュータストレージの文脈において「RAID」とは何ですか。2年前の「情報2」の授業で習ったのですが完全に内容を忘れてしまいました。</li>
       </ul>
       </div>
       <h3 data-number="7.0.1" id="定着確認-7"><span class="header-section-number">7.0.1</span>
       定着確認</h3>
       <ul>
-      <li>データベースの「概念設計」「論理設計」「物理設計」のうち、ハードウェア構成や
-      RAID、レプリケーションなどを扱う段階はどれか。
+      <li>RDBの設計において、テーブル間の関係や主キー、外部キーを決定した後、使用する RDBMS
+      の仕様に合わせて、各カラムのデータ型や制約の定義方法、インデックスの構成などを具体化する設計段階を何とよぶか。「概念設計」「論理設計」「物理設計」から選んで答えよ。
       <ul>
       <li><strong>答え</strong>：<span class="masked">物理設計</span></li>
       </ul></li>
-      <li>データベースの物理設計には、障害復旧の仕組みやパフォーマンスチューニングのような運用面の検討は含まれない。この説明は「適切である」か「適切ではない」か答えよ。
+      <li>次のうち、データベースの「物理設計」で行なう作業として、<u>最も適切でないもの</u>を1つ選び、番号で答えよ。
+      <ol type="1">
+      <li>検索処理を効率化するために、インデックスを設計する。</li>
+      <li>対象の RDBMS に合わせて、各カラムのデータ型を決定する。</li>
+      <li>業務で扱う情報を分析し、必要なエンティティを抽出する。</li>
+      <li>データの整合性を確保するために、制約を具体的に定義する。
       <ul>
-      <li><strong>答え</strong>：<span class="masked">適切ではない</span></li>
+      <li><strong>答え</strong>：<span class="masked">3</span></li>
       </ul></li>
-      <li>データベース (RDB) の物理設計に含まれる作業として適切なものを <u>すべて選択して</u>
-      記号で答えよ。
+      </ol></li>
+      <li>データベース (RDB)
+      の物理設計に含まれる作業として適切なものを<u>すべて選び</u>番号で答えよ。
+      <ol type="1">
+      <li>テーブルごとのデータ型・制約の設計</li>
+      <li>ユースケース図の作成</li>
+      <li>正規化による関係の整理</li>
+      <li>エンティティやリレーションの抽出</li>
+      <li><code>CREATE TABLE</code> などの DDL 記述</li>
+      <li>CPU・メモリ搭載量を前提にした性能設計
       <ul>
-      <li>① テーブルごとのデータ型・制約の設計</li>
-      <li>② ユースケース図の作成</li>
-      <li>③ 正規化による関係の整理</li>
-      <li>④ エンティティやリレーションの抽出</li>
-      <li>⑤ <code>CREATE TABLE</code> などの DDL 記述</li>
-      <li>⑥ CPU・メモリ搭載量を前提にした性能設計</li>
-      <li><strong>答え</strong>：<span class="masked">①、⑤、⑥</span></li>
+      <li><strong>答え</strong>：<span class="masked">1、5、6</span></li>
+      </ul></li>
+      </ol></li>
+      </ul>
+      <h2 data-number="7.1" id="第07回の演習用スキーマ"><span
+      class="header-section-number">7.1</span> 第07回の演習用スキーマ</h2>
+      <p>今回の演習では、これまで使用してきたデータベース <strong>playground</strong>
+      内に、第07回以降の SQL 演習で使用する <strong>w07</strong>
+      という新しいスキーマを作成します。</p>
+      <div class="balloon char-01 face-05 tone-blue">
+      <p>スキーマが異なっていれば、テーブル名が同じでも別々のテーブルとして扱われます。例えば、<code>w07.characters</code>
+      と <code>w03.characters</code> は、それぞれ独立したテーブルとなります。</p>
+      <p>なお、第03回講義で解説したように、RDB において <a
+      href="lecture03.html#rdbms-におけるスキーマという用語の2つの意味">「スキーマ」という用語は異なる
+      2 つの意味がある</a> ので注意してください。</p>
+      </div>
+      <p><strong>w07</strong> スキーマを作成するために <strong>from-teacher/07/setup.sql</strong>
+      を実行してください。このファイルには、以下のような SQL 文が記述されています。</p>
+      <div class="sourceCode" id="cb2"
+      data-caption="from-teacher/07/setup.sql（スキーマ w07 の作成）"><pre
+      class="sourceCode numberSource sql numberLines"><code class="sourceCode sql"><span id="cb2-1"><a href="#cb2-1"></a><span class="kw">CREATE</span> <span class="kw">SCHEMA</span> <span class="cf">IF</span> <span class="kw">NOT</span> <span class="kw">EXISTS</span> w07;</span>
+<span id="cb2-2"><a href="#cb2-2"></a></span>
+<span id="cb2-3"><a href="#cb2-3"></a><span class="kw">SET</span></span>
+<span id="cb2-4"><a href="#cb2-4"></a>  search_path <span class="kw">TO</span> w07;</span>
+<span id="cb2-5"><a href="#cb2-5"></a></span>
+<span id="cb2-6"><a href="#cb2-6"></a>SHOW search_path;</span></code></pre></div>
+      <p>次のコマンドもしくは <code>[Ctrl]+[Shift]+[B]</code>
+      のショートカットから実行することができます (あらかじめ Docker Desktop
+      を起動し、<code>npm run db:up</code> を実行しておく必要があります)。</p>
+      <div class="sourceCode" id="cb3"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="ex">npm</span> run sql from-teacher/07/setup.sql</span></code></pre></div>
+      <p>実行後、<code>SHOW search_path;</code> の結果が <code>w07</code>
+      となることを確認してください。なお、<code>IF NOT EXISTS</code>
+      は、指定したスキーマが存在しない場合にのみ作成するための指定となります。既に
+      <strong>w07</strong>
+      が存在する場合は、新たに作成せず、既存のスキーマをそのまま使用します。</p>
+      <h3 data-number="7.1.1" id="定着確認-8"><span class="header-section-number">7.1.1</span>
+      定着確認</h3>
+      <ul>
+      <li>あるデータベース接続において、テーブル <code>w07.characters</code> をスキーマ名を省略した
+      <code>characters</code> という名前で参照したい。このために実行すべき SQL 文を答えよ。
+      <ul>
+      <li><strong>答え</strong>：<span
+      class="masked"><code>SET search_path TO w07;</code></span></li>
       </ul></li>
       </ul>
-      <h2 data-number="7.1" id="テーブルの定義"><span class="header-section-number">7.1</span>
+      <h2 data-number="7.2" id="テーブルの定義"><span class="header-section-number">7.2</span>
       テーブルの定義</h2>
-      <p>RDBMS に「テーブル」を作成するためには、SQL の <code>CREATE TABLE</code>
-      文を使用します。最小構成の <code>CREATE TABLE</code> には ❶<strong>テーブル名</strong>
+      <p>RDBMS において新規に「<strong>テーブル</strong>」を作成するためには
+      <code>CREATE TABLE</code> 文を使用します。今回の例では、❶<strong>テーブル名</strong>
       (慣例として複数形の名詞もしくは集合名詞)、❷<strong>カラム名</strong>、❸<strong>データ型</strong>、❹<strong>主キーの指定</strong>といった基本要素を記述します。</p>
-      <p>たとえば、次のような「論理ER図」で示されたエンティティは…</p>
+      <p>たとえば、次のようなエンティティは…</p>
       <figure>
       <img src="figs/07/LER-05-1.png" alt="img" />
       <figcaption aria-hidden="true">img</figcaption>
       </figure>
-      <p>次のような SQL でテーブルを定義/作成できます。</p>
-      <div class="sourceCode" id="cb2" data-caption="CREATEによるテーブルの作成"><pre
-      class="sourceCode numberSource sql numberLines"><code class="sourceCode sql"><span id="cb2-1"><a href="#cb2-1"></a><span class="co">-- 既に存在するなら削除</span></span>
-<span id="cb2-2"><a href="#cb2-2"></a><span class="kw">DROP</span> <span class="kw">TABLE</span> <span class="cf">IF</span> <span class="kw">EXISTS</span> p_characters;</span>
-<span id="cb2-3"><a href="#cb2-3"></a></span>
-<span id="cb2-4"><a href="#cb2-4"></a><span class="co">-- テーブルの作成</span></span>
-<span id="cb2-5"><a href="#cb2-5"></a><span class="kw">CREATE</span> <span class="kw">TABLE</span> p_characters (</span>
-<span id="cb2-6"><a href="#cb2-6"></a>  character_id <span class="dt">INTEGER</span> <span class="kw">PRIMARY</span> <span class="kw">KEY</span>, <span class="co">-- 整数型、PK</span></span>
-<span id="cb2-7"><a href="#cb2-7"></a>  name <span class="dt">VARCHAR</span>(<span class="dv">16</span>) <span class="kw">NOT</span> <span class="kw">NULL</span>,        <span class="co">-- 可変長文字列(最大16文字)</span></span>
-<span id="cb2-8"><a href="#cb2-8"></a>  buff <span class="dt">DECIMAL</span>(<span class="dv">3</span>, <span class="dv">2</span>) <span class="kw">NOT</span> <span class="kw">NULL</span>,      <span class="co">-- 固定小数点数型 (-9.99〜9.99)</span></span>
-<span id="cb2-9"><a href="#cb2-9"></a>  is_online <span class="dt">BOOLEAN</span> <span class="kw">NOT</span> <span class="kw">NULL</span>,       <span class="co">-- 真偽値</span></span>
-<span id="cb2-10"><a href="#cb2-10"></a>  notes TEXT,                       <span class="co">-- 可変長文字列(実質無制限)</span></span>
-<span id="cb2-11"><a href="#cb2-11"></a>  created_on <span class="dt">DATE</span> <span class="kw">NOT</span> <span class="kw">NULL</span>,         <span class="co">-- 日付型</span></span>
-<span id="cb2-12"><a href="#cb2-12"></a>  last_login_at <span class="dt">TIMESTAMP</span>           <span class="co">-- 日時型(タイムゾーンなし)</span></span>
-<span id="cb2-13"><a href="#cb2-13"></a>);</span>
-<span id="cb2-14"><a href="#cb2-14"></a></span>
-<span id="cb2-15"><a href="#cb2-15"></a><span class="co">-- レコードの挿入</span></span>
-<span id="cb2-16"><a href="#cb2-16"></a><span class="kw">INSERT</span> <span class="kw">INTO</span></span>
-<span id="cb2-17"><a href="#cb2-17"></a>  p_characters (character_id, name, buff, is_online, notes, created_on, last_login_at)</span>
-<span id="cb2-18"><a href="#cb2-18"></a><span class="kw">VALUES</span></span>
-<span id="cb2-19"><a href="#cb2-19"></a>  (</span>
-<span id="cb2-20"><a href="#cb2-20"></a>    <span class="dv">6</span>,</span>
-<span id="cb2-21"><a href="#cb2-21"></a>    <span class="st">&#39;Alice&#39;</span>,</span>
-<span id="cb2-22"><a href="#cb2-22"></a>    <span class="fl">0.00</span>,</span>
-<span id="cb2-23"><a href="#cb2-23"></a>    <span class="kw">TRUE</span>,</span>
-<span id="cb2-24"><a href="#cb2-24"></a>    <span class="kw">NULL</span>,</span>
-<span id="cb2-25"><a href="#cb2-25"></a>    <span class="dt">DATE</span> <span class="st">&#39;2021-06-14&#39;</span>,</span>
-<span id="cb2-26"><a href="#cb2-26"></a>    <span class="dt">TIMESTAMP</span> <span class="st">&#39;2025-09-18 14:22:00&#39;</span></span>
-<span id="cb2-27"><a href="#cb2-27"></a>  ),</span>
-<span id="cb2-28"><a href="#cb2-28"></a>  (</span>
-<span id="cb2-29"><a href="#cb2-29"></a>    <span class="dv">8</span>,</span>
-<span id="cb2-30"><a href="#cb2-30"></a>    <span class="st">&#39;Bob&#39;</span>,</span>
-<span id="cb2-31"><a href="#cb2-31"></a>    <span class="fl">9.99</span>,</span>
-<span id="cb2-32"><a href="#cb2-32"></a>    <span class="kw">FALSE</span>,</span>
-<span id="cb2-33"><a href="#cb2-33"></a>    <span class="st">&#39;Admin note: Detected abnormal behavior; monitoring enabled.&#39;</span>,</span>
-<span id="cb2-34"><a href="#cb2-34"></a>    <span class="dt">DATE</span> <span class="st">&#39;2022-03-22&#39;</span>,</span>
-<span id="cb2-35"><a href="#cb2-35"></a>    <span class="dt">TIMESTAMP</span> <span class="st">&#39;2025-08-03 09:11:00&#39;</span></span>
-<span id="cb2-36"><a href="#cb2-36"></a>  );</span>
-<span id="cb2-37"><a href="#cb2-37"></a></span>
-<span id="cb2-38"><a href="#cb2-38"></a><span class="co">-- レコードの確認</span></span>
-<span id="cb2-39"><a href="#cb2-39"></a><span class="kw">SELECT</span></span>
-<span id="cb2-40"><a href="#cb2-40"></a>  <span class="op">*</span></span>
-<span id="cb2-41"><a href="#cb2-41"></a><span class="kw">FROM</span></span>
-<span id="cb2-42"><a href="#cb2-42"></a>  p_characters;</span></code></pre></div>
-      <p>SQL演習用のプロジェクトに <code>sql/07/tmp.sql</code> などの適当なファイルを作成して、この
-      SQL を貼り付けて、実際に実行してみてください。</p>
-      <p>次のような実行結果が得られると思います (以下では、notes カラムの表示を省略しています)。</p>
-      <pre><code>DROP TABLE
+      <p>次のような SQL
+      文で「テーブル」を定義および作成することができます。<strong>sql/07/tmp.sql</strong> に、この
+      SQL 文を記述し、実際に実行してみてください。</p>
+      <div class="sourceCode" id="cb4" data-caption="CREATEによるテーブルの作成"><pre
+      class="sourceCode numberSource sql numberLines"><code class="sourceCode sql"><span id="cb4-1"><a href="#cb4-1"></a><span class="kw">SET</span></span>
+<span id="cb4-2"><a href="#cb4-2"></a>  search_path <span class="kw">TO</span> w07;</span>
+<span id="cb4-3"><a href="#cb4-3"></a></span>
+<span id="cb4-4"><a href="#cb4-4"></a><span class="co">-- 既に存在するなら削除</span></span>
+<span id="cb4-5"><a href="#cb4-5"></a><span class="kw">DROP</span> <span class="kw">TABLE</span> <span class="cf">IF</span> <span class="kw">EXISTS</span> w07.characters;</span>
+<span id="cb4-6"><a href="#cb4-6"></a></span>
+<span id="cb4-7"><a href="#cb4-7"></a><span class="co">-- テーブルの作成</span></span>
+<span id="cb4-8"><a href="#cb4-8"></a><span class="kw">CREATE</span> <span class="kw">TABLE</span> characters (</span>
+<span id="cb4-9"><a href="#cb4-9"></a>  character_id <span class="dt">INTEGER</span> <span class="kw">PRIMARY</span> <span class="kw">KEY</span>, <span class="co">-- 整数型、PK</span></span>
+<span id="cb4-10"><a href="#cb4-10"></a>  name <span class="dt">VARCHAR</span>(<span class="dv">16</span>) <span class="kw">NOT</span> <span class="kw">NULL</span>,        <span class="co">-- 可変長文字列(最大16文字)</span></span>
+<span id="cb4-11"><a href="#cb4-11"></a>  buff <span class="dt">NUMERIC</span>(<span class="dv">3</span>, <span class="dv">2</span>) <span class="kw">NOT</span> <span class="kw">NULL</span>,      <span class="co">-- 固定小数点数型 (-9.99〜9.99)</span></span>
+<span id="cb4-12"><a href="#cb4-12"></a>  is_online <span class="dt">BOOLEAN</span> <span class="kw">NOT</span> <span class="kw">NULL</span>,       <span class="co">-- 真偽値</span></span>
+<span id="cb4-13"><a href="#cb4-13"></a>  notes TEXT,                       <span class="co">-- 可変長文字列</span></span>
+<span id="cb4-14"><a href="#cb4-14"></a>  created_on <span class="dt">DATE</span> <span class="kw">NOT</span> <span class="kw">NULL</span>,         <span class="co">-- 日付型</span></span>
+<span id="cb4-15"><a href="#cb4-15"></a>  last_login_at <span class="dt">TIMESTAMP</span>           <span class="co">-- 日時型(タイムゾーンなし)</span></span>
+<span id="cb4-16"><a href="#cb4-16"></a>);</span>
+<span id="cb4-17"><a href="#cb4-17"></a></span>
+<span id="cb4-18"><a href="#cb4-18"></a><span class="co">-- レコードの挿入</span></span>
+<span id="cb4-19"><a href="#cb4-19"></a><span class="kw">INSERT</span> <span class="kw">INTO</span></span>
+<span id="cb4-20"><a href="#cb4-20"></a>  characters (character_id, name, buff, is_online, notes, created_on, last_login_at)</span>
+<span id="cb4-21"><a href="#cb4-21"></a><span class="kw">VALUES</span></span>
+<span id="cb4-22"><a href="#cb4-22"></a>  (</span>
+<span id="cb4-23"><a href="#cb4-23"></a>    <span class="dv">6</span>,</span>
+<span id="cb4-24"><a href="#cb4-24"></a>    <span class="st">&#39;Alice&#39;</span>,</span>
+<span id="cb4-25"><a href="#cb4-25"></a>    <span class="fl">0.00</span>,</span>
+<span id="cb4-26"><a href="#cb4-26"></a>    <span class="kw">TRUE</span>,</span>
+<span id="cb4-27"><a href="#cb4-27"></a>    <span class="kw">NULL</span>,</span>
+<span id="cb4-28"><a href="#cb4-28"></a>    <span class="dt">DATE</span> <span class="st">&#39;2021-06-14&#39;</span>,</span>
+<span id="cb4-29"><a href="#cb4-29"></a>    <span class="dt">TIMESTAMP</span> <span class="st">&#39;2025-09-18 14:22:00&#39;</span></span>
+<span id="cb4-30"><a href="#cb4-30"></a>  ),</span>
+<span id="cb4-31"><a href="#cb4-31"></a>  (</span>
+<span id="cb4-32"><a href="#cb4-32"></a>    <span class="dv">8</span>,</span>
+<span id="cb4-33"><a href="#cb4-33"></a>    <span class="st">&#39;Bob&#39;</span>,</span>
+<span id="cb4-34"><a href="#cb4-34"></a>    <span class="fl">9.99</span>,</span>
+<span id="cb4-35"><a href="#cb4-35"></a>    <span class="kw">FALSE</span>,</span>
+<span id="cb4-36"><a href="#cb4-36"></a>    <span class="st">&#39;Admin note: Detected abnormal behavior; monitoring enabled.&#39;</span>,</span>
+<span id="cb4-37"><a href="#cb4-37"></a>    <span class="dt">DATE</span> <span class="st">&#39;2022-03-22&#39;</span>,</span>
+<span id="cb4-38"><a href="#cb4-38"></a>    <span class="dt">TIMESTAMP</span> <span class="st">&#39;2025-08-03 09:11:00&#39;</span></span>
+<span id="cb4-39"><a href="#cb4-39"></a>  );</span>
+<span id="cb4-40"><a href="#cb4-40"></a></span>
+<span id="cb4-41"><a href="#cb4-41"></a><span class="co">-- レコードの確認</span></span>
+<span id="cb4-42"><a href="#cb4-42"></a><span class="kw">SELECT</span></span>
+<span id="cb4-43"><a href="#cb4-43"></a>  <span class="op">*</span></span>
+<span id="cb4-44"><a href="#cb4-44"></a><span class="kw">FROM</span></span>
+<span id="cb4-45"><a href="#cb4-45"></a>  characters</span>
+<span id="cb4-46"><a href="#cb4-46"></a><span class="kw">ORDER</span> <span class="kw">BY</span></span>
+<span id="cb4-47"><a href="#cb4-47"></a>  character_id;</span></code></pre></div>
+      <p>次のような実行結果が得られるはずです (表示例では、Bob の <code>notes</code> を
+      <code>Admin...</code> と省略しています)。最初の <code>SET</code>
+      はスキーマの検索パスの設定、<code>INSERT 0 2</code>
+      は2件のレコードを挿入できたことを示しています。</p>
+      <pre><code>SET
+DROP TABLE
 CREATE TABLE
 INSERT 0 2
- character_id | name  | buff | is_online | notes       | created_on |    last_login_at
---------------+-------+------+-----------+-------------+------------+---------------------
-            6 | Alice | 0.00 | t         |             | 2021-06-14 | 2025-09-18 14:22:00
-            8 | Bob   | 9.99 | f         | Admin no... | 2022-03-22 | 2025-08-03 09:11:00</code></pre>
-      <p><strong>第02行目</strong> は「<strong>既に</strong> <code>p_characters</code>
-      <strong>テーブルが存在していれば削除する</strong>」という意味の文になります。存在しないテーブルを削除
-      (<code>DROP</code>) しようとするとエラーになるため、<code>IF EXISTS</code>
-      キーワードを追加しています。</p>
-      <p><strong>第05行目</strong> から <strong>第13行目</strong> の
-      <code>CREATE TABLE p_characters (...)</code>
+character_id | name  | buff | is_online | notes    | created_on | last_login_at
+-------------+-------+------+-----------+----------+------------+--------------------
+           6 | Alice | 0.00 | t         |          | 2021-06-14 | 2025-09-18 14:22:00
+           8 | Bob   | 9.99 | f         | Admin... | 2022-03-22 | 2025-08-03 09:11:00
+(2 行)</code></pre>
+      <p><strong>第05行目</strong> は、<code>w07</code> に <code>characters</code>
+      があれば削除する文です。<code>IF EXISTS</code>
+      を指定すると、最初の実行でテーブルがまだ存在しなくても先に進めます。</p>
+      <p><strong>第08行目</strong> から <strong>第16行目</strong> の
+      <code>CREATE TABLE characters (...)</code>
       がテーブルを新規に作成するための文になります。基本的に <code>カラム名 (Column Name)</code> 👉
       <code>データ型 (Data Type)</code> 👉 <code>制約 (Constraint)</code> という順で記述します。</p>
       <ul>
-      <li>「データ型」と「制約」の詳細については、あとのセクションで詳しく説明します。</li>
+      <li>「データ型」と「制約」については、あとのセクションで詳しく説明します。</li>
       </ul>
-      <p><strong>第16行目</strong> から <strong>第36行目</strong>
-      では、作成したテーブルにレコードを挿入しています。<strong>第25行目</strong>では、<code>DATE '2021-06-14'</code>
-      のように <span class="masked">型付きリテラル</span> によって値を設定していますが、単に
-      <code>'2021-06-14'</code> としても (暗黙に変換されるので) 問題ありません。</p>
+      <p><strong>第19行目</strong> から <strong>第39行目</strong>
+      では、作成したテーブルにレコードを挿入しています。<strong>第28行目</strong>では、<code>DATE '2021-06-14'</code>
+      のように <span class="masked">型付きリテラル</span> を用いて値を与えていますが、単に
+      <code>'2021-06-14'</code> としても (暗黙に型変換されるので) 問題ありません。</p>
+      <div class="balloon char-01 face-05 tone-blue">
+      <p>レコードを追加するための <code>INSERT</code> 文については <a
+      href="lecture04.html#insert文-超基礎編">第04回講義</a> で既に学習済みです。</p>
+      </div>
+      <h3 data-number="7.2.1" id="演習"><span class="header-section-number">7.2.1</span> 演習</h3>
+      <p>変更を1つずつ試し、その実行結果 (出力)
+      を確認してください。エラーが出た場合は、メッセージをよく読み、どの文が失敗したかを確認し、なぜ失敗したかを分析・考察してください。各確認が終わったら、SQLを元に戻してから次を試してください。</p>
       <ul>
-      <li><code>INSERT</code> については<a
-      href="lecture04.html#insert文-超基礎編">第04回講義</a>で学習済みです。</li>
+      <li><strong>第28・29行目</strong>、<strong>第37・38行目</strong> の
+      <code>DATE</code>、<code>TIMESTAMP</code>
+      を外し、引用符付きの値だけでレコードを挿入できることを確認してください。</li>
+      <li><strong>第13行目</strong> を <code>notes TEXT NOT NULL,</code>
+      に書き換えて、どのようになるか確認してください。</li>
+      <li><strong>第13行目</strong> を <code>notes VARCHAR(16),</code>
+      に書き換えて、どのようになるか確認してください。</li>
+      <li><strong>第15行目</strong> を <code>last_login_at TIMESTAMP,</code> (末尾にカンマを付ける)
+      に書き換えて、どのようになるか確認してください。</li>
+      <li><strong>第34行目</strong> を <code>9.999,</code>
+      に書き換えて、どのようになるか確認してください。</li>
+      <li><strong>第25行目</strong> を <code>0.000,</code> に書き換えて、実行結果の
+      <code>buff</code> がどう表示されるか確認してください。</li>
+      <li><strong>第26行目</strong> の <code>TRUE</code> を <code>1</code>
+      に書き換えて、どのようになるか確認してください。</li>
+      <li><strong>第26行目</strong> の <code>TRUE</code> を <code>'TRUE'</code>
+      に書き換えて、直前の実行結果と比較してください。</li>
       </ul>
-      <h3 data-number="7.1.1" id="演習"><span class="header-section-number">7.1.1</span> 演習</h3>
-      <ul>
-      <li>上記のSQLの <strong>第25・26行目</strong>、<strong>第34・35行目</strong>
-      において「型付きリテラル」を使用せずとも、問題なくレコードが挿入できること確認してください。</li>
-      <li>上記のSQLの <strong>第10行目</strong> を <code>notes TEXT NOT NULL,</code>
-      に書き換えて実行すると、どのようになるか確認してください。確認後は、元に戻しておいてください。</li>
-      <li>上記のSQLの <strong>第10行目</strong> を <code>notes VARCHAR(16),</code>
-      に書き換えて実行すると、どのようになるか確認してください。確認後は、元に戻しておいてください。</li>
-      <li>上記のSQLの <strong>第12行目</strong> を <code>last_login_at TIMESTAMP,</code>
-      (＝末尾にカンマを付ける)
-      に書き換えて実行すると、どのようになるか確認してください。確認後は、元に戻しておいてください。</li>
-      <li>上記のSQLの <strong>第31行目</strong> を <code>9.999,</code>
-      に書き換えて実行すると、どのようになるか確認してください。確認後は、元に戻しておいてください。</li>
-      <li>上記のSQLの <strong>第22行目</strong> を <code>0.000,</code>
-      に書き換えて実行すると、どのようになるか確認してください。確認後は、元に戻しておいてください。</li>
-      <li>上記のSQLの <strong>第23行目</strong> を <code>1,</code>
-      に書き換えて実行すると、どのようになるか確認してください。確認後は、元に戻しておいてください。</li>
-      <li>上記のSQLの <strong>第23行目</strong> を <code>'TRUE',</code>
-      に書き換えて実行すると、どのようになるか確認してください。確認後は、元に戻しておいてください。</li>
-      </ul>
-      <h3 data-number="7.1.2" id="定着確認-8"><span class="header-section-number">7.1.2</span>
+      <h3 data-number="7.2.2" id="定着確認-9"><span class="header-section-number">7.2.2</span>
       定着確認</h3>
       <ul>
       <li>PostgreSQL において、<code>DATE '2025-01-31'</code> や
@@ -2023,20 +2105,18 @@ INSERT 0 2
       <ul>
       <li><strong>答え</strong>: <span class="masked">型付きリテラル (Typed Literal)</span></li>
       </ul></li>
-      <li>PostgreSQL において、次の指示を満たす SQL 文を 1 行で記述せよ。
+      <li><code>w07</code> スキーマに <code>characters</code>
+      テーブルが存在する場合に限り、そのテーブルを削除する SQL 文を1行で記述せよ。接続時の
+      <code>search_path</code> に依存しないように記述すること。
       <ul>
       <li><strong>答え</strong>: <span
-      class="masked"><code>DROP TABLE IF EXISTS users</code></span></li>
+      class="masked"><code>DROP TABLE IF EXISTS w07.characters;</code></span></li>
       </ul></li>
       </ul>
-      <blockquote>
-      <p>テーブル users
-      が存在する場合にのみ、そのテーブルを削除し、存在しない場合はエラーにならないようにすること。</p>
-      </blockquote>
-      <h2 data-number="7.2" id="データ型"><span class="header-section-number">7.2</span>
+      <h2 data-number="7.3" id="データ型"><span class="header-section-number">7.3</span>
       データ型</h2>
       <p>PostgreSQL で利用可能な <strong>代表的なデータ型</strong>
-      としては、次のようなものがあります。</p>
+      として、次のようなものがあります。</p>
       <ul>
       <li><code>INTEGER</code>: -2,147,483,648 から +2,147,483,647
       までの範囲の整数値を格納可能な型です。PostgreSQL では <code>INT</code>
@@ -2045,53 +2125,105 @@ INSERT 0 2
       <li>より小さな範囲の整数を格納可能な <code>SMALLINT</code>、より大きな範囲の整数を格納可能な
       <code>BIGINT</code> もあります。</li>
       </ul></li>
-      <li><code>TEXT</code>: (最大 1GB まで格納可能な) <strong>可変長文字列型</strong>です。空文字
-      (長さ0の文字列) と <code>NULL</code> は「等価ではない」ので注意してください。</li>
+      <li><code>TEXT</code>:
+      <strong>長さの上限を指定せずに使用する可変長文字列型</strong>です。PostgreSQL
+      で1つの文字列に格納できる大きさは、最大で約 1GB となります。空文字 (長さ0の文字列) と
+      <code>NULL</code> は区別されます。</li>
       <li><code>VARCHAR(n)</code>:
       <strong>最大n文字までを格納可能な可変長文字列型</strong>です。<code>TEXT</code>
       型と同様、空文字と <code>NULL</code> は異なる値として扱われます。
       <ul>
-      <li>書き込みの際に文字数の確認が行われるため、<code>VARCHAR</code> のほうが <code>TEXT</code>
-      よりごくわずかに処理コストが高くなります。ただし、この差は通常のアプリでは誤差レベルとなります。</li>
+      <li><code>n</code> の単位は <span class="masked">バイト数ではなく、文字数</span>
+      です。たとえば、<code>VARCHAR(16)</code>
+      には、英語でも日本語でも「16文字」まで格納できます。</li>
       </ul></li>
-      <li><code>DECIMAL(n, m)</code>: <strong>正確な精度を保持する数値型</strong>
-      (<strong>固定小数点数型</strong>) で、全体の桁数を <code>n</code>、そのうち小数点以下の桁数を
-      <code>m</code> で指定します。
+      <li><code>NUMERIC(n, m)</code>: <strong>数値を正確に保持する型</strong>です。<code>n</code>
+      は数値全体の桁数、<code>m</code> は小数点以下の桁数を指定します (ここでは <code>m</code>
+      は0以上とします)。
       <ul>
-      <li>たとえば、<code>DECIMAL(6, 2)</code> は -9,999.99 から +9,999.99
-      までの範囲を扱い、<strong>桁落ちや丸め誤差なし</strong>で、小数点以下2桁を保持できます。金額などの精度が重要な値に向いています。</li>
-      <li>PostgreSQL では、<code>NUMERIC(n, m)</code> と <code>DECIMAL(n, m)</code>
-      は同義語で内部実装も同じとなります。</li>
-      <li>単に <code>DECIMAL</code>
-      だけを指定した場合、桁数や小数点以下の桁数が固定されない任意精度型として扱われます。ただし、小数点以下を含む桁数に制限がないため便利ですが、演算処理が重くなりやすく、パフォーマンス面で不利になることがあります。</li>
+      <li>第03回の <code>w03.characters</code> テーブルでも、<code>buff</code> に
+      <code>NUMERIC(3, 2)</code> を使用しています。</li>
+      <li>たとえば、<code>NUMERIC(6, 2)</code> は -9,999.99 から +9,999.99
+      までの値を小数点以下2桁で正確に保持できます。小数部が 2 桁を超える入力値は丸められ、<span
+      class="masked">丸めた結果が範囲を超えるとエラー</span> になります。</li>
+      <li>単に <code>NUMERIC</code>
+      だけを指定すると、型として桁数や小数点以下の桁数を固定せず、PostgreSQL
+      が扱える範囲で数値を格納できます。</li>
+      <li>PostgreSQL では、<code>DECIMAL</code> は <code>NUMERIC</code> の別名となります。</li>
       </ul></li>
-      <li><code>BOOLEAN</code>: 真偽値を扱うブール型です。<code>TRUE</code> もしくは
-      <code>FALSE</code> を保持します。</li>
+      <li><code>BOOLEAN</code>: 真偽値を扱うブール型です。<code>TRUE</code> または
+      <code>FALSE</code> を格納します。<code>NULL</code>
+      を許すカラムでは、値が不明な状態も表せます。</li>
       <li><code>DATE</code>:
       日付型です。年、月、日の情報だけを保持し、時刻やタイムゾーンの情報は含みません。</li>
       <li><code>TIMESTAMP</code>: 日付と時刻を <span class="masked">タイムゾーンなし</span>
       で扱う型になります。時刻は、100万分の1秒 (マイクロ秒) までの精度で保持されます。
       <ul>
-      <li>タイムゾーン情報を持たせる場合は <code>TIMESTAMPTZ</code> を使用します。</li>
+      <li>タイムゾーンを考慮して特定の時点を扱う場合は <code>TIMESTAMPTZ</code>
+      を使用します。入力された日時は UTC
+      に換算して保存され、表示時は接続のタイムゾーンに変換されます。タイムゾーン情報そのものを保存する型ではなく、特定の時点を表す値を保存し、接続のタイムゾーン設定に応じた日時として表示する型と言えます。</li>
       </ul></li>
       </ul>
-      <div class="note type-tips">
-      <p><strong>PostgreSQLで利用可能なデータ型</strong></p>
-      <p>PostgreSQL
-      は、リレーショナルモデルではあるものの、オブジェクト指向データベース的な機能も有しており、「可変長配列型」や「JSON型」といった構造化データをそのまま扱うカラムを定義することができます。これらの値は文字列としてシリアライズされて保存されるわけではなく、<strong>検索や更新を高速化するための構造化された形式</strong>で内部的に保持されています。</p>
-      <p>ただし、本科目ではこれらの機能は扱わず、純粋な RDB
-      としての「<strong>基本的なデータ型のみ</strong>」を対象とします。</p>
+      <div class="balloon char-01 face-02 tone-yellow">
+      <p>PostgreSQL では、配列や JSON の値を格納するカラムを定義することもできます。JSON
+      を扱う型には <code>JSON</code> と <code>JSONB</code> があり、<code>JSON</code>
+      は入力されたテキストをそのまま保持し、<code>JSONB</code>
+      は解析したデータをバイナリ形式で保持します。</p>
+      <p>ただし、本講義のなかでは、整数、文字列、日付など、上記に示したような<strong>基本的なデータ型のみ</strong>を使用します。</p>
       </div>
-      <p><strong>(プロンプト例)</strong></p>
-      <blockquote>
-      <p>PostgreSQL に関する質問です。データ型の VARCHAR(n) と TEXT
-      は、どのように使い分けたら良いかを実務的な観点から語ってください。</p>
-      </blockquote>
-      <blockquote>
-      <p>PostgreSQL に関する質問です。データ型として DECIMAL(n, m) ではなく、単に DECIMAL
-      を指定すると、桁数や小数点以下の桁数が固定されない任意精度型になると聞きました。この任意精度型とは、どのようなものか、浮動小数点数型と比較しながら分かりやすく丁寧に解説してください。</p>
-      </blockquote>
-      <h3 data-number="7.2.1" id="定着確認-9"><span class="header-section-number">7.2.1</span>
+      <div class="note type-senior">
+      <p><strong>中級者向け： NUMERIC 型で負の桁数を指定する</strong></p>
+      <p>PostgreSQL 15 以降では、<code>NUMERIC(n, m)</code> の <strong><code>m</code>
+      に負の整数を指定することができます</strong>。通常、<code>m</code>
+      は小数点以下の桁数を表しますが、負の値を指定すると、小数点より左側の桁で <span
+      class="masked">数値を丸めること</span> ができます。</p>
+      <p>例えば、<code>NUMERIC(5, -2)</code> では、数値を「100」の位に丸めて保存します。</p>
+      <table>
+      <thead>
+      <tr>
+      <th>保存する値</th>
+      <th>実際に保存される値</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr>
+      <td>12345</td>
+      <td>12300</td>
+      </tr>
+      <tr>
+      <td>12367</td>
+      <td>12400</td>
+      </tr>
+      <tr>
+      <td>12350</td>
+      <td>12400</td>
+      </tr>
+      <tr>
+      <td>9876543</td>
+      <td>9876500</td>
+      </tr>
+      <tr>
+      <td>9999950</td>
+      <td>エラー (丸めると 10000000 になり、桁数を超える)</td>
+      </tr>
+      </tbody>
+      </table>
+      <p>このように、負の <code>m</code> は、細かい数値を扱う必要がなく、100 単位や 1000
+      単位などで数値を管理したい場合に利用できます。なお、<strong>SQL標準では <code>m</code>
+      に負の数を指定することは認められていません</strong>。これは PostgreSQL
+      独自の拡張機能であるため、ほかの RDBMS との互換性には注意が必要です。</p>
+      </div>
+      <div class="prompts">
+      <ul>
+      <li>PostgreSQL に関する質問です。データ型の <code>VARCHAR(n)</code> と <code>TEXT</code>
+      は、どのように使い分けたらよいですか。ユーザ名と備考欄を例に説明してください。</li>
+      <li>PostgreSQL に関する質問です。桁数を指定していない <code>NUMERIC</code>
+      は、浮動小数点数型とどう違いますか。金額を扱う場合を例に説明してください。</li>
+      <li>PostgreSQL に関する質問です。同じ <code>TIMESTAMPTZ</code> の値を、日本と UTC
+      の設定で表示するとどう変わりますか。実際に試せる短いSQLと、結果の読み方を示してください。</li>
+      </ul>
+      </div>
+      <h3 data-number="7.3.1" id="定着確認-10"><span class="header-section-number">7.3.1</span>
       定着確認</h3>
       <ul>
       <li>PostgreSQL において、データ型 <code>NUMERIC(8, 2)</code> と <code>DECIMAL(8, 2)</code>
@@ -2099,7 +2231,7 @@ INSERT 0 2
       <ul>
       <li><strong>答え</strong>: <span class="masked">適切である</span></li>
       </ul></li>
-      <li>PostgreSQL において <code>DECIMAL(5, 3)</code> が扱える数値範囲を答えよ。
+      <li>PostgreSQL において <code>NUMERIC(5, 3)</code> が扱える数値範囲を答えよ。
       <ul>
       <li><strong>答え</strong>: <span class="masked"> -99.999 から 99.999 </span></li>
       </ul></li>
@@ -2108,133 +2240,230 @@ INSERT 0 2
       <ul>
       <li><strong>答え</strong>: <span class="masked">適切ではない</span></li>
       </ul></li>
-      <li>PostgreSQL で、タイムゾーン情報ありの日時を扱うために最も適切なデータ型を答えよ。
+      <li>PostgreSQL で、タイムゾーンを考慮して特定の時点を扱うために最も適切なデータ型を答えよ。
       <ul>
       <li><strong>答え</strong>: <span class="masked">TIMESTAMPTZ。TIMESTAMP WITH TIME ZONE
       でも可。</span></li>
       </ul></li>
+      <li>PostgreSQL で <code>NUMERIC(3, 2)</code> のカラムに <code>9.994</code> と
+      <code>9.995</code>
+      をそれぞれ登録する。格納できる場合は格納される値を、格納できない場合はその理由を答えよ。
+      <ul>
+      <li><strong>答え</strong>: <span class="masked"><code>9.994</code> は小数点以下2桁に丸められて
+      <code>9.99</code> になります。<code>9.995</code> は丸めると <code>10.00</code>
+      になり、整数部が2桁になって格納できないため、エラーになります。</span></li>
+      </ul></li>
+      <li>PostgreSQL の <code>TIMESTAMPTZ</code> 型のカラムに <code>2026-11-18 09:00:00+09</code>
+      を登録した。この値を、タイムゾーンを <code>UTC</code>
+      に設定した接続で取得すると、どのような日時が表示されるか。
+      <ul>
+      <li><strong>答え</strong>：<span class="masked">11月18日の午前0時を表す
+      <code>2026-11-18 00:00:00+00</code> が表示されます。</span></li>
+      </ul></li>
+      <li>PostgreSQL の <code>TIMESTAMPTZ</code> 型のカラムに <code>2026-11-18 09:00:00+09</code>
+      を登録した。この値を、タイムゾーンを
+      <code>Asia/Tokyo</code>（日本標準時）に設定した接続で取得すると、どのような日時が表示されるか。
+      <ul>
+      <li><strong>答え</strong>：<span class="masked">11月18日の午前9時を表す
+      <code>2026-11-18 09:00:00+09</code> が表示されます。</span></li>
+      </ul></li>
       </ul>
-      <h2 data-number="7.3" id="非null制約-not-null制約"><span
-      class="header-section-number">7.3</span> 非NULL制約 (NOT NULL制約)</h2>
-      <p>レコード内の特定のカラムに対して <span class="masked">「値が入っていない状態」</span>
-      を許容したくない場合は、<code>CREATE TABLE</code>
-      のなかで「<strong>非NULL制約</strong>」を指定します。たとえば
-      <code>is_online BOOLEAN NOT NULL</code> のように記述すると、is_online カラムには
-      <code>NULL</code> が格納できなくなります。逆に言えば、<code>NOT NULL</code>
-      を明示しなければ、そのカラムには <code>NULL</code> が格納できることになります。</p>
+      <div class="balloon char-01 face-05 tone-blue">
+      <p>最後の 2 問については、配布教材の <code>from-teacher/07/check-timestamptz.sql</code>
+      を実行して確認できます。</p>
+      </div>
+      <h2 data-number="7.4" id="非null制約not-null制約"><span
+      class="header-section-number">7.4</span> 非NULL制約（NOT NULL制約）</h2>
+      <p>特定のカラムに <span class="masked"><code>NULL</code></span>
+      を格納できないようにするには、<code>CREATE TABLE</code>
+      文で「<strong>非NULL制約</strong>」を指定します。</p>
+      <p>たとえば、<code>is_online BOOLEAN NOT NULL</code> と記述すると、<code>is_online</code>
+      カラムには <code>TRUE</code> または <code>FALSE</code>
+      のいずれかを必ず登録する必要があり、<code>NULL</code> は登録できなくなります。</p>
       <ul>
       <li>「<strong>非NULL制約</strong>」は「<strong>NOT NULL制約</strong>」とも呼ばれます。</li>
       <li><code>character_id INTEGER PRIMARY KEY</code>
-      のように、主キーに指定されたカラムには、自動的に「非NULL制約」と「UNIQUE制約」が適用されます。</li>
+      のように、主キーに指定されたカラムには、<strong>非NULL制約とUNIQUE制約に相当する制約</strong>が自動的に適用されます。
+      <ul>
+      <li><code>NOT NULL</code> や <code>UNIQUE</code> を明記しなくても、主キーには
+      <code>NULL</code> や重複する値を登録できません。</li>
+      </ul></li>
       </ul>
-      <h3 data-number="7.3.1" id="定着確認-10"><span class="header-section-number">7.3.1</span>
+      <h3 data-number="7.4.1" id="定着確認-11"><span class="header-section-number">7.4.1</span>
       定着確認</h3>
       <ul>
-      <li>以下のように定義される users テーブルにおいて、name
+      <li>以下のように定義される <code>w07.members</code> テーブルにおいて、name
       カラムに「非NULL制約」を追加したい。第03行目をどのように書き換えればよいか答えよ。
       <ul>
       <li><strong>答え</strong>: <span
       class="masked"><code>name VARCHAR(16) NOT NULL</code></span></li>
       </ul></li>
       </ul>
-      <div class="sourceCode" id="cb4" data-caption="定着確認"><pre
-      class="sourceCode numberSource sql numberLines"><code class="sourceCode sql"><span id="cb4-1"><a href="#cb4-1"></a><span class="kw">CREATE</span> <span class="kw">TABLE</span> users (</span>
-<span id="cb4-2"><a href="#cb4-2"></a>  <span class="kw">id</span> <span class="dt">INTEGER</span> <span class="kw">PRIMARY</span> <span class="kw">KEY</span>,</span>
-<span id="cb4-3"><a href="#cb4-3"></a>  name <span class="dt">VARCHAR</span>(<span class="dv">16</span>)</span>
-<span id="cb4-4"><a href="#cb4-4"></a>);</span></code></pre></div>
-      <h2 data-number="7.4" id="primary-key指定"><span class="header-section-number">7.4</span>
+      <div class="sourceCode" id="cb6" data-caption="定着確認"><pre
+      class="sourceCode numberSource sql numberLines"><code class="sourceCode sql"><span id="cb6-1"><a href="#cb6-1"></a><span class="kw">CREATE</span> <span class="kw">TABLE</span> w07.members (</span>
+<span id="cb6-2"><a href="#cb6-2"></a>  <span class="kw">id</span> <span class="dt">INTEGER</span> <span class="kw">PRIMARY</span> <span class="kw">KEY</span>,</span>
+<span id="cb6-3"><a href="#cb6-3"></a>  name <span class="dt">VARCHAR</span>(<span class="dv">16</span>)</span>
+<span id="cb6-4"><a href="#cb6-4"></a>);</span></code></pre></div>
+      <ul>
+      <li><code>name VARCHAR(16) NOT NULL</code> と定義されたカラムに、空文字 <code>''</code> と
+      <code>NULL</code> をそれぞれ格納できるか答えよ。ほかの制約はないものとする。
+      <ul>
+      <li><strong>答え</strong>: <span class="masked">空文字 <code>''</code>
+      は長さ0の文字列なので格納できる。<code>NULL</code> は 非NULL制約
+      に違反するため格納できない。</span></li>
+      </ul></li>
+      </ul>
+      <h2 data-number="7.5" id="primary-key指定"><span class="header-section-number">7.5</span>
       PRIMARY KEY指定</h2>
-      <p><code>CREATE TABLE</code> において、主キーは <code>PRIMARY KEY</code>
-      キーワードを使用して指定します。たとえば、次のようにすることで <code>character_id</code>
-      を主キーに指定することができます。このような指定方法を「カラムレベルの主キー指定」といいます。</p>
-      <div class="sourceCode" id="cb5" data-caption="主キーの設定(1)"><pre
-      class="sourceCode numberSource sql numberLines"><code class="sourceCode sql"><span id="cb5-1"><a href="#cb5-1"></a><span class="kw">CREATE</span> <span class="kw">TABLE</span> characters (</span>
-<span id="cb5-2"><a href="#cb5-2"></a>  character_id <span class="dt">INTEGER</span> <span class="kw">PRIMARY</span> <span class="kw">KEY</span>,</span>
-<span id="cb5-3"><a href="#cb5-3"></a>  name <span class="dt">VARCHAR</span>(<span class="dv">16</span>) <span class="kw">NOT</span> <span class="kw">NULL</span></span>
-<span id="cb5-4"><a href="#cb5-4"></a>);</span></code></pre></div>
-      <p>また、次のようにテーブル定義の末尾に主キーの指定を記述することもできます。このような形式を「<strong>テーブルレベルの主キー指定</strong>」といいます。</p>
-      <div class="sourceCode" id="cb6" data-caption="主キーの設定(2)"><pre
-      class="sourceCode numberSource sql numberLines"><code class="sourceCode sql"><span id="cb6-1"><a href="#cb6-1"></a><span class="kw">CREATE</span> <span class="kw">TABLE</span> characters (</span>
-<span id="cb6-2"><a href="#cb6-2"></a>  character_id <span class="dt">INTEGER</span>,</span>
-<span id="cb6-3"><a href="#cb6-3"></a>  name <span class="dt">VARCHAR</span>(<span class="dv">16</span>) <span class="kw">NOT</span> <span class="kw">NULL</span>,</span>
-<span id="cb6-4"><a href="#cb6-4"></a>  <span class="kw">PRIMARY</span> <span class="kw">KEY</span> (character_id)</span>
-<span id="cb6-5"><a href="#cb6-5"></a>);</span></code></pre></div>
-      <p>複合主キーは、テーブルレベルの主キー指定を用いて次のように記述します。</p>
-      <div class="sourceCode" id="cb7" data-caption="複合主キーの設定(2)"><pre
-      class="sourceCode numberSource sql numberLines"><code class="sourceCode sql"><span id="cb7-1"><a href="#cb7-1"></a><span class="kw">CREATE</span> <span class="kw">TABLE</span> character_items (</span>
-<span id="cb7-2"><a href="#cb7-2"></a>  character_id <span class="dt">INTEGER</span>,</span>
-<span id="cb7-3"><a href="#cb7-3"></a>  item_id <span class="dt">INTEGER</span>,</span>
-<span id="cb7-4"><a href="#cb7-4"></a>  quantity <span class="dt">INTEGER</span> <span class="kw">NOT</span> <span class="kw">NULL</span>,</span>
-<span id="cb7-5"><a href="#cb7-5"></a>  <span class="kw">PRIMARY</span> <span class="kw">KEY</span> (character_id, item_id)</span>
-<span id="cb7-6"><a href="#cb7-6"></a>);</span></code></pre></div>
-      <p>複合主キーに含まれる character_id と item_id
-      には、それぞれ自動的に「非NULL制約」が適用されます。また、character_id と item_id
-      の組み合わせに対して「UNIQUE制約」が自動適用されます。</p>
-      <h3 data-number="7.4.1" id="定着確認-11"><span class="header-section-number">7.4.1</span>
+      <p><code>CREATE TABLE</code> 文において、主キー (PK) は <code>PRIMARY KEY</code>
+      キーワードを使用して指定します。</p>
+      <p>たとえば、次のようにすることで <code>character_id</code>
+      を主キーに指定することができます。このような指定方法を「<strong>カラムレベルの主キー指定</strong>」といいます。</p>
+      <div class="sourceCode" id="cb7" data-caption="主キーの設定(1)"><pre
+      class="sourceCode numberSource sql numberLines"><code class="sourceCode sql"><span id="cb7-1"><a href="#cb7-1"></a><span class="kw">CREATE</span> <span class="kw">TABLE</span> w07.character_profiles (</span>
+<span id="cb7-2"><a href="#cb7-2"></a>  character_id <span class="dt">INTEGER</span> <span class="kw">PRIMARY</span> <span class="kw">KEY</span>,</span>
+<span id="cb7-3"><a href="#cb7-3"></a>  name <span class="dt">VARCHAR</span>(<span class="dv">16</span>) <span class="kw">NOT</span> <span class="kw">NULL</span></span>
+<span id="cb7-4"><a href="#cb7-4"></a>);</span></code></pre></div>
+      <p>また、次のように <span class="masked">テーブル定義の末尾</span>
+      に主キーの指定を記述することもできます。このような形式を「<strong>テーブルレベルの主キー指定</strong>」といいます。</p>
+      <div class="sourceCode" id="cb8" data-caption="主キーの設定(2)"><pre
+      class="sourceCode numberSource sql numberLines"><code class="sourceCode sql"><span id="cb8-1"><a href="#cb8-1"></a><span class="kw">CREATE</span> <span class="kw">TABLE</span> w07.character_profiles (</span>
+<span id="cb8-2"><a href="#cb8-2"></a>  character_id <span class="dt">INTEGER</span>,</span>
+<span id="cb8-3"><a href="#cb8-3"></a>  name <span class="dt">VARCHAR</span>(<span class="dv">16</span>) <span class="kw">NOT</span> <span class="kw">NULL</span>,</span>
+<span id="cb8-4"><a href="#cb8-4"></a>  <span class="kw">PRIMARY</span> <span class="kw">KEY</span> (character_id)</span>
+<span id="cb8-5"><a href="#cb8-5"></a>);</span></code></pre></div>
+      <p>前回講義で扱った <a href="lecture06.html#複合主キー">複合主キー</a>
+      については、テーブルレベルの主キー指定を用いて次のように記述します。</p>
+      <div class="sourceCode" id="cb9" data-caption="複合主キーの設定(2)"><pre
+      class="sourceCode numberSource sql numberLines"><code class="sourceCode sql"><span id="cb9-1"><a href="#cb9-1"></a><span class="kw">CREATE</span> <span class="kw">TABLE</span> w07.character_items (</span>
+<span id="cb9-2"><a href="#cb9-2"></a>  character_id <span class="dt">INTEGER</span>,</span>
+<span id="cb9-3"><a href="#cb9-3"></a>  item_id <span class="dt">INTEGER</span>,</span>
+<span id="cb9-4"><a href="#cb9-4"></a>  quantity <span class="dt">INTEGER</span> <span class="kw">NOT</span> <span class="kw">NULL</span>,</span>
+<span id="cb9-5"><a href="#cb9-5"></a>  <span class="kw">PRIMARY</span> <span class="kw">KEY</span> (character_id, item_id)</span>
+<span id="cb9-6"><a href="#cb9-6"></a>);</span></code></pre></div>
+      <p>ここで、複合主キーを構成する <strong>character_id</strong> と <strong>item_id</strong>
+      については、どちらにも <code>NULL</code>
+      を登録できなくなります。また、主キーの制約によって、<strong>character_id</strong> と
+      <strong>item_id</strong> の<strong>組み合わせの重複が禁止</strong>されるようになります。</p>
+      <div class="balloon char-01 face-02 tone-yellow">
+      <p>たとえば、Alice (<strong>character_id = 1</strong>) が回復薬 (<strong>item_id =
+      38</strong>) を 3 個持っていて、敵を倒して回復薬をもう1個手に入れたとします。</p>
+      <p>所持アイテムのテーブルには、すでに <strong>(character_id, item_id, quantity) = (1, 38,
+      3)</strong> の行が登録されています。</p>
+      <p>このとき、手に入れた 1 個を次のように <code>INSERT</code> すると、複合主キーの組み合わせ
+      <strong>(1, 38)</strong> が重複するため、エラーになります。</p>
+      <div class="sourceCode" id="cb10" data-caption="INSERT"><pre
+      class="sourceCode numberSource sql numberLines"><code class="sourceCode sql"><span id="cb10-1"><a href="#cb10-1"></a><span class="kw">INSERT</span> <span class="kw">INTO</span> w07.character_items (character_id, item_id, quantity)</span>
+<span id="cb10-2"><a href="#cb10-2"></a><span class="kw">VALUES</span> (<span class="dv">1</span>, <span class="dv">38</span>, <span class="dv">1</span>);</span></code></pre></div>
+      <p>この場合は、<code>UPDATE</code> 文で Alice
+      の回復薬を管理する行を選び、<strong>quantity</strong> を 1 増やす必要があります。</p>
+      <div class="sourceCode" id="cb11" data-caption="UPDATE"><pre
+      class="sourceCode numberSource sql numberLines"><code class="sourceCode sql"><span id="cb11-1"><a href="#cb11-1"></a><span class="kw">UPDATE</span> w07.character_items</span>
+<span id="cb11-2"><a href="#cb11-2"></a><span class="kw">SET</span> quantity <span class="op">=</span> quantity <span class="op">+</span> <span class="dv">1</span></span>
+<span id="cb11-3"><a href="#cb11-3"></a><span class="kw">WHERE</span> character_id <span class="op">=</span> <span class="dv">1</span> <span class="kw">AND</span> item_id <span class="op">=</span> <span class="dv">38</span>;</span></code></pre></div>
+      <p><code>WHERE</code> で2つのIDを指定することで、Alice
+      の回復薬の所持数だけが3個から4個に変わります。</p>
+      </div>
+      <div class="prompts">
+      <ul>
+      <li>PostgreSQL に関する質問です。<code>PRIMARY KEY (character_id, item_id)</code>
+      を指定する場合と、<code>character_id</code> と <code>item_id</code> にそれぞれ
+      <code>UNIQUE</code>
+      を指定する場合では、同じキャラクタが複数種類のアイテムを持つとき、登録できるレコードにどんな違いが出ますか。</li>
+      </ul>
+      </div>
+      <h3 data-number="7.5.1" id="定着確認-12"><span class="header-section-number">7.5.1</span>
       定着確認</h3>
       <ul>
       <li>次の <code>CREATE TABLE</code> 文において character_id と guild_id
-      を複合主キーとして設定したい。第05行目に記述すべき主キー指定を答えよ。
+      を複合主キーとして設定したい。以下の第05行目に記述すべき主キー指定を答えよ。
       <ul>
       <li><strong>答え</strong>: <span
       class="masked"><code>PRIMARY KEY (character_id, guild_id)</code></span></li>
       </ul></li>
       </ul>
-      <div class="sourceCode" id="cb8" data-caption="定着確認"><pre
-      class="sourceCode numberSource sql numberLines"><code class="sourceCode sql"><span id="cb8-1"><a href="#cb8-1"></a><span class="kw">CREATE</span> <span class="kw">TABLE</span> character_guilds (</span>
-<span id="cb8-2"><a href="#cb8-2"></a>  character_id <span class="dt">INTEGER</span>,</span>
-<span id="cb8-3"><a href="#cb8-3"></a>  guild_id <span class="dt">INTEGER</span>,</span>
-<span id="cb8-4"><a href="#cb8-4"></a>  joined_at <span class="dt">TIMESTAMP</span>,</span>
-<span id="cb8-5"><a href="#cb8-5"></a></span>
-<span id="cb8-6"><a href="#cb8-6"></a>);</span></code></pre></div>
+      <div class="sourceCode" id="cb12" data-caption="定着確認"><pre
+      class="sourceCode numberSource sql numberLines"><code class="sourceCode sql"><span id="cb12-1"><a href="#cb12-1"></a><span class="kw">CREATE</span> <span class="kw">TABLE</span> w07.character_guilds (</span>
+<span id="cb12-2"><a href="#cb12-2"></a>  character_id <span class="dt">INTEGER</span>,</span>
+<span id="cb12-3"><a href="#cb12-3"></a>  guild_id <span class="dt">INTEGER</span>,</span>
+<span id="cb12-4"><a href="#cb12-4"></a>  joined_at <span class="dt">TIMESTAMP</span>,</span>
+<span id="cb12-5"><a href="#cb12-5"></a></span>
+<span id="cb12-6"><a href="#cb12-6"></a>);</span></code></pre></div>
       <ul>
-      <li>次のように定義されるテーブルがあり、<code>INSERT INTO character_items VALUES (1, 1, 3);</code>
-      により、すでに 1 件のレコードが挿入されているものとする。このとき、次の <code>INSERT</code>
-      文のうち、エラーとなるものをすべて答えよ。
-      <ul>
-      <li>➀ <code>INSERT INTO character_items VALUES (2, 5, 3);</code></li>
-      <li>➁ <code>INSERT INTO character_items VALUES (1, 2, 5);</code></li>
-      <li>③ <code>INSERT INTO character_items VALUES (1, 1, 4);</code></li>
-      <li>④ <code>INSERT INTO character_items VALUES (1,-1, 0);</code></li>
-      <li>⑤ <code>INSERT INTO character_items VALUES (NULL, 2, 1);</code></li>
-      <li>➅ <code>INSERT INTO character_items VALUES (2, NULL, 1);</code></li>
-      <li><strong>答え</strong>: <span class="masked">③ (＝UNIQUE制約に違反)、⑤・⑥ (＝NOT
-      NULL制約に違反)、</span></li>
-      </ul></li>
+      <li><code>search_path</code> に <code>w07</code>
+      を指定した接続で、次のように定義されるテーブルに
+      <code>INSERT INTO character_items VALUES (1, 1, 3);</code> により 1
+      件のレコードを挿入した。</li>
       </ul>
-      <div class="sourceCode" id="cb9" data-caption="定着確認"><pre
-      class="sourceCode numberSource sql numberLines"><code class="sourceCode sql"><span id="cb9-1"><a href="#cb9-1"></a><span class="kw">CREATE</span> <span class="kw">TABLE</span> character_items (</span>
-<span id="cb9-2"><a href="#cb9-2"></a>  character_id <span class="dt">INTEGER</span>,</span>
-<span id="cb9-3"><a href="#cb9-3"></a>  item_id      <span class="dt">INTEGER</span>,</span>
-<span id="cb9-4"><a href="#cb9-4"></a>  quantity     <span class="dt">INTEGER</span> <span class="kw">NOT</span> <span class="kw">NULL</span>,</span>
-<span id="cb9-5"><a href="#cb9-5"></a>  <span class="kw">PRIMARY</span> <span class="kw">KEY</span> (character_id, item_id)</span>
-<span id="cb9-6"><a href="#cb9-6"></a>);</span></code></pre></div>
-      <h3 data-number="7.4.2" id="sqlドリル"><span class="header-section-number">7.4.2</span>
+      <div class="sourceCode" id="cb13" data-caption="定着確認"><pre
+      class="sourceCode numberSource sql numberLines"><code class="sourceCode sql"><span id="cb13-1"><a href="#cb13-1"></a><span class="kw">CREATE</span> <span class="kw">TABLE</span> w07.character_items (</span>
+<span id="cb13-2"><a href="#cb13-2"></a>  character_id <span class="dt">INTEGER</span>,</span>
+<span id="cb13-3"><a href="#cb13-3"></a>  item_id      <span class="dt">INTEGER</span>,</span>
+<span id="cb13-4"><a href="#cb13-4"></a>  quantity     <span class="dt">INTEGER</span> <span class="kw">NOT</span> <span class="kw">NULL</span>,</span>
+<span id="cb13-5"><a href="#cb13-5"></a>  <span class="kw">PRIMARY</span> <span class="kw">KEY</span> (character_id, item_id)</span>
+<span id="cb13-6"><a href="#cb13-6"></a>);</span></code></pre></div>
+      <p>この状態から次の <code>INSERT</code>
+      文をそれぞれ試すとき、エラーとなるものをすべて答えよ。</p>
+      <ol type="1">
+      <li><code>INSERT INTO character_items VALUES (2, 5, 3);</code></li>
+      <li><code>INSERT INTO character_items VALUES (1, 2, 5);</code></li>
+      <li><code>INSERT INTO character_items VALUES (1, 1, 4);</code></li>
+      <li><code>INSERT INTO character_items VALUES (1,-1, 0);</code></li>
+      <li><code>INSERT INTO character_items VALUES (NULL, 2, 1);</code></li>
+      <li><code>INSERT INTO character_items VALUES (2, NULL, 1);</code>
+      <ul>
+      <li><strong>答え</strong>: <span class="masked">3 (主キーの組み合わせが重複)、5・6
+      (主キーを構成するカラムが <code>NULL</code>)</span></li>
+      </ul></li>
+      </ol>
+      <ul>
+      <li><p>🏅 基本情報技術者試験 平成 21 年度秋期 午前 <a
+      href="https://www.fe-siken.com/kakomon/21_aki/q32.html">問32</a></p></li>
+      <li><p>🏅 基本情報技術者試験 平成 22 年度秋期 午前 <a
+      href="https://www.fe-siken.com/kakomon/22_aki/q31.html">問31</a></p></li>
+      </ul>
+      <h3 data-number="7.5.2" id="sqlドリル"><span class="header-section-number">7.5.2</span>
       SQLドリル💻</h3>
       <ul>
-      <li><code>ex-01_1.sql</code> 👉 以下に示す <strong>[期待する実行結果]</strong> を得るように
-      p_users テーブルの作成、レコードの挿入、集計処理をせよ。</li>
+      <li><code>ex-01_1.sql</code> 👉 以下に示す <strong>[期待する実行結果]</strong>
+      を得るように、<code>w07.users</code> テーブルを作成し、レコードの挿入と集計処理をせよ。</li>
       </ul>
-      <div class="sourceCode" id="cb10" data-caption="SQLドリル ex-01_1.sql"><pre
-      class="sourceCode numberSource sql numberLines"><code class="sourceCode sql"><span id="cb10-1"><a href="#cb10-1"></a><span class="co">-- トランザクションの開始</span></span>
-<span id="cb10-2"><a href="#cb10-2"></a><span class="kw">START</span> <span class="kw">TRANSACTION</span>;</span>
-<span id="cb10-3"><a href="#cb10-3"></a></span>
-<span id="cb10-4"><a href="#cb10-4"></a><span class="co">-- p_users テーブルの作成 (ここを記述)</span></span>
-<span id="cb10-5"><a href="#cb10-5"></a></span>
-<span id="cb10-6"><a href="#cb10-6"></a><span class="co">-- p_users テーブルにレコードを挿入 (ここを記述)</span></span>
-<span id="cb10-7"><a href="#cb10-7"></a></span>
-<span id="cb10-8"><a href="#cb10-8"></a><span class="co">-- テーブルの確認</span></span>
-<span id="cb10-9"><a href="#cb10-9"></a><span class="kw">SELECT</span></span>
-<span id="cb10-10"><a href="#cb10-10"></a>  <span class="op">*</span></span>
-<span id="cb10-11"><a href="#cb10-11"></a><span class="kw">FROM</span></span>
-<span id="cb10-12"><a href="#cb10-12"></a>  p_users;</span>
-<span id="cb10-13"><a href="#cb10-13"></a></span>
-<span id="cb10-14"><a href="#cb10-14"></a><span class="co">-- p_users テーブルを集計 (ここを記述)</span></span>
-<span id="cb10-15"><a href="#cb10-15"></a></span>
-<span id="cb10-16"><a href="#cb10-16"></a><span class="co">-- ロールバックによる処理の取り消し</span></span>
-<span id="cb10-17"><a href="#cb10-17"></a><span class="kw">ROLLBACK</span>;</span></code></pre></div>
+      <div class="sourceCode" id="cb14" data-caption="SQLドリル ex-01_1.sql"><pre
+      class="sourceCode numberSource sql numberLines"><code class="sourceCode sql"><span id="cb14-1"><a href="#cb14-1"></a><span class="kw">SET</span> search_path <span class="kw">TO</span> w07;</span>
+<span id="cb14-2"><a href="#cb14-2"></a></span>
+<span id="cb14-3"><a href="#cb14-3"></a><span class="co">-- トランザクションの開始</span></span>
+<span id="cb14-4"><a href="#cb14-4"></a><span class="kw">START</span> <span class="kw">TRANSACTION</span>;</span>
+<span id="cb14-5"><a href="#cb14-5"></a></span>
+<span id="cb14-6"><a href="#cb14-6"></a><span class="co">-- users テーブルの作成 (ここを記述)</span></span>
+<span id="cb14-7"><a href="#cb14-7"></a></span>
+<span id="cb14-8"><a href="#cb14-8"></a><span class="co">-- users テーブルにレコードを挿入 (ここを記述)</span></span>
+<span id="cb14-9"><a href="#cb14-9"></a></span>
+<span id="cb14-10"><a href="#cb14-10"></a><span class="co">-- テーブルの確認</span></span>
+<span id="cb14-11"><a href="#cb14-11"></a><span class="kw">SELECT</span></span>
+<span id="cb14-12"><a href="#cb14-12"></a>  <span class="op">*</span></span>
+<span id="cb14-13"><a href="#cb14-13"></a><span class="kw">FROM</span></span>
+<span id="cb14-14"><a href="#cb14-14"></a>  users</span>
+<span id="cb14-15"><a href="#cb14-15"></a><span class="kw">ORDER</span> <span class="kw">BY</span></span>
+<span id="cb14-16"><a href="#cb14-16"></a>  user_id;</span>
+<span id="cb14-17"><a href="#cb14-17"></a></span>
+<span id="cb14-18"><a href="#cb14-18"></a><span class="co">-- users テーブルを集計 (ここを記述)</span></span>
+<span id="cb14-19"><a href="#cb14-19"></a></span>
+<span id="cb14-20"><a href="#cb14-20"></a><span class="co">-- ロールバックによる処理の取り消し</span></span>
+<span id="cb14-21"><a href="#cb14-21"></a><span class="kw">ROLLBACK</span>;</span></code></pre></div>
+      <ul>
+      <li><strong>user_id</strong> は、整数型で主キーとすること。</li>
+      <li><strong>name</strong>
+      は、最大16文字の可変長文字列型とし、「非NULL制約」を付加すること。</li>
+      <li><strong>is_admin</strong> は、ブール型とし、「非NULL制約」を付加すること。</li>
+      <li><strong>height_cm</strong> は、身長 (cm)
+      を小数第1位まで記録できるように適切な桁数を指定した固定小数点型とすること。NULLを許容すること。</li>
+      <li><strong>birthday</strong> は、日付型とすること。NULLを許容すること。</li>
+      <li><strong>admin_count</strong> の集計には、管理者の行を <code>1</code>、それ以外の行を
+      <code>0</code> として、その合計を求めること。</li>
+      </ul>
       <p><strong>[期待する実行結果]</strong></p>
-      <pre><code>START TRANSACTION
+      <pre><code>SET
+START TRANSACTION
 CREATE TABLE
 INSERT 0 5
  user_id |  name   | is_admin | height_cm |  birthday
@@ -2249,24 +2478,27 @@ INSERT 0 5
  user_count | height_avg | admin_count
 ------------+------------+-------------
           5 |     172.30 |           2
-(1 行)</code></pre>
+(1 行)
+
+ROLLBACK</code></pre>
+      <h3 data-number="7.5.3" id="定着確認-13"><span class="header-section-number">7.5.3</span>
+      定着確認</h3>
       <ul>
-      <li>user_id は、整数型で主キーとしてください。</li>
-      <li>name は、文字列型として非NULL制約をつけてください。</li>
-      <li>is_admin は、ブール型としてください。非NULL制約をつけてください。</li>
-      <li>height_cm
-      は、適切に桁数を設定した固定小数点型としてください。NULLを許容してください。</li>
-      <li>birthday は、日付型としてください。NULLを許容してください。</li>
-      <li>admin_count を集計する方法 (＝<span class="masked">CASE と SUM
-      を組み合わせた典型的な条件付き集計</span>) は、授業ではまだ触れていないので解答例
-      <code>from-teacher/07/drill/ex-01_1.sql</code> を参考にしてください。</li>
+      <li>上記のSQLドリルでは、ユーザが 5 人いるが、身長が記録されているのは 3
+      人である。<code>COUNT(*)</code> と <code>AVG(height_cm)</code>
+      は、それぞれ何人分のデータを対象に集計するか答えよ。
+      <ul>
+      <li><strong>答え</strong>: <span class="masked"><code>COUNT(*)</code>
+      は5行すべてを数える。<code>AVG(height_cm)</code> は <code>NULL</code>
+      を除いた3人分の身長で平均を計算する。</span></li>
+      </ul></li>
       </ul>
       <h1 data-number="8" id="授業時間外学習の指示-宿題"><span
       class="header-section-number">8</span> 授業時間外学習の指示 (宿題)</h1>
       <p>🚨<strong>本科目は「学修単位科目」であり、1回の講義あたり「4時間相当」の授業時間外学習が求められる科目です</strong>🏃</p>
       <ul>
       <li>第01回講義から第07回講義までの内容について総復習して、後期中間試験に挑んでください。</li>
-      <li>試験明けの 第09回講義 (12月11日) では、小テストを実施しません。
+      <li>試験明けの第09回講義では、小テストを実施しません。
       <ul>
       <li>後期中間試験を 第08回 としてカウントしています。</li>
       </ul></li>
